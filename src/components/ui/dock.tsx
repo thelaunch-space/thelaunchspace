@@ -181,7 +181,7 @@ export function Dock({
     <nav ref={dockRef} role="navigation" aria-label="Main Dock">
       <ul
         className={cn(
-          "flex items-center rounded-xl border border-gray-100 bg-gradient-to-t from-neutral-50 to-white p-1 dark:border-zinc-900 dark:from-zinc-950 dark:to-zinc-900",
+          "flex items-center rounded-xl border border-white/20 bg-white/10 p-1 backdrop-blur-lg",
           className
         )}
       >
