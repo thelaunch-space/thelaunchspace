@@ -3,6 +3,7 @@ import { ArrowLeft, Linkedin } from 'lucide-react';
 import XIcon from './components/XIcon';
 import Modal from './components/Modal';
 import { Dock } from "@/components/ui/dock"
+import { SparklesCore } from "@/components/ui/sparkles";
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -116,7 +117,8 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-text-primary">
+    <div className="min-h-screen text-text-primary relative">
+      <SparklesCore className="absolute inset-0 z-[-1]" />
       <div className="mx-auto flex min-h-screen w-full max-w-[1200px] flex-col px-6 py-12 md:px-10 lg:px-16">
         <header className="flex items-center justify-between py-2">
           <div className="flex items-center gap-4">
@@ -130,7 +132,7 @@ function App() {
           <img
             src="/logo.png"
             alt="Agency Logo"
-            className="h-14 md:h-20 w-auto absolute left-1/2 -translate-x-1/2"
+            className="h-20 md:h-24 w-auto absolute left-1/2 -translate-x-1/2"
           />
 
         </header>
