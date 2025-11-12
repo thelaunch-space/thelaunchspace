@@ -153,7 +153,7 @@ function App() {
                 
                 <div className="flex flex-wrap justify-center gap-3 lg:gap-4">
                   <span className="rounded-full bg-border-color/50 px-5 py-2 text-sm font-medium text-text-primary">
-                    <span className="font-semibold">$45k+</span> client revenue
+                    <span className="font-semibold">15+ MVPs shipped in 8 months</span>
                   </span>
                   <span className="rounded-full bg-border-color/50 px-5 py-2 text-sm font-medium text-text-primary">
                     MVPs • Landing Pages • AI Tools
@@ -169,9 +169,9 @@ function App() {
                   onClick={() => setIsModalOpen(true)}
                   className="inline-flex h-12 items-center justify-center rounded-full bg-gradient-to-r from-accent-blue to-accent-purple px-10 text-base font-semibold text-white shadow-[0_20px_35px_rgba(37,99,235,0.35)] transition-transform hover:-translate-y-0.5"
                 >
-                  Tell us what you need to ship
+                  Get Your Launch Roadmap
                 </button>
-                <p className="text-sm text-text-secondary">You get a voice note in 24h: what you need, timeline, fit. We cut the BS. This page reflects that.</p>
+                <p className="text-sm text-text-secondary">You get a voice note in 24h: what you need, timeline, fit. We cut the BS.</p>
               </div>
             </div>
           </section>
