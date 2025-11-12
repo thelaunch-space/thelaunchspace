@@ -27,21 +27,27 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
       return;
     }
 
-    if (!email.includes('@')) {
+    // Conditional validation
+    if (preferWhatsApp && !whatsappNumber) {
+      setError('Please enter your WhatsApp number');
+      setIsSubmitting(false);
+      return;
+    }
+    if (!preferWhatsApp && !email.includes('@')) {
       setError('Please enter a valid email address');
       setIsSubmitting(false);
       return;
     }
 
     try {
-      const { error: submitError } = await supabase.from('leads').insert([
-        {
-          project_description: projectDescription,
-          email,
-          prefer_whatsapp: preferWhatsApp,
-          whatsapp_number: preferWhatsApp ? whatsappNumber : null,
-        },
-      ]);
+      const payload = {
+        project_description: projectDescription,
+        prefer_whatsapp: preferWhatsApp,
+        email: preferWhatsApp ? null : email,
+        whatsapp_number: preferWhatsApp ? whatsappNumber : null,
+      };
+
+      const { error: submitError } = await supabase.from('leads').insert([payload]);
 
       if (submitError) throw submitError;
 
@@ -163,19 +169,36 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
               </div>
             </div>
 
-            <div className="mb-4">
-              <label htmlFor="email" className="block text-sm font-medium text-text-secondary mb-2">
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-4 bg-border-color/50 border border-border-color rounded-lg text-base text-text-primary placeholder:text-text-secondary/70 focus:outline-none focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/40 transition-all"
-                required
-              />
-            </div>
+            {!preferWhatsApp ? (
+              <div className="mb-4">
+                <label htmlFor="email" className="block text-sm font-medium text-text-secondary mb-2">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full p-4 bg-border-color/50 border border-border-color rounded-lg text-base text-text-primary placeholder:text-text-secondary/70 focus:outline-none focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/40 transition-all"
+                  required={!preferWhatsApp}
+                />
+              </div>
+            ) : (
+              <div className="mb-4">
+                <label htmlFor="whatsapp" className="block text-sm font-medium text-text-secondary mb-2">
+                  WhatsApp Number
+                </label>
+                <input
+                  type="tel"
+                  id="whatsapp"
+                  value={whatsappNumber}
+                  onChange={(e) => setWhatsappNumber(e.target.value)}
+                  placeholder="+1 (555) 123-4567"
+                  className="w-full p-4 bg-border-color/50 border border-border-color rounded-lg text-base text-text-primary placeholder:text-text-secondary/70 focus:outline-none focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/40 transition-all"
+                  required={preferWhatsApp}
+                />
+              </div>
+            )}
 
             <div className="mb-6">
               <label className="flex items-center gap-2 cursor-pointer">
@@ -189,16 +212,6 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
                   Prefer WhatsApp instead?
                 </span>
               </label>
-
-              {preferWhatsApp && (
-                <input
-                  type="tel"
-                  value={whatsappNumber}
-                  onChange={(e) => setWhatsappNumber(e.target.value)}
-                  placeholder="+1 (555) 123-4567"
-                  className="w-full p-4 bg-border-color/50 border border-border-color rounded-lg text-base text-text-primary placeholder:text-text-secondary/70 focus:outline-none focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/40 transition-all mt-3"
-                />
-              )}
             </div>
 
             {error && (
@@ -215,16 +228,6 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
               {isSubmitting ? 'Sending...' : 'Send →'}
             </button>
 
-            <div className="text-center">
-              <a
-                href="https://calendly.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-accent-blue hover:underline text-sm md:text-base"
-              >
-                Book a 15-min call instead
-              </a>
-            </div>
           </form>
         )}
       </div>

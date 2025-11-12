@@ -4,7 +4,7 @@ import * as React from "react"
 import { useState, useRef } from "react"
 import ReactDOM from "react-dom"
 
-import { cn } from "@/lib/utils"
+import { cn, scaleValue } from "@/lib/utils"
 
 interface DockProps {
   className?: string
@@ -26,7 +26,7 @@ interface DockIconProps {
   onTap?: () => void
 }
 
-type ScaleValueParams = [number, number]
+
 
 // New Tooltip component to be rendered in a portal
 function Tooltip({
@@ -54,16 +54,6 @@ function Tooltip({
     </div>,
     document.body
   )
-}
-
-export const scaleValue = function (
-  value: number,
-  from: ScaleValueParams,
-  to: ScaleValueParams
-): number {
-  const scale = (to[1] - to[0]) / (from[1] - from[0])
-  const capped = Math.min(from[1], Math.max(from[0], value)) - from[0]
-  return Math.floor(capped * scale + to[0])
 }
 
 export function DockIcon({

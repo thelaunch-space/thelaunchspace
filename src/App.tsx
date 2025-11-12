@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { ArrowLeft, Twitter, Linkedin } from 'lucide-react';
+import { ArrowLeft, Linkedin } from 'lucide-react';
+import XIcon from './components/XIcon';
 import Modal from './components/Modal';
-import { Dock, DockIcon } from "@/components/ui/dock"
+import { Dock } from "@/components/ui/dock"
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -116,27 +117,22 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background text-text-primary">
-      <div className="mx-auto flex min-h-screen w-full max-w-[1200px] flex-col px-6 py-5 md:px-10 lg:px-16">
+      <div className="mx-auto flex min-h-screen w-full max-w-[1200px] flex-col px-6 py-12 md:px-10 lg:px-16">
         <header className="flex items-center justify-between py-2">
           <div className="flex items-center gap-4">
-            <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-text-primary">
-              <Twitter size={20} />
+            <a href="https://x.com/nkgoutham" target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-text-primary">
+              <XIcon size={20} />
             </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-text-primary">
+            <a href="https://www.linkedin.com/in/krishna-goutham/" target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-text-primary">
               <Linkedin size={20} />
             </a>
           </div>
           <img
             src="/logo.png"
             alt="Agency Logo"
-            className="h-10 md:h-14 w-auto absolute left-1/2 -translate-x-1/2"
+            className="h-14 md:h-20 w-auto absolute left-1/2 -translate-x-1/2"
           />
-          <button
-            onClick={() => setShowWhatWeDo(true)}
-            className="text-sm md:text-base font-medium text-text-secondary transition-colors hover:text-text-primary"
-          >
-            What We Do
-          </button>
+
         </header>
 
         <main className="flex flex-1 flex-col justify-center">
@@ -150,17 +146,17 @@ function App() {
               </div>
 
               <div className="flex w-full flex-col items-center gap-8">
-                <p className="max-w-[640px] text-[clamp(1.5rem,3vw,2rem)] font-medium italic leading-snug text-text-secondary">
+                <h2 className="max-w-[640px] text-[clamp(1.5rem,3vw,2rem)] font-medium italic leading-snug text-text-secondary">
                   “We think like your <span className="text-accent-blue not-italic font-semibold">cofounder</span>, and build like your{' '}
                   <span className="text-accent-blue not-italic font-semibold">CTO</span>”
-                </p>
+                </h2>
                 
                 <div className="flex flex-wrap justify-center gap-3 lg:gap-4">
                   <span className="rounded-full bg-border-color/50 px-5 py-2 text-sm font-medium text-text-primary">
                     <span className="font-semibold">$45k+</span> client revenue
                   </span>
                   <span className="rounded-full bg-border-color/50 px-5 py-2 text-sm font-medium text-text-primary">
-                    <span className="font-semibold">20+</span> product life-cycles
+                    MVPs • Landing Pages • AI Tools
                   </span>
                   <span className="rounded-full bg-border-color/50 px-5 py-2 text-sm font-medium text-text-primary">
                     Human led, <span className="font-semibold text-accent-blue">AI-assisted</span> builds
@@ -175,10 +171,7 @@ function App() {
                 >
                   Tell us what you need to ship
                 </button>
-                <p className="text-sm text-text-secondary">You get a voice note in 24h: what you need, timeline, fit.</p>
-                <p className="text-sm italic text-text-secondary/70">
-                  You know what you want. We cut the BS. This page reflects that.
-                </p>
+                <p className="text-sm text-text-secondary">You get a voice note in 24h: what you need, timeline, fit. We cut the BS. This page reflects that.</p>
               </div>
             </div>
           </section>
