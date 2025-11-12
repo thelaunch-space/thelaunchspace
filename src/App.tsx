@@ -171,7 +171,7 @@ function App() {
                 >
                   Get Your Launch Roadmap
                 </button>
-                <p className="text-sm text-text-secondary">You get a voice note in 24h: what you need, timeline, fit. We cut the BS. This page reflects that.</p>
+                <p className="text-sm text-text-secondary">You get a voice note in 24h: what you need, timeline, fit. We cut the BS.</p>
               </div>
             </div>
           </section>
