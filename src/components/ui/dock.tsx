@@ -133,7 +133,7 @@ export function DockIcon({
             <img
               src={src}
               alt={name}
-              className="h-full w-full rounded-[inherit]"
+              className="h-full w-full rounded-[inherit] filter grayscale opacity-60 md:hover:filter-none md:hover:opacity-100 transition-all duration-300"
             />
           ) : (
             children

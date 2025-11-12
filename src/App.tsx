@@ -119,7 +119,7 @@ function App() {
   return (
     <div className="min-h-screen text-text-primary relative">
       <SparklesCore className="absolute inset-0 z-[-1]" />
-      <div className="mx-auto flex min-h-screen w-full max-w-[1200px] flex-col px-6 py-12 md:px-10 lg:px-16">
+      <div className="mx-auto flex min-h-screen w-full max-w-[1200px] flex-col px-6 py-6 md:py-12 md:px-10 lg:px-16">
         <header className="flex items-center justify-between py-2">
           <div className="flex items-center gap-4">
             <a href="https://x.com/nkgoutham" target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-text-primary">
@@ -138,7 +138,7 @@ function App() {
         </header>
 
         <main className="flex flex-1 flex-col justify-center">
-          <section className="flex flex-1 flex-col justify-center">
+          <section className="flex flex-1 flex-col justify-center pt-16">
             <div className="flex flex-col items-center text-center gap-8 md:gap-10">
               <div className="max-w-[820px]">
                 <h1 className="font-display text-[clamp(2.75rem,7vw,5.25rem)] font-bold leading-[1.05] tracking-tight">
