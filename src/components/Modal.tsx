@@ -22,7 +22,7 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
     setIsSubmitting(true);
 
     if (projectDescription.length < 10) {
-      setError('Please provide more details about what you\'re building');
+      setError("Please provide more details about what you're building");
       setIsSubmitting(false);
       return;
     }
@@ -48,11 +48,14 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
       setIsSuccess(true);
       setTimeout(() => {
         onClose();
-        setIsSuccess(false);
-        setProjectDescription('');
-        setEmail('');
-        setPreferWhatsApp(false);
-        setWhatsappNumber('');
+        // Reset state after a delay to allow for exit animation
+        setTimeout(() => {
+          setIsSuccess(false);
+          setProjectDescription('');
+          setEmail('');
+          setPreferWhatsApp(false);
+          setWhatsappNumber('');
+        }, 300);
       }, 2000);
     } catch (err) {
       setError('Something went wrong. Please try again.');
@@ -66,16 +69,16 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-[640px] p-8 md:p-12 relative animate-scaleIn"
+        className="bg-background border border-border-color rounded-2xl shadow-2xl w-full max-w-[640px] p-8 md:p-12 relative animate-scaleIn"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 transition-colors"
+          className="absolute top-4 right-4 p-2 text-text-secondary hover:text-text-primary transition-colors"
           aria-label="Close modal"
         >
           <X size={24} />
@@ -83,9 +86,9 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
 
         {isSuccess ? (
           <div className="text-center py-8">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
-                className="w-8 h-8 text-green-600"
+                className="w-8 h-8 text-green-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -98,12 +101,12 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
                 />
               </svg>
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">Got it!</h3>
-            <p className="text-gray-600">You'll hear from us within 24 hours.</p>
+            <h3 className="text-2xl font-bold text-text-primary mb-2">Got it!</h3>
+            <p className="text-text-secondary">You'll hear from us within 24 hours.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+            <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-6">
               What are you building?
             </h2>
 
@@ -111,14 +114,14 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
               value={projectDescription}
               onChange={(e) => setProjectDescription(e.target.value)}
               placeholder='A CRM for real estate agents" or "An AI tool that summarizes legal documents'
-              className="w-full min-h-[120px] p-4 border border-gray-300 rounded-lg text-base focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 transition-all mb-4 resize-y"
+              className="w-full min-h-[120px] p-4 bg-border-color/50 border border-border-color rounded-lg text-base text-text-primary placeholder:text-text-secondary/70 focus:outline-none focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/40 transition-all mb-4 resize-y"
               required
             />
 
-            <div className="space-y-3 mb-6 text-sm md:text-base text-gray-700">
+            <div className="space-y-3 mb-6 text-sm md:text-base text-text-secondary">
               <div className="flex items-start gap-2">
                 <svg
-                  className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5"
+                  className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -132,7 +135,7 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
               </div>
               <div className="flex items-start gap-2">
                 <svg
-                  className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5"
+                  className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -146,7 +149,7 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
               </div>
               <div className="flex items-start gap-2">
                 <svg
-                  className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5"
+                  className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -161,7 +164,7 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-text-secondary mb-2">
                 Email Address
               </label>
               <input
@@ -169,7 +172,7 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-4 border border-gray-300 rounded-lg text-base focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 transition-all"
+                className="w-full p-4 bg-border-color/50 border border-border-color rounded-lg text-base text-text-primary placeholder:text-text-secondary/70 focus:outline-none focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/40 transition-all"
                 required
               />
             </div>
@@ -180,9 +183,9 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
                   type="checkbox"
                   checked={preferWhatsApp}
                   onChange={(e) => setPreferWhatsApp(e.target.checked)}
-                  className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-600/20"
+                  className="w-4 h-4 text-accent-blue bg-border-color border-border-color rounded focus:ring-2 focus:ring-accent-blue/40"
                 />
-                <span className="text-sm md:text-base text-gray-700">
+                <span className="text-sm md:text-base text-text-secondary">
                   Prefer WhatsApp instead?
                 </span>
               </label>
@@ -193,13 +196,13 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
                   value={whatsappNumber}
                   onChange={(e) => setWhatsappNumber(e.target.value)}
                   placeholder="+1 (555) 123-4567"
-                  className="w-full p-4 border border-gray-300 rounded-lg text-base focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 transition-all mt-3"
+                  className="w-full p-4 bg-border-color/50 border border-border-color rounded-lg text-base text-text-primary placeholder:text-text-secondary/70 focus:outline-none focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/40 transition-all mt-3"
                 />
               )}
             </div>
 
             {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+              <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
                 {error}
               </div>
             )}
@@ -207,7 +210,7 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-blue-600 text-white font-medium text-base md:text-lg py-4 px-8 rounded-xl hover:bg-blue-700 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed mb-4"
+              className="w-full bg-accent-blue text-white font-medium text-base md:text-lg py-4 px-8 rounded-xl hover:bg-blue-700 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed mb-4"
             >
               {isSubmitting ? 'Sending...' : 'Send →'}
             </button>
@@ -217,7 +220,7 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
                 href="https://calendly.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:underline text-sm md:text-base"
+                className="text-accent-blue hover:underline text-sm md:text-base"
               >
                 Book a 15-min call instead
               </a>

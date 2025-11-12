@@ -1,221 +1,198 @@
 import { useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Twitter, Linkedin } from 'lucide-react';
 import Modal from './components/Modal';
+import { Dock, DockIcon } from "@/components/ui/dock"
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showWhatWeDo, setShowWhatWeDo] = useState(false);
 
-  return (
-    <div className="min-h-screen bg-white overflow-hidden">
-      {!showWhatWeDo ? (
-        <>
-          <header className="fixed top-0 left-0 right-0 bg-white z-40">
-            <div className="max-w-[700px] mx-auto px-6 md:px-12 py-3 md:py-4 flex items-center justify-between">
-              <img
-                src="/logo.png"
-                alt="Agency Logo"
-                className="h-10 md:h-14 w-auto"
-              />
-              <button
-                onClick={() => setShowWhatWeDo(true)}
-                className="text-gray-600 hover:text-gray-900 font-medium text-sm md:text-base transition-colors"
-              >
-                What We Do
-              </button>
-            </div>
-          </header>
+  const dockItems = [
+    {
+      src: "/bolt.png",
+      name: "Bolt",
+      href: "#",
+      outcome: "Curriculum Design",
+    },
+    {
+      src: "/beacon-house.png",
+      name: "Beacon House",
+      href: "#",
+      outcome: "Retainer",
+    },
+    {
+      src: "/directshelf.png",
+      name: "DirectShelf",
+      href: "#",
+      outcome: "Landing Page",
+    },
+    {
+      src: "/dreamvid.png",
+      name: "DreamVid",
+      href: "#",
+      outcome: "Retainer",
+    },
+    {
+      src: "/fractalhive.png",
+      name: "Fractal Hive",
+      href: "#",
+      outcome: "School SaaS Product",
+    },
+    {
+      src: "/tripture.png",
+      name: "Tripture",
+      href: "#",
+      outcome: "Retainer, Growth Strategy",
+    },
+    {
+      src: "/poai.png",
+      name: "Po AI",
+      href: "#",
+      outcome: "Landing Page, Strategy",
+    },
+  ];
 
-          <main className="max-w-[700px] mx-auto px-6 md:px-12 pt-24 md:pt-28 pb-8 md:pb-12 min-h-screen flex flex-col justify-center">
-            <div className="text-center">
-              <h1 className="text-[32px] leading-[1.1] md:text-[64px] font-bold text-[#1a1a1a] mb-6 md:mb-8">
-                21 days. Idea to revenue.
-              </h1>
-
-              <p className="text-base md:text-[22px] leading-[1.6] text-[#4a4a4a] mb-8 md:mb-10">
-                We think like your cofounder, build like your CTO.
-                <br />
-                3-4 week builds. $20k+ client revenue. AI-first tools
-                <br className="hidden md:block" /> that replace manual processes.
-              </p>
-
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="bg-blue-600 text-white font-medium text-base md:text-lg py-4 px-8 md:px-10 rounded-xl hover:bg-blue-700 hover:scale-[1.03] active:scale-[0.98] transition-all shadow-lg hover:shadow-xl mb-4 md:mb-5"
-              >
-                Tell Me What You're Building →
-              </button>
-
-              <p className="text-sm md:text-base text-[#6a6a6a]">
-                Voice note in 24h: what you need, timeline, fit.
-              </p>
-
-              <p className="text-sm md:text-[15px] italic text-[#6a6a6a]/70 mt-2 md:mt-3">
-                You know what you want. We cut the BS. This page reflects that.
-              </p>
-
-              <div className="mt-12 md:mt-16">
-                <p className="text-xs md:text-sm text-[#6a6a6a]/50 uppercase tracking-wider mb-6 md:mb-8">
-                  Trusted by founders at
-                </p>
-                <div className="relative w-full">
-                  <div className="absolute left-0 top-0 bottom-0 w-8 md:w-12 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-                  <div className="absolute right-0 top-0 bottom-0 w-8 md:w-12 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-                  <div className="overflow-hidden">
-                    <div className="flex items-center gap-8 md:gap-12 animate-scroll" style={{ width: 'fit-content' }}>
-                      <img
-                        src="/bolt.png"
-                        alt="Bolt"
-                        className="flex-shrink-0 opacity-40 grayscale"
-                        style={{ height: '36px', width: 'auto' }}
-                      />
-                      <img
-                        src="/beacon-house.png"
-                        alt="Beacon House"
-                        className="flex-shrink-0 opacity-40 grayscale"
-                        style={{ height: '42px', width: 'auto' }}
-                      />
-                      <img
-                        src="/directshelf.png"
-                        alt="DirectShelf"
-                        className="flex-shrink-0 opacity-40 grayscale"
-                        style={{ height: '40px', width: 'auto' }}
-                      />
-                      <img
-                        src="/dreamvid.png"
-                        alt="DreamVid"
-                        className="flex-shrink-0 opacity-40 grayscale"
-                        style={{ height: '40px', width: 'auto' }}
-                      />
-                      <img
-                        src="/fractalhive.png"
-                        alt="Fractal Hive"
-                        className="flex-shrink-0 opacity-40 grayscale"
-                        style={{ height: '40px', width: 'auto' }}
-                      />
-                      <img
-                        src="/tripture.png"
-                        alt="Tripture"
-                        className="flex-shrink-0 opacity-40 grayscale"
-                        style={{ height: '36px', width: 'auto' }}
-                      />
-                      <img
-                        src="/poai.png"
-                        alt="Po AI"
-                        className="flex-shrink-0 opacity-40 grayscale"
-                        style={{ height: '40px', width: 'auto' }}
-                      />
-                      <img
-                        src="/bolt.png"
-                        alt="Bolt"
-                        className="flex-shrink-0 opacity-40 grayscale"
-                        style={{ height: '36px', width: 'auto' }}
-                      />
-                      <img
-                        src="/beacon-house.png"
-                        alt="Beacon House"
-                        className="flex-shrink-0 opacity-40 grayscale"
-                        style={{ height: '42px', width: 'auto' }}
-                      />
-                      <img
-                        src="/directshelf.png"
-                        alt="DirectShelf"
-                        className="flex-shrink-0 opacity-40 grayscale"
-                        style={{ height: '40px', width: 'auto' }}
-                      />
-                      <img
-                        src="/dreamvid.png"
-                        alt="DreamVid"
-                        className="flex-shrink-0 opacity-40 grayscale"
-                        style={{ height: '40px', width: 'auto' }}
-                      />
-                      <img
-                        src="/fractalhive.png"
-                        alt="Fractal Hive"
-                        className="flex-shrink-0 opacity-40 grayscale"
-                        style={{ height: '40px', width: 'auto' }}
-                      />
-                      <img
-                        src="/tripture.png"
-                        alt="Tripture"
-                        className="flex-shrink-0 opacity-40 grayscale"
-                        style={{ height: '36px', width: 'auto' }}
-                      />
-                      <img
-                        src="/poai.png"
-                        alt="Po AI"
-                        className="flex-shrink-0 opacity-40 grayscale"
-                        style={{ height: '40px', width: 'auto' }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </main>
-
-          <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-        </>
-      ) : (
-        <>
-          <header className="fixed top-0 left-0 right-0 bg-white z-40">
-            <div className="max-w-[700px] mx-auto px-6 md:px-12 py-3 md:py-4 flex items-center justify-between">
-              <button
-                onClick={() => setShowWhatWeDo(false)}
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium text-sm md:text-base transition-colors"
-              >
-                <ArrowLeft size={20} />
-                <span>Back</span>
-              </button>
-              <img
-                src="/logo.png"
-                alt="Agency Logo"
-                className="h-10 md:h-14 w-auto"
-              />
-              <div className="w-12" />
-            </div>
-          </header>
-
-          <main className="max-w-[700px] mx-auto px-6 md:px-12 pt-24 md:pt-28 pb-8 md:pb-12 min-h-screen flex flex-col justify-center">
-            <h2 className="text-3xl md:text-5xl font-bold text-[#1a1a1a] mb-12 md:mb-16">
-              What We Do
-            </h2>
-
-            <div className="space-y-8 md:space-y-12">
-              <div className="space-y-3">
-                <div className="text-4xl md:text-5xl font-bold text-blue-600">$500</div>
-                <h3 className="font-bold text-xl md:text-2xl text-[#1a1a1a]">Landing Pages</h3>
-                <p className="text-base md:text-lg text-[#4a4a4a] leading-relaxed">
-                  High-converting pages that turn visitors into customers. Minimal friction, maximum clarity.
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                <div className="text-4xl md:text-5xl font-bold text-blue-600">$1.5k-4k</div>
-                <h3 className="font-bold text-xl md:text-2xl text-[#1a1a1a]">MVPs</h3>
-                <p className="text-base md:text-lg text-[#4a4a4a] leading-relaxed">
-                  Ship fast, validate ideas. We build the core features you need to get to market.
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                <div className="text-4xl md:text-5xl font-bold text-blue-600">$2k+/mo</div>
-                <h3 className="font-bold text-xl md:text-2xl text-[#1a1a1a]">Retainers</h3>
-                <p className="text-base md:text-lg text-[#4a4a4a] leading-relaxed">
-                  Ongoing support. We scale your product, improve performance, and own the roadmap.
-                </p>
-              </div>
-            </div>
-
+  if (showWhatWeDo) {
+    return (
+      <div className="min-h-screen bg-background overflow-hidden text-text-primary">
+        <header className="fixed top-0 left-0 right-0 bg-background/80 backdrop-blur-sm z-40">
+          <div className="max-w-[700px] mx-auto px-6 md:px-12 py-3 md:py-4 flex items-center justify-between">
             <button
               onClick={() => setShowWhatWeDo(false)}
-              className="mt-12 md:mt-16 bg-blue-600 text-white font-medium text-base md:text-lg py-4 px-8 md:px-10 rounded-xl hover:bg-blue-700 hover:scale-[1.03] active:scale-[0.98] transition-all shadow-lg hover:shadow-xl w-full"
+              className="flex items-center gap-2 text-text-secondary hover:text-text-primary font-medium text-sm md:text-base transition-colors"
             >
-              Tell Me What You're Building →
+              <ArrowLeft size={20} />
+              <span>Back</span>
             </button>
-          </main>
-        </>
-      )}
+            <img
+              src="/logo.png"
+              alt="Agency Logo"
+              className="h-10 md:h-14 w-auto"
+            />
+            <div className="w-12" />
+          </div>
+        </header>
+
+        <main className="max-w-[700px] mx-auto px-6 md:px-12 pt-24 md:pt-28 pb-8 md:pb-12 min-h-screen flex flex-col justify-center">
+          <h2 className="text-3xl md:text-5xl font-bold mb-12 md:mb-16">
+            What We Do
+          </h2>
+
+          <div className="space-y-8 md:space-y-12">
+            <div className="space-y-3">
+              <div className="text-4xl md:text-5xl font-bold text-accent-blue">$500</div>
+              <h3 className="font-bold text-xl md:text-2xl">Landing Pages</h3>
+              <p className="text-base md:text-lg text-text-secondary leading-relaxed">
+                High-converting pages that turn visitors into customers. Minimal friction, maximum clarity.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <div className="text-4xl md:text-5xl font-bold text-accent-blue">$1.5k-4k</div>
+              <h3 className="font-bold text-xl md:text-2xl">MVPs</h3>
+              <p className="text-base md:text-lg text-text-secondary leading-relaxed">
+                Ship fast, validate ideas. We build the core features you need to get to market.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <div className="text-4xl md:text-5xl font-bold text-accent-blue">$2k+/mo</div>
+              <h3 className="font-bold text-xl md:text-2xl">Retainers</h3>
+              <p className="text-base md:text-lg text-text-secondary leading-relaxed">
+                Ongoing support. We scale your product, improve performance, and own the roadmap.
+                              </p>            </div>
+          </div>
+
+          <button
+            onClick={() => setShowWhatWeDo(false)}
+            className="mt-12 md:mt-16 bg-accent-blue text-white font-medium text-base md:text-lg py-4 px-8 md:px-10 rounded-xl hover:bg-blue-700 hover:scale-[1.03] active:scale-[0.98] transition-all shadow-lg hover:shadow-xl"
+          >
+            Back to Landing →
+          </button>
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background text-text-primary">
+      <div className="mx-auto flex min-h-screen w-full max-w-[1200px] flex-col px-6 py-5 md:px-10 lg:px-16">
+        <header className="flex items-center justify-between py-2">
+          <div className="flex items-center gap-4">
+            <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-text-primary">
+              <Twitter size={20} />
+            </a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-text-primary">
+              <Linkedin size={20} />
+            </a>
+          </div>
+          <img
+            src="/logo.png"
+            alt="Agency Logo"
+            className="h-10 md:h-14 w-auto absolute left-1/2 -translate-x-1/2"
+          />
+          <button
+            onClick={() => setShowWhatWeDo(true)}
+            className="text-sm md:text-base font-medium text-text-secondary transition-colors hover:text-text-primary"
+          >
+            What We Do
+          </button>
+        </header>
+
+        <main className="flex flex-1 flex-col justify-center">
+          <section className="flex flex-1 flex-col justify-center">
+            <div className="flex flex-col items-center text-center gap-8 md:gap-10">
+              <div className="max-w-[820px]">
+                <h1 className="font-display text-[clamp(2.75rem,7vw,5.25rem)] font-bold leading-[1.05] tracking-tight">
+                  21 days.
+                  <span className="text-[clamp(1.9rem,4vw,3.25rem)] font-normal text-text-secondary"> idea to revenue</span>
+                </h1>
+              </div>
+
+              <div className="flex w-full flex-col items-center gap-8">
+                <p className="max-w-[640px] text-[clamp(1.5rem,3vw,2rem)] font-medium italic leading-snug text-text-secondary">
+                  “We think like your <span className="text-accent-blue not-italic font-semibold">cofounder</span>, and build like your{' '}
+                  <span className="text-accent-blue not-italic font-semibold">CTO</span>”
+                </p>
+                
+                <div className="flex flex-wrap justify-center gap-3 lg:gap-4">
+                  <span className="rounded-full bg-border-color/50 px-5 py-2 text-sm font-medium text-text-primary">
+                    <span className="font-semibold">$45k+</span> client revenue
+                  </span>
+                  <span className="rounded-full bg-border-color/50 px-5 py-2 text-sm font-medium text-text-primary">
+                    <span className="font-semibold">20+</span> product life-cycles
+                  </span>
+                  <span className="rounded-full bg-border-color/50 px-5 py-2 text-sm font-medium text-text-primary">
+                    Human led, <span className="font-semibold text-accent-blue">AI-assisted</span> builds
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center gap-3">
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="inline-flex h-12 items-center justify-center rounded-full bg-gradient-to-r from-accent-blue to-accent-purple px-10 text-base font-semibold text-white shadow-[0_20px_35px_rgba(37,99,235,0.35)] transition-transform hover:-translate-y-0.5"
+                >
+                  Tell us what you need to ship
+                </button>
+                <p className="text-sm text-text-secondary">You get a voice note in 24h: what you need, timeline, fit.</p>
+                <p className="text-sm italic text-text-secondary/70">
+                  You know what you want. We cut the BS. This page reflects that.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-10 md:mt-12 flex w-full flex-col items-center gap-6">
+            <p className="text-center text-xs uppercase tracking-[0.35em] text-text-secondary">Trusted by founders at</p>
+            <div className="max-w-full overflow-x-auto">
+              <Dock items={dockItems} />
+            </div>
+          </section>
+        </main>
+
+        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      </div>
     </div>
   );
 }
