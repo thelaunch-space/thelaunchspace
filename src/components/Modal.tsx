@@ -1,6 +1,5 @@
 import { X } from 'lucide-react';
 import { useState, FormEvent } from 'react';
-import { supabase } from '../lib/supabase';
 
 interface ModalProps {
   isOpen: boolean;
@@ -47,9 +46,23 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
         whatsapp_number: preferWhatsApp ? whatsappNumber : null,
       };
 
-      const { error: submitError } = await supabase.from('leads').insert([payload]);
+      const webhookUrl = import.meta.env.VITE_WEBHOOK_URL;
 
-      if (submitError) throw submitError;
+      if (!webhookUrl) {
+        throw new Error('Webhook URL is not configured');
+      }
+
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Webhook request failed with status ${response.status}`);
+      }
 
       setIsSuccess(true);
       setTimeout(() => {
