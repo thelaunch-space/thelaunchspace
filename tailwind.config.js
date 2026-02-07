@@ -2,7 +2,7 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  content: ['./app/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}', './lib/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
@@ -14,8 +14,8 @@ export default {
         'border-color': '#27272a',
       },
       fontFamily: {
-        sans: ['Sora', ...fontFamily.sans],
-        display: ['Syne', ...fontFamily.sans],
+        sans: ['var(--font-sora)', ...fontFamily.sans],
+        display: ['var(--font-syne)', ...fontFamily.sans],
       },
       keyframes: {
         scroll: {
