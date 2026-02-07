@@ -16,11 +16,6 @@
     min-height: -webkit-fill-available;
   }
 
-  #root {
-    min-height: 100dvh;
-    min-height: -webkit-fill-available;
-  }
-
   h1, h2, h3 {
     font-family: theme('fontFamily.display');
   }
@@ -158,4 +153,3 @@
     );
   }
 }
-

@@ -1,6 +1,8 @@
+"use client";
+
 import { X } from 'lucide-react';
 import { useState, FormEvent } from 'react';
-import { sendLeadToWebhook } from '../lib/webhook';
+import { submitLead } from '@/lib/submit-lead';
 
 interface ModalProps {
   isOpen: boolean;
@@ -49,7 +51,7 @@ export default function Modal({ isOpen, onClose }: ModalProps) {
 
       console.log('Submitting lead with payload:', payload);
 
-      const result = await sendLeadToWebhook(payload);
+      const result = await submitLead(payload);
 
       if (!result.success) {
         throw new Error(result.error || 'Failed to submit lead');

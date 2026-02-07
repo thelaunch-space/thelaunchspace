@@ -1,11 +1,13 @@
+"use client";
+
 import { useState } from 'react';
 import { ArrowLeft, Linkedin } from 'lucide-react';
-import XIcon from './components/XIcon';
-import Modal from './components/Modal';
-import { Dock } from "@/components/ui/dock"
+import XIcon from '@/components/XIcon';
+import Modal from '@/components/Modal';
+import { Dock } from "@/components/ui/dock";
 import { SparklesCore } from "@/components/ui/sparkles";
 
-function App() {
+export default function LandingPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showWhatWeDo, setShowWhatWeDo] = useState(false);
 
@@ -149,10 +151,10 @@ function App() {
 
               <div className="flex w-full flex-col items-center gap-8">
                 <h2 className="max-w-[640px] text-[clamp(1.5rem,3vw,2rem)] font-medium italic leading-snug text-text-secondary">
-                  “We think like your <span className="text-accent-blue not-italic font-semibold">cofounder</span>, and build like your{' '}
-                  <span className="text-accent-blue not-italic font-semibold">CTO</span>”
+                  &ldquo;We think like your <span className="text-accent-blue not-italic font-semibold">cofounder</span>, and build like your{' '}
+                  <span className="text-accent-blue not-italic font-semibold">CTO</span>&rdquo;
                 </h2>
-                
+
                 <div className="flex flex-wrap justify-center gap-3 lg:gap-4">
                   <span className="rounded-full bg-border-color/50 px-5 py-2 text-sm font-medium text-text-primary">
                     <span className="font-semibold">15+ MVPs shipped in 8 months</span>
@@ -191,5 +193,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
