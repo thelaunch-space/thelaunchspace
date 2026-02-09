@@ -245,7 +245,7 @@ export default function BlogPost() {
         <footer className="max-w-[720px] mx-auto px-6 md:px-8 pb-16">
           <div className="border-t border-border-color pt-10">
             <p className="text-text-secondary mb-4">Ready to stop searching and start building? We ship MVPs in 21 days - no technical cofounder required.</p>
-            <a href="/" className="inline-flex h-12 items-center justify-center rounded-full bg-gradient-to-r from-accent-blue to-accent-purple px-10 text-base font-semibold text-white shadow-[0_20px_35px_rgba(37,99,235,0.35)] transition-transform hover:-translate-y-0.5">
+            <a href="/?cta=open" className="inline-flex h-12 items-center justify-center rounded-full bg-gradient-to-r from-accent-blue to-accent-purple px-10 text-base font-semibold text-white shadow-[0_20px_35px_rgba(37,99,235,0.35)] transition-transform hover:-translate-y-0.5">
               Get Your Launch Roadmap
             </a>
           </div>
@@ -254,3 +254,4 @@ export default function BlogPost() {
     </>
   );
 }
+
