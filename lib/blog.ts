@@ -16,7 +16,7 @@ export interface BlogCategory {
   posts: BlogPost[];
 }
 
-const CATEGORY_LABELS: Record<string, string> = {
+export const CATEGORY_LABELS: Record<string, string> = {
   "startup-mvps": "Startup MVPs",
   "landing-pages": "Landing Pages",
   "ai-tools": "AI Tools",
@@ -48,10 +48,10 @@ export function discoverBlogPosts(): BlogPost[] {
       const content = readFileSync(pagePath, "utf-8");
 
       const titleMatch = content.match(
-        /title:\s*["'`]([^"'`]+?)(?:\s*\|[^"'`]*)?["'`]/
+        /title:\s*(["'`])((?:(?!\1).)+?)(?:\s*\|(?:(?!\1).)*?)?\1/
       );
       const descMatch = content.match(
-        /(?:^|\n)\s*description:\s*["'`]([^"'`]+)["'`]/
+        /(?:^|\n)\s*description:\s*(["'`])((?:(?!\1).)+)\1/
       );
       const publishedMatch = content.match(
         /publishedTime:\s*["'`]([^"'`]+)["'`]/
@@ -60,8 +60,8 @@ export function discoverBlogPosts(): BlogPost[] {
       posts.push({
         topic: topic.name,
         slug: slug.name,
-        title: titleMatch?.[1] ?? slug.name.replace(/-/g, " "),
-        description: descMatch?.[1] ?? "",
+        title: titleMatch?.[2] ?? slug.name.replace(/-/g, " "),
+        description: descMatch?.[2] ?? "",
         publishedTime: publishedMatch?.[1] ?? new Date().toISOString(),
         url: `/blogs/${topic.name}/${slug.name}`,
       });
