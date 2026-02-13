@@ -98,6 +98,32 @@
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  /* Agent card styles */
+  .agent-card-glow {
+    transition: box-shadow 0.4s ease;
+  }
+
+  .agent-card-scan::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      var(--agent-color, rgba(37, 99, 235, 0.06)) 50%,
+      transparent 100%
+    );
+    opacity: 0;
+    animation: scan-line 4s linear infinite;
+    pointer-events: none;
+    border-radius: inherit;
+    transition: opacity 0.3s ease;
+  }
+
+  .agent-card-scan:hover::before {
+    opacity: 1;
+  }
+
   /* Improved backdrop blur support */
   @supports (backdrop-filter: blur(12px)) {
     .backdrop-blur-md {

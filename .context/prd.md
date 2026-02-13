@@ -1,6 +1,6 @@
 # Product Requirements — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-11
+Last updated: 2026-02-14
 
 ## Core Concept
 "Tweet-sized" landing page — deliver the full value prop instantly, no scrolling. Reflects agency ethos: cut bureaucracy, deliver fast. Also hosts SEO-optimized blog posts for programmatic content marketing.
@@ -59,7 +59,19 @@ Ambitious founders and product leaders who prioritize execution and clarity over
 - Human reviews and merges every post before it goes live
 - Category index pages at `/blogs/<topic>/` show filtered post listings per topic
 
+### My AI Employees Section
+- Showcase page at `/my-ai-employees` presenting all 5 AI agents as a team
+- 5 agents: Parthasarathi (ops), Sanjaya (lead intel), Valmiki (social), Vibhishana (research), Vyasa (SEO blog)
+- Card grid with highlight/standard/compact sizing and per-agent accent colors
+- Individual detail pages at `/my-ai-employees/<agent>` showing:
+  - Key Responsibility Areas (KRAs) with outcomes and frequency
+  - Daily rhythm / schedule
+  - Proof points (stats, links, real-world catches)
+- Floating CTA button appears on scroll for conversion
+- Designed to sell the "AI employees" concept to potential clients
+- Agent data structured in TypeScript for future database migration
+
 ### Analytics
 - Google Analytics (GA4) via `next/script` in root layout
-- Auto-tracks page views on all routes (landing page + blog posts)
+- Auto-tracks page views on all routes (landing page + blog posts + agent pages)
 - Measurement ID via `NEXT_PUBLIC_GA_MEASUREMENT_ID` env var

@@ -1,6 +1,6 @@
 # Progress — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-11
+Last updated: 2026-02-14
 
 ## Completed
 - [x] Project scaffolding (Vite + React 18 + TS + Tailwind)
@@ -38,6 +38,16 @@ Last updated: 2026-02-11
 - [x] **`lib/blog.ts` — shared blog discovery utility (used by sitemap + blog index)**
 - [x] **Blog category index pages (`/blogs/[topic]/`) — dynamic route filtering posts by topic**
 - [x] **New blog post: "Why Your Agency Wasted $30K on Your MVP"**
+- [x] **"My AI Employees" section — full agent showcase at `/my-ai-employees`**
+- [x] **Agent data layer (`lib/agents.ts`) — 5 agents: Parthasarathi, Sanjaya, Valmiki, Vibhishana, Vyasa**
+- [x] **Agent card component (`AgentCard.tsx`) — highlight/standard/compact sizes, accent colors**
+- [x] **Agent detail pages (`/my-ai-employees/[agent]`) — KRAs, daily rhythm, proof points**
+- [x] **FloatingCTA component — scroll-triggered sticky CTA button**
+- [x] **Individual agent page routes with layouts for all 5 agents**
+- [x] **NavBar updated with "My AI Employees" link**
+- [x] **Sitemap updated to include agent pages**
+- [x] **Tailwind config extended with agent accent colors**
+- [x] **New CSS utilities for agent card animations (scan line, glow pulse)**
 
 ## In Progress
 - Nothing currently in progress
@@ -46,8 +56,9 @@ Last updated: 2026-02-11
 - Nothing currently blocked
 
 ## Recent Changes (latest first)
-1. Added blog category index pages at `/blogs/[topic]/` with SEO metadata (2026-02-11)
-2. Published blog: "Why Your Agency Wasted $30K on Your MVP" (2026-02-11)
+1. Added full "My AI Employees" section with agent index, detail pages, cards, data layer (2026-02-14)
+2. Added blog category index pages at `/blogs/[topic]/` with SEO metadata (2026-02-11)
+3. Published blog: "Why Your Agency Wasted $30K on Your MVP" (2026-02-11)
 3. Added NavBar, blog index page, GA4 tracking, shared blog discovery utility (2026-02-09)
 2. Added robots.txt and sitemap.xml with auto-discovery (2026-02-09)
 3. Published first blog post via AI agent PR workflow (2026-02-09)

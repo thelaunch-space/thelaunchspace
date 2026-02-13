@@ -8,6 +8,7 @@ import XIcon from "@/components/XIcon";
 export default function NavBar() {
   const pathname = usePathname();
   const isBlog = pathname.startsWith("/blogs");
+  const isAITeam = pathname.startsWith("/my-ai-employees");
 
   return (
     <nav className="bg-background/80 backdrop-blur-sm z-50 px-6 md:px-10 lg:px-16 py-3">
@@ -30,6 +31,16 @@ export default function NavBar() {
             }`}
           >
             Blog
+          </Link>
+          <Link
+            href="/my-ai-employees"
+            className={`text-sm font-medium transition-colors ${
+              isAITeam
+                ? "text-text-primary"
+                : "text-text-secondary hover:text-text-primary"
+            }`}
+          >
+            AI Team
           </Link>
           <a
             href="https://x.com/nkgoutham"

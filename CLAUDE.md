@@ -2,6 +2,17 @@
 
 Single-page landing page for thelaunch.space agency. "21 days, idea to revenue" — all content fits in the first fold, no scrolling.
 
+## Global Context — Where This Fits
+
+This is Krishna's storefront — where blogs land, leads convert, and eventually free tools will live. AI agents (Vibhishana + Vyasa) produce daily blog posts that get merged here via PRs. Social media posts drive traffic here. Organic search traffic is the long-term goal.
+
+**Sibling projects** (see root [CLAUDE.md](../CLAUDE.md) for full map):
+- `social-media-content-openclaw/` — Daily LinkedIn/X posts (main priority now). Drives awareness to this site.
+- `agent-config-openclaw/` — Where agent behavior is designed. Agent changes affect blog quality/topics.
+- `seo-mastery-openclaw/` — SEO strategy (activating soon). Will shape what keywords blogs target.
+- `content-creation-openclaw/` — OpenClaw setup knowledge base. Mostly done. Future lead magnet.
+- `_openclaw-business-archive/` — Old archive. Ignore, getting deleted.
+
 ## Stack
 Next.js 14 (App Router) + React 18 + TypeScript + Tailwind CSS 3 + Framer Motion + tsparticles
 

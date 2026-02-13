@@ -1,6 +1,6 @@
 # Integrations — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-09
+Last updated: 2026-02-14
 
 ## Make.com Webhook (Active)
 - **Purpose:** Lead capture → CRM pipeline

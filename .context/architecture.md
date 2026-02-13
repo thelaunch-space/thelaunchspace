@@ -1,9 +1,9 @@
 # Architecture — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-11
+Last updated: 2026-02-14
 
 ## Overview
-Next.js 14 App Router application. Server-side rendered for SEO/crawlability. Landing page content rendered as a client component for interactivity. Blog posts are static Server Components created by an AI agent via GitHub PRs. Webhook proxy via API route (server-side, no secrets exposed to browser). Hosted on Netlify. Google Analytics (GA4) tracking via `next/script`.
+Next.js 14 App Router application. Server-side rendered for SEO/crawlability. Landing page content rendered as a client component for interactivity. Blog posts are static Server Components created by an AI agent via GitHub PRs. "My AI Employees" section showcases 5 AI agents with index + detail pages. Webhook proxy via API route (server-side, no secrets exposed to browser). Hosted on Netlify. Google Analytics (GA4) tracking via `next/script`.
 
 ## File Structure
 ```
@@ -21,16 +21,30 @@ app/
 ├── blogs/startup-mvps/     # Blog topic folder
 │   └── how-to-find-technical-cofounder/
 │       └── page.tsx        # First published blog post (static Server Component)
+├── my-ai-employees/        # AI team showcase section
+│   ├── layout.tsx          # Section layout
+│   ├── page.tsx            # Agent index page (card grid)
+│   ├── parthasarathi/      # Agent detail pages (one per agent)
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── sanjaya/
+│   ├── valmiki/
+│   ├── vibhishana/
+│   └── vyasa/
 └── tools/[tool-slug]/      # Future tool routes (placeholder)
 components/
-├── NavBar.tsx              # "use client" — site-wide nav bar (logo, blog link, social icons)
+├── NavBar.tsx              # "use client" — site-wide nav bar (logo, blog, AI employees, social icons)
 ├── LandingPage.tsx         # "use client" — main landing page (hero + services)
+├── AgentCard.tsx           # "use client" — agent showcase card (highlight/standard/compact sizes)
+├── AgentDetailPage.tsx     # "use client" — full agent detail view (KRAs, rhythm, proof points)
+├── FloatingCTA.tsx         # "use client" — scroll-triggered sticky CTA button
 ├── Modal.tsx               # "use client" — lead capture form
 ├── XIcon.tsx               # Pure SVG component
 └── ui/
     ├── dock.tsx            # "use client" — macOS-style magnification dock
     └── sparkles.tsx        # "use client" — tsparticles background
 lib/
+├── agents.ts              # Agent data layer (5 agents, typed interfaces, structured for future DB migration)
 ├── blog.ts                # Blog discovery utility (shared by sitemap.ts + blogs/page.tsx)
 ├── utils.ts               # cn() (clsx+tailwind-merge), scaleValue()
 └── submit-lead.ts          # Client fetch to /api/lead
@@ -38,7 +52,9 @@ docs/
 ├── BLOG-AGENT-INSTRUCTIONS.md  # AI agent instructions for creating blog posts
 ├── BLOG-STYLE-REFERENCE.md     # Code template, design tokens for blog pages
 └── BLOG-OWNER-GUIDE.md         # Human guide for PR review workflow
-public/                     # Static assets (logos, OG image, favicon)
+public/
+├── agents/                 # Agent avatar images (+ AVATAR-PROMPTS.md for generation)
+└── ...                     # Static assets (logos, OG image, favicon)
 netlify.toml                # Netlify build config (@netlify/plugin-nextjs)
 ```
 
@@ -57,8 +73,13 @@ RootLayout (Server)
 │           └── Modal              — Lead capture form → /api/lead
 ├── blogs/page.tsx (Server)       — Blog index (lists posts by category)
 ├── blogs/<topic>/page.tsx (Server) — Category index (filtered by topic, 404 if empty)
-└── blogs/<topic>/<slug>/page.tsx (Server)
-    └── Static blog post (no "use client", self-contained)
+├── blogs/<topic>/<slug>/page.tsx (Server)
+│   └── Static blog post (no "use client", self-contained)
+├── my-ai-employees/page.tsx (Server)
+│   └── AgentCard ("use client")   — Card grid for all 5 agents
+└── my-ai-employees/<agent>/page.tsx (Server)
+    ├── AgentDetailPage ("use client") — Full agent profile (KRAs, rhythm, proof)
+    └── FloatingCTA ("use client")     — Scroll-triggered sticky CTA
 ```
 
 ## NavBar
@@ -89,6 +110,18 @@ RootLayout (Server)
 - `lib/blog.ts` provides `discoverBlogPosts()`, `getBlogCategories()`, and `CATEGORY_LABELS` — shared by sitemap, blog index, and category pages
 - Blog index at `/blogs` auto-discovers and lists all posts grouped by category
 - Category index at `/blogs/[topic]/` filters posts by topic slug, returns 404 for empty/unknown topics
+
+## AI Employees Section
+- Index page at `/my-ai-employees` shows all 5 agents in a card grid (highlight + standard + compact sizes)
+- Detail pages at `/my-ai-employees/<agent>` show full profile: KRAs, daily rhythm, proof points
+- Agent data in `lib/agents.ts` — static TypeScript objects, structured for future Convex DB migration
+- 5 agents: Parthasarathi (ops), Sanjaya (lead intel), Valmiki (social content), Vibhishana (research), Vyasa (SEO blog)
+- Each agent has: accent color, avatar, KRAs with outcomes/frequency, daily rhythm, proof points
+- `AgentCard.tsx` — responsive card with accent-colored gradients, image fallback to initials
+- `AgentDetailPage.tsx` — full detail view with breadcrumb, sections for KRAs/rhythm/proof
+- `FloatingCTA.tsx` — appears after 600px scroll, links to external booking/contact
+- NavBar includes "My AI Employees" link
+- Sitemap includes agent pages
 
 ## Google Analytics (GA4)
 - Measurement ID stored in `NEXT_PUBLIC_GA_MEASUREMENT_ID` env var

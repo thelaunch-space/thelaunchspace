@@ -1,6 +1,6 @@
 # Todo — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-11
+Last updated: 2026-02-14
 
 ## Priority: High
 - [ ] Build out free tools pages (`/tools/[tool-slug]`)
@@ -16,7 +16,11 @@ Last updated: 2026-02-11
 - [ ] Add loading skeleton for particle effects init
 - [ ] Consider Netlify deploy previews for PR review (currently using local preview)
 
+## Priority: Low-Medium
+- [ ] Add agent avatar images to `public/agents/` (currently showing fallback initials)
+
 ## Done (moved from above)
+- [x] Build "My AI Employees" section — agent index + detail pages for all 5 agents
 - [x] Build out blog pages (`/blogs/[topic]/[title]`) — AI agent creates via PRs
 - [x] Add `/?cta=open` deep link for blog CTAs to open modal directly
 - [x] Add `robots.txt` and `sitemap.xml` — done (auto-discovers blog posts from filesystem)
