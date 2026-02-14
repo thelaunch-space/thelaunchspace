@@ -18,9 +18,14 @@ app/
 ├── blogs/[topic]/page.tsx  # Category index page (server component, filtered by topic)
 ├── blogs/[topic]/[title]/  # Dynamic blog route (fallback)
 │   └── page.tsx
-├── blogs/startup-mvps/     # Blog topic folder
-│   └── how-to-find-technical-cofounder/
-│       └── page.tsx        # First published blog post (static Server Component)
+├── blogs/startup-mvps/     # Blog topic folder (5 posts)
+│   ├── how-to-find-technical-cofounder/
+│   ├── why-agency-mvp-failed/
+│   ├── when-no-code-tools-stop-working/
+│   ├── find-technical-cofounder-alternative/
+│   └── build-mvp-without-coding-ai-tools/
+├── blogs/founder-advice/   # Blog topic folder (1 post)
+│   └── validate-startup-idea-domain-expert/
 ├── my-ai-employees/        # AI team showcase section
 │   ├── layout.tsx          # Section layout
 │   ├── page.tsx            # Agent index page (card grid)
@@ -108,7 +113,7 @@ RootLayout (Server)
 - Owner reviews locally (`npm run dev`) or on GitHub, then merges to `main`
 - Netlify auto-deploys on merge
 - `lib/blog.ts` provides `discoverBlogPosts()`, `getBlogCategories()`, and `CATEGORY_LABELS` — shared by sitemap, blog index, and category pages
-- Blog index at `/blogs` auto-discovers and lists all posts grouped by category
+- Blog index at `/blogs` auto-discovers and lists all posts — horizontal card layout with sticky header/footer
 - Category index at `/blogs/[topic]/` filters posts by topic slug, returns 404 for empty/unknown topics
 
 ## AI Employees Section

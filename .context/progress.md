@@ -38,6 +38,9 @@ Last updated: 2026-02-14
 - [x] **`lib/blog.ts` — shared blog discovery utility (used by sitemap + blog index)**
 - [x] **Blog category index pages (`/blogs/[topic]/`) — dynamic route filtering posts by topic**
 - [x] **New blog post: "Why Your Agency Wasted $30K on Your MVP"**
+- [x] **New blog post: "When No-Code Tools Stop Working (And What to Do Next)"**
+- [x] **New blog post: "Can't Find a Technical Cofounder? Here's What to Do"**
+- [x] **Blog index (`/blogs`) redesigned — horizontal card layout with sticky header/footer**
 - [x] **"My AI Employees" section — full agent showcase at `/my-ai-employees`**
 - [x] **Agent data layer (`lib/agents.ts`) — 5 agents: Parthasarathi, Sanjaya, Valmiki, Vibhishana, Vyasa**
 - [x] **Agent card component (`AgentCard.tsx`) — highlight/standard/compact sizes, accent colors**
@@ -57,8 +60,11 @@ Last updated: 2026-02-14
 
 ## Recent Changes (latest first)
 1. Added full "My AI Employees" section with agent index, detail pages, cards, data layer (2026-02-14)
-2. Added blog category index pages at `/blogs/[topic]/` with SEO metadata (2026-02-11)
-3. Published blog: "Why Your Agency Wasted $30K on Your MVP" (2026-02-11)
+2. Redesigned `/blogs` page — horizontal card layout with sticky header/footer (2026-02-14)
+3. Published blog: "Can't Find a Technical Cofounder? Here's What to Do" (2026-02-14)
+4. Published blog: "When No-Code Tools Stop Working (And What to Do Next)" (2026-02-14)
+5. Added blog category index pages at `/blogs/[topic]/` with SEO metadata (2026-02-11)
+6. Published blog: "Why Your Agency Wasted $30K on Your MVP" (2026-02-11)
 3. Added NavBar, blog index page, GA4 tracking, shared blog discovery utility (2026-02-09)
 2. Added robots.txt and sitemap.xml with auto-discovery (2026-02-09)
 3. Published first blog post via AI agent PR workflow (2026-02-09)

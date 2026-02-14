@@ -53,7 +53,7 @@ Ambitious founders and product leaders who prioritize execution and clarity over
 ### Blog System
 - AI agent creates SEO-optimized blog posts via GitHub PRs
 - Self-contained static pages at `/blogs/<topic>/<slug>`
-- Blog index at `/blogs` auto-discovers and lists all posts grouped by category
+- Blog index at `/blogs` — horizontal card layout with sticky header/footer, auto-discovers all posts grouped by category
 - Dark theme consistent with landing page design
 - Blog CTAs link to `/?cta=open` (directly opens lead capture modal)
 - Human reviews and merges every post before it goes live
