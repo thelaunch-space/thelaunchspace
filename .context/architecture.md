@@ -118,12 +118,16 @@ RootLayout (Server)
 - Category index at `/blogs/[topic]/` filters posts by topic slug, returns 404 for empty/unknown topics
 
 ## AI Employees Section
-- Index page at `/my-ai-employees` shows all 5 agents in a card grid (highlight + standard + compact sizes)
+- Index page at `/my-ai-employees` — left-sticky hero + right-scrolling 2-column card grid
+- Hero: "Your Brain. Your Agents. Real Output." → "Meet My AI Employees" → scaling-thinking copy → WhatsApp/LinkedIn/email CTAs
+- Agent order: Parthasarathi (highlight card, full-width), then 2-col grid: Vyasa+Vibhishana, Sanjaya+Valmiki
+- Card sizes: `highlight` (h-48 md:h-64), `standard` (h-40 md:h-48), `compact` (h-28 md:h-36) — controlled via `size` prop
+- Pipeline visualization + bottom CTA (WhatsApp/LinkedIn/email) below card grid
 - Detail pages at `/my-ai-employees/<agent>` show full profile: KRAs, daily rhythm, proof points
 - Agent data in `lib/agents.ts` — static TypeScript objects, structured for future Convex DB migration
 - 5 agents: Parthasarathi (ops), Sanjaya (lead intel), Valmiki (social content), Vibhishana (research), Vyasa (SEO blog)
 - Each agent has: accent color, avatar, KRAs with outcomes/frequency, daily rhythm, proof points
-- `AgentCard.tsx` — responsive card with accent-colored gradients, image fallback to initials
+- `AgentCard.tsx` — highlight/standard/compact sizes, fixed image heights, accent-colored gradients, image fallback to initials
 - `AgentDetailPage.tsx` — full detail view with breadcrumb, sections for KRAs/rhythm/proof
 - `FloatingCTA.tsx` — appears after 600px scroll, links to external booking/contact
 - NavBar includes "My AI Employees" link

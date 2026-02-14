@@ -62,14 +62,19 @@ Ambitious founders and product leaders who prioritize execution and clarity over
 
 ### My AI Employees Section
 - Showcase page at `/my-ai-employees` presenting all 5 AI agents as a team
-- 5 agents: Parthasarathi (ops), Sanjaya (lead intel), Valmiki (social), Vibhishana (research), Vyasa (SEO blog)
-- Card grid with highlight/standard/compact sizing and per-agent accent colors
+- Layout: Left-sticky hero text + right-scrolling 2-column card grid
+- Hero copy: "Your Brain. Your Agents. Real Output." eyebrow, "Meet My AI Employees" headline, scaling-your-thinking body copy with bold/italic emphasis
+- CTAs: Primary WhatsApp (wa.me with pre-filled message), secondary LinkedIn (brand blue), tertiary email link
+- 5 agents in order: Parthasarathi, Vyasa, Vibhishana, Sanjaya, Valmiki
+- Partha gets highlight card (bigger), others standard size in 2-col grid
+- Card sizes: highlight (h-48/h-64), standard (h-40/h-48), compact (h-28/h-36)
+- Pipeline visualization section showing how agents work together
+- Bottom CTA section with same WhatsApp/LinkedIn/email pattern
 - Individual detail pages at `/my-ai-employees/<agent>` showing:
   - Key Responsibility Areas (KRAs) with outcomes and frequency
   - Daily rhythm / schedule
   - Proof points (stats, links, real-world catches)
 - Floating CTA button appears on scroll for conversion
-- Designed to sell the "AI employees" concept to potential clients
 - Agent data structured in TypeScript for future database migration
 
 ### Analytics

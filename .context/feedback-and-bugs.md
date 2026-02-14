@@ -41,5 +41,26 @@ Last updated: 2026-02-14
 **Context:** Blog posts used `max-w-[720px]` which left massive side margins on wide screens.
 **Action:** Changed to `max-w-6xl` (1152px) across all posts + category page + style reference doc. Agent instruction also updated (sent to Partha).
 
+### FB-005: AI Employees page bento grid was "too tall and weird" (2026-02-14)
+**Context:** Attempted a 12-column CSS Grid bento mosaic layout with tilted cards and variant sizing. Krishna found it over-engineered and visually broken.
+**Action:** Reverted to left-sticky hero + right-scrolling cards. Then iterated: single-column cards were too wide → switched to 2-column grid. Partha gets highlight (full-width), others in pairs.
+**Lesson:** Don't over-design. Simple layouts with intentional hierarchy beat fancy grids.
+
+### FB-006: Cards too wide in single-column layout (2026-02-14)
+**Context:** After reverting from bento, cards stacked in a single column were too wide/short with landscape aspect ratios.
+**Action:** Changed to 2-col grid for standard cards. Switched portrait back to taller ratio (`aspect-[3/4]`). Then moved to fixed-height approach (`h-40 md:h-48`) for more control.
+
+### FB-007: Hero body copy too long, felt like filler (2026-02-14)
+**Context:** Original copy was 3 disconnected lines of text occupying space without communicating. No visual emphasis.
+**Action:** Rewrote as one connected thought with bold/italic on key phrases: "Scaling **how you think**" (problem), "*my*" thinking (proof), "**I'll help you build yours.**" (offer). Shortened overall.
+
+### FB-008: Client dock logos too faint on light background (2026-02-14)
+**Context:** Dock container used `bg-surface/80` with `border-color/40`, logos were `grayscale opacity-60`. Everything blended into the off-white background.
+**Action:** Removed grayscale filter entirely. Full-color logos at all times. Strengthened border to full `border-color`, shadow to `shadow-card-hover`. Added `overflow-hidden` to fix corner bleed on logos with sharp corners.
+
+### FB-009: Dock logo corners bleeding through rounded container (2026-02-14)
+**Context:** Some logos (especially dark ones) had visible sharp corners inside the rounded dock item containers.
+**Action:** Removed `p-1.5` padding from icon anchor (image now fills edge-to-edge). Added `overflow-hidden` so container clips image to rounded corners. Removed `rounded-[inherit]` from img since parent handles clipping.
+
 ## Resolved Bugs
 (none yet — move bugs here when fully verified in production)

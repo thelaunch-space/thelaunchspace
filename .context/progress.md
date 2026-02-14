@@ -67,6 +67,14 @@ Last updated: 2026-02-14
 - [x] **Blog post width — widened from `max-w-[720px]` to `max-w-6xl` across all posts + category page + style reference**
 - [x] **NavBar scroll-aware CTA — on `/blogs` pages, CTA button appears in navbar after scrolling 100px (rounded-xl, matches navbar radius)**
 - [x] **Agent blog template instruction updated — told agent (via Partha) to use `max-w-6xl` for future posts**
+- [x] **AI Employees page redesign — left-hero sticky + right 2-col scrolling card grid**
+- [x] **AgentCard refactored — highlight/standard/compact sizes with fixed image heights (no more aspect-ratio cards)**
+- [x] **Hero copy rewrite — "Your Brain. Your Agents. Real Output." eyebrow, scaling-your-thinking body copy with bold/italic emphasis**
+- [x] **CTAs updated — primary WhatsApp (wa.me with pre-filled msg), secondary LinkedIn (brand blue #0A66C2), tertiary email link**
+- [x] **Landing page hero — "15+ MVPs shipped" → "60+ projects built"**
+- [x] **Client dock — full-color logos (removed grayscale), stronger border/shadow, overflow-hidden corner fix**
+- [x] **Design system — Valmiki avatar prompt updated (sage in late 50s, not young 30s)**
+- [x] **New blog post: "Should You Hire a Developer or Build With AI?"**
 
 ## In Progress
 - Nothing currently in progress
@@ -75,9 +83,12 @@ Last updated: 2026-02-14
 - Nothing currently blocked
 
 ## Recent Changes (latest first)
-1. Blog index v2 redesign — removed header/footer containers, inline title row, NavBar scroll CTA (2026-02-14)
-2. Blog post width widened — `max-w-[720px]` → `max-w-6xl` across all 6 posts + category page + docs (2026-02-14)
-3. "Quiet Luxury" design polish — shadows, grain, typography, card elevation, hero atmosphere (2026-02-14)
+1. AI Employees page redesign + hero copy + CTAs (WhatsApp/LinkedIn/email) + dock polish (2026-02-14)
+2. Landing page "60+ projects built" credential update (2026-02-14)
+3. Valmiki avatar prompt redesigned as wise sage (2026-02-14)
+4. Blog index v2 redesign — removed header/footer containers, inline title row, NavBar scroll CTA (2026-02-14)
+5. Blog post width widened — `max-w-[720px]` → `max-w-6xl` across all 6 posts + category page + docs (2026-02-14)
+6. "Quiet Luxury" design polish — shadows, grain, typography, card elevation, hero atmosphere (2026-02-14)
 4. Dark → Light mode migration — full site, 15 files, ~75 color edits (2026-02-14)
 5. Added full "My AI Employees" section with agent index, detail pages, cards, data layer (2026-02-14)
 6. Redesigned `/blogs` page — horizontal card layout with sticky header/footer (2026-02-14)

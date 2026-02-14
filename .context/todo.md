@@ -1,6 +1,6 @@
 # Todo — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-14
+Last updated: 2026-02-14 (evening)
 
 ## Priority: High
 - [ ] Build out free tools pages (`/tools/[tool-slug]`)
@@ -17,7 +17,7 @@ Last updated: 2026-02-14
 - [ ] Consider Netlify deploy previews for PR review (currently using local preview)
 
 ## Priority: Low-Medium
-- [ ] Add agent avatar images to `public/agents/` (currently showing fallback initials)
+- [ ] Regenerate Valmiki avatar using updated sage prompt (design-system-v2.md)
 
 ## Done (moved from above)
 - [x] Build "My AI Employees" section — agent index + detail pages for all 5 agents
