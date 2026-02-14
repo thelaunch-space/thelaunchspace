@@ -50,13 +50,13 @@ export default function BlogPost() {
       />
       <div className="min-h-screen bg-background text-text-primary">
         {/* Back link */}
-        <header className="max-w-[720px] mx-auto px-6 md:px-8 pt-8 md:pt-12">
+        <header className="max-w-6xl mx-auto px-6 md:px-8 pt-8 md:pt-12">
           <a href="/" className="inline-flex items-center gap-2 text-text-secondary hover:text-accent-blue text-sm font-medium transition-colors">
             ← thelaunch.space
           </a>
         </header>
 
-        <article className="max-w-[720px] mx-auto px-6 md:px-8 py-12 md:py-16">
+        <article className="max-w-6xl mx-auto px-6 md:px-8 py-12 md:py-16">
           <h1 className="text-3xl md:text-5xl font-bold leading-tight mb-4">Should You Hire a Developer or Build It Yourself with AI?</h1>
           <div className="flex items-center gap-3 text-sm text-text-secondary mb-10">
             <span>thelaunch.space</span><span>·</span>
@@ -357,7 +357,7 @@ export default function BlogPost() {
         </article>
 
         {/* Footer CTA */}
-        <footer className="max-w-[720px] mx-auto px-6 md:px-8 pb-16">
+        <footer className="max-w-6xl mx-auto px-6 md:px-8 pb-16">
           <div className="border-t border-border-color pt-10">
             <p className="text-text-secondary mb-4">Have an idea? We ship MVPs in 21 days.</p>
             <a href="/?cta=open" className="inline-flex h-12 items-center justify-center rounded-full bg-gradient-to-r from-accent-blue to-accent-purple px-10 text-base font-semibold text-white shadow-[0_20px_35px_rgba(37,99,235,0.35)] transition-transform hover:-translate-y-0.5">
