@@ -26,7 +26,7 @@ export default function AgentCard({ agent }: { agent: Agent }) {
     >
       {/* ─── Character portrait area ─── */}
       <div
-        className="relative overflow-hidden aspect-[3/4] max-h-[280px]"
+        className="relative overflow-hidden aspect-[4/5] md:aspect-[3/4] md:max-h-[280px]"
         style={{
           background: `linear-gradient(160deg, ${agent.accentHex}12 0%, ${agent.accentHex}04 100%)`,
         }}
@@ -35,7 +35,7 @@ export default function AgentCard({ agent }: { agent: Agent }) {
           <img
             src={agent.avatarPath}
             alt={agent.name}
-            className="w-full h-full object-contain object-bottom"
+            className="w-full h-full object-cover object-top"
             onError={() => setImgError(true)}
           />
         ) : (
@@ -104,7 +104,7 @@ export default function AgentCard({ agent }: { agent: Agent }) {
 
         {/* CTA */}
         <Link
-          href={`/my-ai-employees/${agent.workPageSlug}`}
+          href={`/build-your-ai-team/${agent.workPageSlug}`}
           className="group/btn inline-flex items-center gap-2 font-semibold rounded-lg transition-all w-fit text-xs md:text-sm py-2 px-3 md:py-2.5 md:px-4"
           style={{
             background: `${agent.accentHex}12`,

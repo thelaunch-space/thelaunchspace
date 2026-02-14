@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Sanjaya — Lead Intelligence Scout | thelaunch.space",
     description:
       "Pipeline fills without you scrolling LinkedIn. 3-tier qualification system, structured briefings, and market pattern recognition — all on autopilot.",
-    url: "https://thelaunch.space/my-ai-employees/sanjaya",
+    url: "https://thelaunch.space/build-your-ai-team/sanjaya",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {

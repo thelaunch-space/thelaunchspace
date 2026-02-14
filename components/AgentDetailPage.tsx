@@ -78,7 +78,7 @@ export default function AgentDetailPage({ agentId }: { agentId: string }) {
           transition={{ duration: 0.3 }}
         >
           <Link
-            href="/my-ai-employees"
+            href="/build-your-ai-team"
             className="text-sm text-text-secondary hover:text-text-primary inline-flex items-center gap-1.5"
           >
             <svg
@@ -340,7 +340,7 @@ export default function AgentDetailPage({ agentId }: { agentId: string }) {
                   {agent.pipelineRole}
                 </p>
                 <Link
-                  href="/my-ai-employees"
+                  href="/build-your-ai-team"
                   className="inline-flex items-center gap-1.5 text-sm text-text-secondary hover:text-text-primary mt-3 transition-colors"
                 >
                   Meet the rest of the team

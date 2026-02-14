@@ -18,13 +18,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/my-ai-employees`,
+      url: `${baseUrl}/build-your-ai-team`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/my-ai-employees/vibhishana`,
+      url: `${baseUrl}/build-your-ai-team/vibhishana`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.7,

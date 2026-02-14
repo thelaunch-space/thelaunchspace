@@ -9,7 +9,7 @@ import XIcon from "@/components/XIcon";
 export default function NavBar() {
   const pathname = usePathname();
   const isBlog = pathname.startsWith("/blogs");
-  const isAITeam = pathname.startsWith("/my-ai-employees");
+  const isAITeam = pathname.startsWith("/build-your-ai-team");
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -65,7 +65,7 @@ export default function NavBar() {
             Blog
           </Link>
           <Link
-            href="/my-ai-employees"
+            href="/build-your-ai-team"
             className={`text-sm font-medium transition-all duration-200 rounded-lg px-3 py-1.5 ${
               isAITeam
                 ? "text-text-primary bg-accent-blue/[0.07]"
@@ -126,7 +126,7 @@ export default function NavBar() {
               Blog
             </Link>
             <Link
-              href="/my-ai-employees"
+              href="/build-your-ai-team"
               className={`text-sm font-medium transition-all duration-200 rounded-lg px-3 py-2 -mx-1 ${
                 isAITeam ? "text-text-primary bg-accent-blue/[0.07]" : "text-text-secondary"
               }`}

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Parthasarathi — Operations Orchestrator | thelaunch.space",
     description:
       "The conductor. Coordinates 4 AI agents, catches problems before they cascade, and delivers one daily report instead of checking 5 tools.",
-    url: "https://thelaunch.space/my-ai-employees/parthasarathi",
+    url: "https://thelaunch.space/build-your-ai-team/parthasarathi",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {

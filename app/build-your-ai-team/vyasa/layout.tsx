@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Vyasa — SEO Blog Writer | thelaunch.space",
     description:
       "Your site becomes the go-to resource in your niche. Inbound leads from people who found your blog. 1 published article per day, on autopilot.",
-    url: "https://thelaunch.space/my-ai-employees/vyasa",
+    url: "https://thelaunch.space/build-your-ai-team/vyasa",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {

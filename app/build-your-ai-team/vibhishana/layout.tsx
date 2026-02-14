@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Vibhishana — Research Intelligence Analyst | thelaunch.space",
     description:
       "Know what your market struggles with this week. Content always aligned with real demand. Competitive gaps spotted first.",
-    url: "https://thelaunch.space/my-ai-employees/vibhishana",
+    url: "https://thelaunch.space/build-your-ai-team/vibhishana",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
