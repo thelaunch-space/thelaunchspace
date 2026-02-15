@@ -61,6 +61,23 @@ export const listMetadata = query({
   },
 });
 
+export const getPublicBrief = query({
+  args: { briefId: v.id("briefs") },
+  handler: async (ctx, args) => {
+    const brief = await ctx.db.get(args.briefId);
+    if (!brief) return null;
+    return {
+      _id: brief._id,
+      title: brief.title,
+      primaryKeyword: brief.primaryKeyword,
+      category: brief.category,
+      status: brief.status,
+      contentMarkdown: brief.contentMarkdown,
+      createdAt: brief.createdAt,
+    };
+  },
+});
+
 export const getFullBrief = query({
   args: { briefId: v.id("briefs") },
   handler: async (ctx, args) => {

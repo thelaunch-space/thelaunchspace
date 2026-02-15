@@ -3,9 +3,8 @@
 Last updated: 2026-02-15
 
 ## Priority: High
-- [ ] **Launch Control mobile QA** — test at 375px (iPhone SE), 768px (iPad), 1280px (desktop). Verify all tabs, modals, panels work.
-- [ ] **Clerk production instance** — create prod instance in Clerk dashboard, get `pk_live_`/`sk_live_` keys, add to Netlify env vars
-- [ ] **Convex production deployment** — `npx convex deploy` for prod, update Netlify env vars, swap VPS skill URLs to prod endpoints
+- [ ] **Partha historical data backfill** — waiting for Partha to push ALL Google Sheets data to prod Convex DB (message sent)
+- [ ] **Fix Scoreboard baseline** — remove hardcoded `5*3` hours / `5*180` cost, zero out or make data-dependent
 - [ ] Build out free tools pages (`/tools/[tool-slug]`)
 
 ## Priority: Medium
@@ -22,6 +21,8 @@ Last updated: 2026-02-15
 - [ ] Regenerate Valmiki avatar using updated sage prompt (design-system-v2.md)
 
 ## Done (moved from above)
+- [x] Launch Control DEPLOYED TO PRODUCTION — Clerk prod, Convex prod (`curious-iguana-738`), Netlify env vars, VPS skills updated, PR #19 merged
+- [x] Launch Control mobile QA — 12 files fixed (responsive stacking, scrollable tabs, bottom-sheet modals, card views, capped heights)
 - [x] Launch Control frontend dashboard — full 3-column dashboard, 23 new files, tabbed center, waitlist CTA, brief reader
 - [x] Launch Control polish — portrait masking, font size bump, waitlist CTA with hidden admin gate, center tabs, markdown fix
 - [x] Launch Control Convex backend — schema, HTTP endpoints, Clerk auth, provider wiring, curl-tested

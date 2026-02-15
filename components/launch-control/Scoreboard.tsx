@@ -4,6 +4,8 @@ import { useRef, useState, useEffect } from "react";
 import { useCountUp } from "@/lib/useCountUp";
 import type { WeeklyStats } from "@/lib/launch-control-types";
 
+type TimeRange = "week" | "allTime";
+
 interface ScoreboardProps {
   weeklyStats: WeeklyStats | undefined;
   allTimeStats: WeeklyStats | undefined;
@@ -40,6 +42,7 @@ function StatCard({
 export default function Scoreboard({ weeklyStats, allTimeStats }: ScoreboardProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const [range, setRange] = useState<TimeRange>("week");
 
   useEffect(() => {
     if (!ref.current) return;
@@ -56,16 +59,39 @@ export default function Scoreboard({ weeklyStats, allTimeStats }: ScoreboardProp
     return () => observer.disconnect();
   }, []);
 
-  const q = weeklyStats?.questions ?? 0;
-  const b = weeklyStats?.briefs ?? 0;
-  const bl = weeklyStats?.blogs ?? 0;
+  const active = range === "week" ? weeklyStats : allTimeStats;
+  const q = active?.questions ?? 0;
+  const b = active?.briefs ?? 0;
+  const bl = active?.blogs ?? 0;
   const humanHours = Math.round((q / 50) * 2.5 + b * 4 + bl * 4 + 5 * 3);
   const costSaved = Math.round((q / 50) * 112.5 + b * 180 + bl * 300 + 5 * 180);
-  const loaded = weeklyStats !== undefined;
+  const loaded = active !== undefined;
 
   return (
     <div ref={ref}>
-      <p className="meta-label text-text-secondary mb-3">This Week&apos;s Impact</p>
+      {/* Toggle header */}
+      <div className="flex items-center gap-1 mb-3">
+        <button
+          onClick={() => setRange("week")}
+          className={`meta-label px-2.5 py-1 rounded-md transition-colors ${
+            range === "week"
+              ? "bg-surface-alt text-text-primary"
+              : "text-text-secondary hover:text-text-primary"
+          }`}
+        >
+          This Week
+        </button>
+        <button
+          onClick={() => setRange("allTime")}
+          className={`meta-label px-2.5 py-1 rounded-md transition-colors ${
+            range === "allTime"
+              ? "bg-surface-alt text-text-primary"
+              : "text-text-secondary hover:text-text-primary"
+          }`}
+        >
+          All Time
+        </button>
+      </div>
 
       {/* Primary stats */}
       <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3">
@@ -89,16 +115,6 @@ export default function Scoreboard({ weeklyStats, allTimeStats }: ScoreboardProp
           accent="text-accent-blue"
         />
       </div>
-
-      {/* All-time stats */}
-      {allTimeStats && (
-        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 px-1">
-          <span className="meta-label text-text-secondary">All Time</span>
-          <span className="font-mono text-xs text-text-secondary">
-            {allTimeStats.questions} questions &middot; {allTimeStats.briefs} briefs &middot; {allTimeStats.blogs} blogs
-          </span>
-        </div>
-      )}
     </div>
   );
 }

@@ -124,17 +124,27 @@ Last updated: 2026-02-15
 - [x] **LC: Center column tabs (`CenterTabs.tsx`) — "Overview" tab (Scoreboard + Timeline) always visible. Communities/Questions/Briefs tabs appear only when signed in. Same space, no scrolling down.**
 - [x] **LC: Brief Reader Modal fix — `react-markdown` v10 requires children prop, was self-closing with no content passed. Fixed.**
 - [x] **LC: Test brief pushed to Convex with full `contentMarkdown` (2523 chars) — renders tables, code blocks, headings, bold, lists**
+- [x] **LC: Mobile QA — 12 files fixed** — responsive breakpoints for all components (dashboard stacked layout, scrollable tabs, bottom-sheet modals, card views for tables, capped feed height, vertical CTA, responsive scoreboard/timeline)
+- [x] **LC: NavBar hooks fix — moved early return after all hook declarations (rules-of-hooks lint error)**
+- [x] **Clerk production instance** — created prod instance, cloned dev settings, added `thelaunch.space` domain, 5 CNAME records in GoDaddy DNS (`clerk`, `accounts`, `clk._domainkey`, `clk2._domainkey`, `mail`), all verified green
+- [x] **Convex production deployment** — `curious-iguana-738` prod instance, env vars set (AGENT_API_KEY, CLERK_ISSUER_URL), functions deployed
+- [x] **Netlify env vars updated** — 4 vars swapped to prod values (NEXT_PUBLIC_CONVEX_URL, CONVEX_DEPLOY_KEY, NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY, CLERK_SECRET_KEY)
+- [x] **Deployed to production** — committed all LC frontend + mobile QA, merged PR #19 to main, Netlify auto-deployed
+- [x] **VPS agent skills updated** — Partha changed 3 skill URLs from dev (`impartial-pelican-672`) to prod (`curious-iguana-738`), test push confirmed
 
 ## In Progress
-- [ ] Launch Control mobile QA + final design polish
-- [ ] Clerk production instance setup (separate from dev)
-- [ ] Convex production deployment
+- [ ] Partha historical data backfill — message sent to push ALL Google Sheets data to prod Convex DB (pending completion)
 
 ## Blocked
 - Nothing currently blocked
 
+## Known Issues
+- Scoreboard shows 15h / $900 with empty DB due to hardcoded baseline formula (`5*3` hours, `5*180` cost for agent overhead). Fix later by zeroing baseline or making it data-dependent.
+
 ## Recent Changes (latest first)
-1. Launch Control polish session — portrait masking, font size bump, waitlist CTA with hidden admin gate, tabbed center layout, brief reader markdown fix (2026-02-15)
+1. Production deployment — Clerk prod instance (5 CNAMEs), Convex prod (`curious-iguana-738`), Netlify env vars, VPS skills updated, deployed to main (2026-02-15)
+2. Mobile QA — 12 files fixed for responsive layout (stacked sidebar, scrollable tabs, bottom-sheet modals, card views, capped heights) (2026-02-15)
+3. Launch Control polish session — portrait masking, font size bump, waitlist CTA with hidden admin gate, tabbed center layout, brief reader markdown fix (2026-02-15)
 2. Launch Control frontend dashboard — 21 new files, 4 modified files, full 3-column dashboard with agent sidebar, scoreboard, timeline, live feed, admin tabs, brief reader. Typecheck + lint + build all pass. (2026-02-15)
 2. Launch Control VPS deployment — 3 SKILL.md files installed, API key stored, 50 records backfilled (13 briefs, 7 blogs, 30 questions), test push verified (2026-02-15)
 2. Launch Control SKILL.md files — 3 separate skills created (convex-push-scanner, convex-push-blog, convex-push-activity), Node.js JSON escaping instead of jq (2026-02-15)
