@@ -164,75 +164,110 @@ export default function AIEmployeesPage() {
               <div className="flex-1 h-px bg-border-color/50" />
             </div>
 
-            <div className="space-y-5 md:space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {lanes.map((lane, i) => (
                 <motion.div
                   key={i}
-                  className="flex items-center gap-3 md:gap-4"
                   initial={{ opacity: 0, y: 12 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
                 >
-                  {/* Agent nodes — fixed width so all lanes align */}
-                  <div className="flex items-start gap-1.5 md:gap-2 shrink-0 w-[140px] md:w-[160px]">
-                    {lane.agents.map((agent, j) => (
-                      <div key={agent.id} className="flex items-center gap-1.5 md:gap-2">
-                        {j > 0 && <span className="text-text-secondary/40 text-sm font-medium mt-1">+</span>}
-                        <AgentNode name={agent.name} slug={agent.workPageSlug} id={agent.id} />
-                      </div>
-                    ))}
+                  {/* ── Mobile layout: avatar(s) left, stacked text right ── */}
+                  <div className="flex items-start gap-3 sm:hidden">
+                    <div className="flex items-start gap-1.5 shrink-0 pt-0.5">
+                      {lane.agents.map((agent, j) => (
+                        <div key={agent.id} className="flex items-center gap-1.5">
+                          {j > 0 && <span className="text-text-secondary/40 text-sm font-medium mt-1">+</span>}
+                          <AgentNode name={agent.name} slug={agent.workPageSlug} id={agent.id} />
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex flex-col gap-1.5 min-w-0 pt-1">
+                      <span className="text-[11px] text-text-secondary italic leading-snug">
+                        {lane.action}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-text-primary">
+                        <span className="w-1.5 h-1.5 rounded-full bg-accent-emerald shrink-0" />
+                        {lane.outcome}
+                      </span>
+                    </div>
                   </div>
 
-                  {/* Connecting line + action */}
-                  <div className="flex-1 flex items-center gap-2 md:gap-3 min-w-0">
-                    <div className="flex-1 border-t border-dashed border-border-color/60" />
-                    <span className="text-[11px] md:text-xs text-text-secondary italic whitespace-nowrap shrink-0">
-                      {lane.action}
+                  {/* ── Desktop layout: horizontal pipeline (unchanged) ── */}
+                  <div className="hidden sm:flex items-center gap-4">
+                    <div className="flex items-start gap-2 shrink-0 w-[160px]">
+                      {lane.agents.map((agent, j) => (
+                        <div key={agent.id} className="flex items-center gap-2">
+                          {j > 0 && <span className="text-text-secondary/40 text-sm font-medium mt-1">+</span>}
+                          <AgentNode name={agent.name} slug={agent.workPageSlug} id={agent.id} />
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex-1 flex items-center gap-3 min-w-0">
+                      <div className="flex-1 border-t border-dashed border-border-color/60" />
+                      <span className="text-[11px] md:text-xs text-text-secondary italic whitespace-nowrap shrink-0">
+                        {lane.action}
+                      </span>
+                      <div className="w-4 md:w-6 border-t border-dashed border-border-color/60 shrink-0" />
+                    </div>
+                    <span className="inline-flex items-center gap-2 text-xs md:text-sm font-semibold text-text-primary whitespace-nowrap shrink-0">
+                      <span className="w-1.5 h-1.5 rounded-full bg-accent-emerald shrink-0" />
+                      {lane.outcome}
                     </span>
-                    <div className="w-4 md:w-6 border-t border-dashed border-border-color/60 shrink-0" />
                   </div>
-
-                  {/* Outcome */}
-                  <span className="hidden sm:inline-flex items-center gap-2 text-xs md:text-sm font-semibold text-text-primary whitespace-nowrap shrink-0">
-                    <span className="w-1.5 h-1.5 rounded-full bg-accent-emerald shrink-0" />
-                    {lane.outcome}
-                  </span>
                 </motion.div>
               ))}
             </div>
 
-            {/* Orchestrator lane — same structure as above */}
+            {/* Orchestrator lane */}
             <motion.div
-              className="mt-6 md:mt-7 pt-5 border-t border-border-color/50 flex items-center gap-1.5 md:gap-2"
+              className="mt-5 sm:mt-7 pt-5 border-t border-border-color/50"
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
             >
-              <div className="flex items-start shrink-0 w-[140px] md:w-[160px]">
-                <Link href={`/build-your-ai-team/${partha.workPageSlug}`} className="group/node flex flex-col items-center gap-1.5 shrink-0 w-[56px] md:w-[64px]">
-                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden transition-transform group-hover/node:scale-110">
-                    <img src="/agent-avatars/parthasarathi.png" alt="Parthasarathi" className="w-full h-full object-cover" />
-                  </div>
-                  <span className="text-[10px] font-semibold text-text-secondary group-hover/node:text-text-primary transition-colors leading-none text-center">
-                    Parthasarathi
+              {/* ── Mobile orchestrator ── */}
+              <div className="flex items-start gap-3 sm:hidden">
+                <div className="shrink-0 pt-0.5">
+                  <AgentNode name={partha.name} slug={partha.workPageSlug} id={partha.id} />
+                </div>
+                <div className="flex flex-col gap-1.5 min-w-0 pt-1">
+                  <span className="text-[11px] text-text-secondary italic leading-snug">
+                    tracks all ops, sends you daily reports
                   </span>
-                </Link>
+                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-text-primary">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent-emerald shrink-0" />
+                    Nothing falls through
+                  </span>
+                </div>
               </div>
 
-              <div className="flex-1 flex items-center gap-2 md:gap-3 min-w-0">
-                <div className="flex-1 border-t border-dashed border-border-color/60" />
-                <span className="text-[11px] md:text-xs text-text-secondary italic whitespace-nowrap shrink-0">
-                  tracks all ops, sends you daily reports
+              {/* ── Desktop orchestrator (unchanged) ── */}
+              <div className="hidden sm:flex items-center gap-2">
+                <div className="flex items-start shrink-0 w-[160px]">
+                  <Link href={`/build-your-ai-team/${partha.workPageSlug}`} className="group/node flex flex-col items-center gap-1.5 shrink-0 w-[64px]">
+                    <div className="w-14 h-14 rounded-full overflow-hidden transition-transform group-hover/node:scale-110">
+                      <img src="/agent-avatars/parthasarathi.png" alt="Parthasarathi" className="w-full h-full object-cover" />
+                    </div>
+                    <span className="text-[10px] font-semibold text-text-secondary group-hover/node:text-text-primary transition-colors leading-none text-center">
+                      Parthasarathi
+                    </span>
+                  </Link>
+                </div>
+                <div className="flex-1 flex items-center gap-3 min-w-0">
+                  <div className="flex-1 border-t border-dashed border-border-color/60" />
+                  <span className="text-[11px] md:text-xs text-text-secondary italic whitespace-nowrap shrink-0">
+                    tracks all ops, sends you daily reports
+                  </span>
+                  <div className="w-4 md:w-6 border-t border-dashed border-border-color/60 shrink-0" />
+                </div>
+                <span className="inline-flex items-center gap-2 text-xs md:text-sm font-semibold text-text-primary whitespace-nowrap shrink-0">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent-emerald shrink-0" />
+                  Nothing falls through
                 </span>
-                <div className="w-4 md:w-6 border-t border-dashed border-border-color/60 shrink-0" />
               </div>
-
-              <span className="hidden sm:inline-flex items-center gap-2 text-xs md:text-sm font-semibold text-text-primary whitespace-nowrap shrink-0">
-                <span className="w-1.5 h-1.5 rounded-full bg-accent-emerald shrink-0" />
-                Nothing falls through
-              </span>
             </motion.div>
           </motion.section>
 
