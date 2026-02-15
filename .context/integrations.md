@@ -1,6 +1,6 @@
 # Integrations — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-14
+Last updated: 2026-02-15
 
 ## Make.com Webhook (Active)
 - **Purpose:** Lead capture → CRM pipeline
@@ -51,6 +51,30 @@ Last updated: 2026-02-14
 - **Auto-tracks:** Page views on all route changes (including Next.js client-side navigation)
 - **No extra code needed:** GA4 handles blog page tracking automatically since scripts are in root layout
 - **Netlify env:** Must also set `NEXT_PUBLIC_GA_MEASUREMENT_ID` in Netlify dashboard
+
+## Convex (Active — Launch Control Backend)
+- **Purpose:** Real-time database for Launch Control dashboard — stores agent activity, scanned questions, briefs, blog metadata
+- **Deployment:** `impartial-pelican-672` (dev). Production deployment TBD.
+- **Client URL:** `https://impartial-pelican-672.convex.cloud`
+- **HTTP Actions URL:** `https://impartial-pelican-672.convex.site`
+- **Env vars (`.env.local`):** `NEXT_PUBLIC_CONVEX_URL`, `CONVEX_DEPLOYMENT`, `NEXT_PUBLIC_CONVEX_SITE_URL`, `CONVEX_DEPLOY_KEY`
+- **Env vars (Convex Dashboard):** `AGENT_API_KEY` (shared secret for HTTP endpoint auth), `CLERK_ISSUER_URL` (Clerk identity provider)
+- **Schema:** 4 tables (questions, briefs, blogs, agentActivity) with 11 indexes
+- **HTTP Endpoints:** 4 POST routes (`/ingestQuestions`, `/ingestBrief`, `/ingestBlog`, `/ingestActivity`) — all require Bearer token auth
+- **Queries:** Public (no auth needed) for read-only dashboard data; Admin (Clerk auth required) for full brief content + activity logs
+- **Frontend wiring:** `app/ConvexClientProvider.tsx` wraps entire app in ClerkProvider + ConvexProviderWithClerk
+- **Build:** `npx convex deploy --cmd 'npm run build'` — pushes Convex functions before Next.js build
+- **Real-time:** `useQuery()` creates WebSocket subscriptions, instant frontend updates when agents push data
+- **Netlify env vars needed for production:** `NEXT_PUBLIC_CONVEX_URL`, `CONVEX_DEPLOY_KEY`, `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`
+
+## Clerk (Active — Authentication)
+- **Purpose:** Authentication for Launch Control admin features (Krishna's login)
+- **Instance:** `famous-krill-26.clerk.accounts.dev`
+- **Env vars (`.env.local`):** `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`
+- **Middleware:** `middleware.ts` at project root — permissive `clerkMiddleware()`, does NOT block any route
+- **Integration with Convex:** `ConvexProviderWithClerk` passes Clerk auth tokens to Convex for admin query validation
+- **Admin queries:** Check `ctx.auth.getUserIdentity()` in Convex — throw if not authenticated
+- **No route protection:** All existing pages work without login. Auth is only checked inside admin query functions.
 
 ## GitHub (Active)
 - **Repo:** `thelaunch-space/thelaunch-space-tweet-sized-landing-page`

@@ -3,6 +3,7 @@ import { Inter, Cormorant_Garamond, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import NavBar from "@/components/NavBar";
 import AnnouncementRibbon from "@/components/AnnouncementRibbon";
+import ConvexClientProvider from "./ConvexClientProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -86,9 +87,11 @@ export default function RootLayout({
             </Script>
           </>
         )}
-        <AnnouncementRibbon />
-        <NavBar />
-        <div className="flex-1 flex flex-col">{children}</div>
+        <ConvexClientProvider>
+          <AnnouncementRibbon />
+          <NavBar />
+          <div className="flex-1 flex flex-col">{children}</div>
+        </ConvexClientProvider>
       </body>
     </html>
   );

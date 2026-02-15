@@ -1,6 +1,6 @@
 # Product Requirements — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-14
+Last updated: 2026-02-15
 
 ## Core Concept
 "Tweet-sized" landing page — deliver the full value prop instantly, no scrolling. Reflects agency ethos: cut bureaucracy, deliver fast. Also hosts SEO-optimized blog posts for programmatic content marketing.
@@ -76,6 +76,16 @@ Ambitious founders and product leaders who prioritize execution and clarity over
   - Proof points (stats, links, real-world catches)
 - Floating CTA button appears on scroll for conversion
 - Agent data structured in TypeScript for future database migration
+
+### Launch Control Dashboard (Backend + Skills DONE, Frontend Next)
+- Live, public-facing dashboard at `/launch-control` showing AI agents working in real-time
+- **Backend (DONE):** Convex database with 4 tables (questions, briefs, blogs, agentActivity), 4 HTTP ingestion endpoints with Bearer token auth, Clerk authentication for admin features
+- **Skills (DONE):** 3 SKILL.md files deployed on VPS — agents push data via curl on scheduled runs. 50 records backfilled (13 briefs, 7 blogs, 30 questions).
+- **Public view (TODO):** Agent status cards, questions scanned, brief titles + status, blogs published, live activity feed
+- **Admin view (TODO):** Full brief content (markdown rendered as HTML), full activity log, SEO metadata
+- **Real-time:** Convex WebSocket subscriptions — instant UI updates when agents push data (no polling, no refresh)
+- **Dual purpose:** Internal review tool (Krishna reads briefs without SSH) + marketing asset (audience watches agents work live)
+- Full spec: `live-dashboard-convex.md` in project root
 
 ### Analytics
 - Google Analytics (GA4) via `next/script` in root layout

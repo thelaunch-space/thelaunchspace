@@ -1,14 +1,15 @@
 # Architecture — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-14
+Last updated: 2026-02-15
 
 ## Overview
-Next.js 14 App Router application. Server-side rendered for SEO/crawlability. Landing page content rendered as a client component for interactivity. Blog posts are static Server Components created by an AI agent via GitHub PRs. "My AI Employees" section showcases 5 AI agents with index + detail pages. Webhook proxy via API route (server-side, no secrets exposed to browser). Hosted on Netlify. Google Analytics (GA4) tracking via `next/script`.
+Next.js 14 App Router application. Server-side rendered for SEO/crawlability. Landing page content rendered as a client component for interactivity. Blog posts are static Server Components created by an AI agent via GitHub PRs. "Build Your AI Team" section showcases 5 AI agents with index + detail pages. Webhook proxy via API route (server-side, no secrets exposed to browser). Hosted on Netlify. Google Analytics (GA4) tracking via `next/script`. **Convex** real-time database for Launch Control dashboard (agent activity, questions, briefs, blogs). **Clerk** authentication for admin access. Entire app wrapped in ConvexProviderWithClerk + ClerkProvider.
 
 ## File Structure
 ```
 app/
-├── layout.tsx              # Root layout (next/font, metadata API, NavBar, GA4 scripts)
+├── layout.tsx              # Root layout (next/font, metadata API, NavBar, AnnouncementRibbon, GA4 scripts, ConvexClientProvider wrapper)
+├── ConvexClientProvider.tsx # "use client" — ClerkProvider + ConvexProviderWithClerk (wraps all children)
 ├── page.tsx                # Server Component → <Suspense><LandingPage /></Suspense>
 ├── globals.css             # Tailwind directives + custom keyframes
 ├── robots.ts               # robots.txt (allows all, points to sitemap)
@@ -18,15 +19,16 @@ app/
 ├── blogs/[topic]/page.tsx  # Category index page (server component, filtered by topic)
 ├── blogs/[topic]/[title]/  # Dynamic blog route (fallback)
 │   └── page.tsx
-├── blogs/startup-mvps/     # Blog topic folder (5 posts)
+├── blogs/startup-mvps/     # Blog topic folder (6 posts)
 │   ├── how-to-find-technical-cofounder/
 │   ├── why-agency-mvp-failed/
 │   ├── when-no-code-tools-stop-working/
 │   ├── find-technical-cofounder-alternative/
-│   └── build-mvp-without-coding-ai-tools/
+│   ├── build-mvp-without-coding-ai-tools/
+│   └── hire-developer-vs-build-with-ai/
 ├── blogs/founder-advice/   # Blog topic folder (1 post)
 │   └── validate-startup-idea-domain-expert/
-├── my-ai-employees/        # AI team showcase section
+├── build-your-ai-team/     # AI team showcase section (renamed from my-ai-employees)
 │   ├── layout.tsx          # Section layout
 │   ├── page.tsx            # Agent index page (card grid)
 │   ├── parthasarathi/      # Agent detail pages (one per agent)
@@ -37,8 +39,9 @@ app/
 │   ├── vibhishana/
 │   └── vyasa/
 └── tools/[tool-slug]/      # Future tool routes (placeholder)
+middleware.ts               # Clerk middleware (permissive — no route blocking, makes auth available)
 components/
-├── NavBar.tsx              # "use client" — site-wide nav bar (logo, blog, AI employees, social icons, scroll-aware CTA on blog pages)
+├── NavBar.tsx              # "use client" — site-wide nav bar (logo, blog, "Build Your AI Team", social icons, hamburger menu on mobile, scroll-aware CTA on blog pages, active link pill indicators)
 ├── LandingPage.tsx         # "use client" — main landing page (hero + services)
 ├── AgentCard.tsx           # "use client" — agent showcase card (highlight/standard/compact sizes)
 ├── AgentDetailPage.tsx     # "use client" — full agent detail view (KRAs, rhythm, proof points)
@@ -60,38 +63,55 @@ docs/
 public/
 ├── agents/                 # Agent avatar images (+ AVATAR-PROMPTS.md for generation)
 └── ...                     # Static assets (logos, OG image, favicon)
-netlify.toml                # Netlify build config (@netlify/plugin-nextjs)
+convex/
+├── _generated/             # Auto-generated types + API references (do not edit)
+├── schema.ts               # 4 tables: questions, briefs, blogs, agentActivity (with indexes)
+├── auth.config.ts          # Clerk identity provider config for Convex
+├── http.ts                 # HTTP Action router — 4 ingestion endpoints with Bearer token auth
+├── questions.ts            # ingestBatch (internal) + listRecent (public) + listFullDetails (admin)
+├── briefs.ts               # ingest (internal) + listMetadata (public) + getFullBrief/listFull (admin)
+├── blogs.ts                # ingest (internal) + listRecent (public)
+└── agentActivity.ts        # ingest (internal) + agentStatuses/recentFeed (public) + fullLog (admin)
+skills/
+├── convex-push-scanner.SKILL.md  # Vibhishana: push questions (batch) + briefs (with markdown) to Convex
+├── convex-push-blog.SKILL.md     # Vyasa: push blog metadata to Convex after PR creation
+└── convex-push-activity.SKILL.md # All agents: push milestone activity to Convex
+netlify.toml                # Netlify build config (npx convex deploy --cmd 'npm run build')
 ```
 
 ## Component Tree
 ```
 RootLayout (Server)
-├── NavBar ("use client")       — Logo (link to /), Blog link, AI Team link, X + LinkedIn icons, scroll CTA on blog pages
+├── ConvexClientProvider ("use client") — ClerkProvider + ConvexProviderWithClerk (wraps everything below)
+├── AnnouncementRibbon              — Top banner
+├── NavBar ("use client")           — Logo (link to /), Blog link, AI Team link, X + LinkedIn icons, scroll CTA on blog pages
 ├── page.tsx (Server)
 │   └── Suspense
 │       └── LandingPage ("use client")
 │           ├── SparklesCore      — Particle effects background
 │           ├── Hero / WhatWeDo    — State-toggled views (useState)
-│           ├── Dock               — Client logos with magnification
-│           │   └── Tooltip (Portal) — Rendered outside DOM tree
+│           ├── Client Logos        — Inline grayscale plates (horizontal scroll on mobile, single row on desktop)
+│           │   └── Hover tooltip   — Brand name label below tile
 │           ├── CTA Button         — Opens Modal
 │           └── Modal              — Lead capture form → /api/lead
 ├── blogs/page.tsx (Server)       — Blog index (lists posts by category)
 ├── blogs/<topic>/page.tsx (Server) — Category index (filtered by topic, 404 if empty)
 ├── blogs/<topic>/<slug>/page.tsx (Server)
 │   └── Static blog post (no "use client", self-contained)
-├── my-ai-employees/page.tsx (Server)
+├── build-your-ai-team/page.tsx (Server)
 │   └── AgentCard ("use client")   — Card grid for all 5 agents
-└── my-ai-employees/<agent>/page.tsx (Server)
+└── build-your-ai-team/<agent>/page.tsx (Server)
     ├── AgentDetailPage ("use client") — Full agent profile (KRAs, rhythm, proof)
     └── FloatingCTA ("use client")     — Scroll-triggered sticky CTA
 ```
 
 ## NavBar
 - Rendered in `app/layout.tsx`, visible on ALL pages
-- Left: Logo linked to `/` — Right: "Blog" link, "AI Team" link, X icon, LinkedIn icon
-- Uses `usePathname()` to highlight active nav link
-- Scroll-aware CTA on blog pages: when on `/blogs/*` and scrolled >100px, a "Get Your Launch Roadmap" button appears in the navbar (replaces social icons on mobile, coexists on desktop). Uses `useState` + `useEffect` with `window.scrollY`.
+- Left: Logo linked to `/` (h-14 mobile, h-16 desktop) — Right: "Blog" link, "Build Your AI Team" link, X icon, LinkedIn icon
+- Active link indicators: subtle blue pill background (`bg-accent-blue/[0.07]`) on current page link, hover shows faint tint
+- Desktop: full nav inline — Mobile: hamburger menu (Menu/X icons from lucide), dropdown with links + socials
+- Dropdown closes on route change or click outside (useRef + mousedown listener)
+- Scroll-aware CTA on blog pages: when on `/blogs/*` and scrolled >100px, a "Get Your Launch Roadmap" button appears in the navbar. Uses `useState` + `useEffect` with `window.scrollY`.
 - The "What We Do" view in LandingPage has its own fixed header (z-40) that overlays the NavBar
 
 ## Data Flow
@@ -138,6 +158,45 @@ RootLayout (Server)
 - gtag.js loaded via `next/script` with `strategy="afterInteractive"` in layout.tsx
 - Auto-tracks page views on all route changes (no extra code needed)
 
+## Convex Backend (Launch Control)
+
+### Database Tables (Convex)
+| Table | Purpose | Ingestion |
+|-------|---------|-----------|
+| `questions` | Vibhishana's Reddit scans | Batch via `/ingestQuestions` |
+| `briefs` | Vibhishana's research briefs | Single via `/ingestBrief` |
+| `blogs` | Vyasa's published blog metadata | Single via `/ingestBlog` |
+| `agentActivity` | All agent milestones | Single via `/ingestActivity` |
+
+### HTTP Ingestion Endpoints
+Base URL: `https://impartial-pelican-672.convex.site` (dev deployment)
+- All 4 POST endpoints require `Authorization: Bearer <AGENT_API_KEY>`
+- AGENT_API_KEY stored in Convex env vars (server-side only)
+- CORS preflight (OPTIONS) handled for all endpoints
+- `/ingestQuestions` accepts array OR single object (normalizes to array)
+
+### Query Functions
+- **Public (no auth):** `questions.listRecent`, `briefs.listMetadata`, `blogs.listRecent`, `agentActivity.agentStatuses`, `agentActivity.recentFeed`
+- **Admin (auth required):** `questions.listFullDetails`, `briefs.getFullBrief`, `briefs.listFull`, `agentActivity.fullLog`
+- Admin queries check `ctx.auth.getUserIdentity()` — throw if not authenticated
+
+### Auth
+- **Provider:** Clerk (ClerkProvider wraps ConvexProviderWithClerk)
+- **Middleware:** `middleware.ts` at project root — permissive `clerkMiddleware()`, does not block any route
+- **Convex auth config:** `convex/auth.config.ts` — Clerk issuer domain from env var
+- **No route protection:** All existing pages work without login. Admin queries enforce auth at the function level.
+
+### Data Flow (Agent → Dashboard)
+```
+Agent on VPS → curl POST to Convex HTTP Action → validates Bearer token → internalMutation → writes to DB → Convex WebSocket pushes to subscribed frontends → instant UI update
+```
+
+### Dev Workflow
+```
+Terminal 1: npx convex dev    (watches convex/ files, syncs to dev deployment)
+Terminal 2: npm run dev       (Next.js dev server at localhost:3000)
+```
+
 ## State Management
 - `useState` only — no global state, no context
 - `showWhatWeDo` — toggles hero vs services view
@@ -153,9 +212,11 @@ RootLayout (Server)
 - Fonts via `next/font/google` (self-hosted, CSS variables)
 
 ## Build & Deploy
+- Build command: `npx convex deploy --cmd 'npm run build'` (pushes Convex functions then builds Next.js)
 - `next build` produces optimized output in `.next/`
 - Landing page is statically prerendered (SSG)
 - Blog pages are statically generated at build time
-- API route runs server-side
+- API route + Clerk middleware run server-side
 - Hosted on Netlify with `@netlify/plugin-nextjs`
 - Auto-deploys on merge to `main`
+- Convex dev deployment: `impartial-pelican-672` (production deployment TBD)

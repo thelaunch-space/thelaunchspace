@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.netlify.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:answers.netlify.com)",
+      "WebFetch(domain:cli.netlify.com)",
+      "WebSearch",
+      "Bash(git fetch:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(git stash:*)",
+      "Bash(gh pr checkout:*)",
+      "Bash(npm run dev:*)",
+      "Bash(git pull:*)",
+      "Bash(npm run lint)",
+      "Bash(npm run typecheck:*)",
+      "Bash(npm install:*)",
+      "Bash(git checkout:*)",
+      "Bash(node -e:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm ls:*)",
+      "Bash(sips:*)",
+      "Bash(lsof:*)",
+      "Bash(npx convex dev:*)",
+      "Bash(npx convex run:*)",
+      "Bash(npx convex data questions:*)"
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 # Progress — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-14
+Last updated: 2026-02-15
 
 ## Completed
 - [x] Project scaffolding (Vite + React 18 + TS + Tailwind)
@@ -75,15 +75,44 @@ Last updated: 2026-02-14
 - [x] **Client dock — full-color logos (removed grayscale), stronger border/shadow, overflow-hidden corner fix**
 - [x] **Design system — Valmiki avatar prompt updated (sage in late 50s, not young 30s)**
 - [x] **New blog post: "Should You Hire a Developer or Build With AI?"**
+- [x] **Client logos redesign — replaced Dock with inline grayscale logo plates on white tiles**
+- [x] **Added Vitalyf and Classroots (text logo) as clients**
+- [x] **Mobile: horizontal scroll for client logos, hamburger menu nav, slimmer CTA button**
+- [x] **Desktop: all logos in single row, intentional subheadline line breaks ("cofounder" / "CTO")**
+- [x] **Logo images get `rounded-lg` for dark-background logos (Tripture)**
+- [x] **NavBar: "AI Team" → "Build Your AI Team" (aspirational CTA-style label)**
+- [x] **NavBar: logo enlarged (h-14 md:h-16), active link pill indicators (subtle blue bg)**
+- [x] **NavBar: mobile hamburger menu with dropdown (logo + hamburger only on small screens)**
+- [x] **Announcement ribbon component (`AnnouncementRibbon.tsx`) — site-wide top banner**
+- [x] **Renamed `/my-ai-employees` → `/build-your-ai-team` (aspirational URL)**
+- [x] **Pipeline section redesign on AI team page + mobile layout fix**
+- [x] **Launch Control backend (Convex) — 4 tables, 4 HTTP ingestion endpoints, Clerk auth, provider wiring**
+- [x] **Convex schema deployed: questions, briefs, blogs, agentActivity with 11 indexes**
+- [x] **HTTP Actions: `/ingestQuestions` (batch), `/ingestBrief`, `/ingestBlog`, `/ingestActivity` — Bearer token auth + CORS**
+- [x] **Public queries: listRecent (questions/blogs), listMetadata (briefs), agentStatuses, recentFeed**
+- [x] **Admin queries: listFullDetails (questions), getFullBrief + listFull (briefs), fullLog (activity)**
+- [x] **Clerk middleware (`middleware.ts`) — permissive, no route blocking, makes auth available**
+- [x] **ConvexClientProvider wrapping entire app (ClerkProvider + ConvexProviderWithClerk)**
+- [x] **Netlify build updated to `npx convex deploy --cmd 'npm run build'`**
+- [x] **All 4 Convex HTTP endpoints tested with curl — data confirmed in Convex Dashboard**
+- [x] **3 SKILL.md files created: convex-push-scanner (Vibhishana), convex-push-blog (Vyasa), convex-push-activity (all agents)**
+- [x] **Partha deployed skills on VPS — all 3 installed at `/app/skills/`, API key stored, test push successful**
+- [x] **Historical data backfill — 13 briefs (with full markdown), 7 blogs, 30 questions pushed to Convex**
+- [x] **Convex schema fully enriched — all 12 scanner fields, all 14 blog-queue columns, matches Partha's audit**
 
 ## In Progress
-- Nothing currently in progress
+- [ ] Launch Control frontend dashboard (`/launch-control` page)
 
 ## Blocked
 - Nothing currently blocked
 
 ## Recent Changes (latest first)
-1. AI Employees page redesign + hero copy + CTAs (WhatsApp/LinkedIn/email) + dock polish (2026-02-14)
+1. Launch Control VPS deployment — 3 SKILL.md files installed, API key stored, 50 records backfilled (13 briefs, 7 blogs, 30 questions), test push verified (2026-02-15)
+2. Launch Control SKILL.md files — 3 separate skills created (convex-push-scanner, convex-push-blog, convex-push-activity), Node.js JSON escaping instead of jq (2026-02-15)
+3. Launch Control Convex backend — schema, HTTP endpoints, auth, provider wiring, tested with curl (2026-02-15)
+2. Announcement ribbon, pipeline redesign, `/my-ai-employees` → `/build-your-ai-team` rename (2026-02-15)
+3. Client logos redesign (grayscale plates, +Vitalyf, +Classroots), nav overhaul (hamburger, pill indicators, "Build Your AI Team"), mobile UX improvements (2026-02-14)
+2. AI Employees page redesign + hero copy + CTAs (WhatsApp/LinkedIn/email) + dock polish (2026-02-14)
 2. Landing page "60+ projects built" credential update (2026-02-14)
 3. Valmiki avatar prompt redesigned as wise sage (2026-02-14)
 4. Blog index v2 redesign — removed header/footer containers, inline title row, NavBar scroll CTA (2026-02-14)

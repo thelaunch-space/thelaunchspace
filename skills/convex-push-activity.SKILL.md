@@ -1,0 +1,66 @@
+---
+name: convex-push-activity
+description: Push agent activity milestones to Launch Control (Convex database)
+metadata: { "openclaw": { "emoji": "📊", "requires": { "bins": ["curl"], "env": [] } } }
+---
+
+# Push Activity Milestones to Launch Control
+
+After key events (scan complete, brief created, blog published, health check), push a milestone to Convex so the Launch Control dashboard shows agent activity in real-time.
+
+## Setup
+
+API key file: `/home/node/openclaw/credentials/convex-api-key.txt`
+Base URL: `https://impartial-pelican-672.convex.site`
+
+## Push Activity Milestone
+
+Run this with `exec` after completing a significant action:
+
+```bash
+API_KEY=$(cat /home/node/openclaw/credentials/convex-api-key.txt)
+
+curl -s -X POST https://impartial-pelican-672.convex.site/ingestActivity \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $API_KEY" \
+  -d '{
+    "agentName": "YOUR AGENT NAME",
+    "action": "ACTION TYPE",
+    "status": "completed",
+    "message": "ONE-LINE SUMMARY OF WHAT HAPPENED",
+    "timestamp": "YYYY-MM-DDTHH:MM:SSZ"
+  }'
+```
+
+## When to Push (and What to Say)
+
+Push activity at these moments — not after every small step, only at milestones:
+
+**Vibhishana:**
+- After morning scan: `{"action": "scan_complete", "message": "Scanned X questions from Y subreddits", "agentName": "Vibhishana"}`
+- After each brief: `{"action": "brief_created", "message": "Created brief: TITLE", "agentName": "Vibhishana"}`
+- After evening report: `{"action": "daily_report", "message": "Daily summary: X questions scanned, Y briefs created", "agentName": "Vibhishana"}`
+
+**Vyasa:**
+- After blog PR created: `{"action": "blog_pr_created", "message": "PR created: TITLE (WORD_COUNT words)", "agentName": "Vyasa"}`
+
+**Parthasarathi:**
+- After 7 PM due diligence: `{"action": "due_diligence", "message": "Daily review complete. X briefs pending, Y blogs in pipeline", "agentName": "Parthasarathi"}`
+- After health check: `{"action": "health_check", "message": "All systems nominal. X crons active", "agentName": "Parthasarathi"}`
+- After cron/config change: `{"action": "config_change", "message": "Updated AGENT cron: WHAT CHANGED", "agentName": "Parthasarathi"}`
+
+## Field Rules
+
+- `agentName`: Exactly `"Parthasarathi"`, `"Vibhishana"`, or `"Vyasa"` (capitalized)
+- `action`: Use the exact strings above (lowercase with underscores)
+- `status`: Usually `"completed"`. Use `"error"` only if something failed.
+- `message`: One sentence. Be specific — include counts, titles, or names.
+- `timestamp`: ISO 8601 format. Use `date -u +"%Y-%m-%dT%H:%M:%SZ"` to generate.
+
+Expected response: `{"success":true,"id":"..."}`
+
+## When Things Fail
+
+If curl returns an error:
+1. Log to Slack: `⚠️ Convex activity push failed. Error: [response]. Moving on.`
+2. Do NOT retry. Do NOT block. Activity logging is nice-to-have, not critical.
