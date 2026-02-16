@@ -66,7 +66,7 @@ export default function BlogPost() {
 
           {/* Opening paragraph */}
           <p className="text-lg md:text-xl text-text-primary leading-relaxed mb-8">
-            The short answer: <span className="text-text-primary font-semibold">Claude Code for building, Bolt.new for prototyping, Cursor for editing, Supabase for your backend, and Make.com for automation.</span> That is the stack we have used to ship 65 projects in 14 months as a non-developer. This guide explains why these five tools, how they work together, and how to get productive with them in weeks rather than months.
+            The short answer: <span className="text-text-primary font-semibold">Claude Code for building, Bolt.new for prototyping, Cursor for editing, Convex for your backend, and Make.com for automation.</span> That is the stack we have used to ship 65 projects in 14 months as a non-developer. This guide explains why these five tools, how they work together, and how to get productive with them in weeks rather than months.
           </p>
 
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
@@ -156,7 +156,7 @@ export default function BlogPost() {
           </div>
 
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
-            <span className="text-text-primary font-semibold">Cost:</span> Free tier available. Pro at $20/month for more generations and features.
+            <span className="text-text-primary font-semibold">Cost:</span> Free tier available. Pro at $25/month for more generations and features.
           </p>
 
           <h3 className="text-xl md:text-2xl font-bold mt-8 mb-3">Cursor: The AI-Native Code Editor</h3>
@@ -173,18 +173,22 @@ export default function BlogPost() {
             <span className="text-text-primary font-semibold">Cost:</span> Free tier with limited AI calls. Pro at $20/month for unlimited.
           </p>
 
-          <h3 className="text-xl md:text-2xl font-bold mt-8 mb-3">Supabase: The Backend You Do Not Have to Build</h3>
+          <h3 className="text-xl md:text-2xl font-bold mt-8 mb-3">Convex: The Backend That Just Works</h3>
 
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
-            <a href="https://supabase.com" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">Supabase</a> is a backend-as-a-service platform. It gives you a database, user authentication, file storage, and real-time subscriptions out of the box. Instead of building these from scratch, which requires significant technical knowledge, you get them ready to use.
+            <a href="https://www.convex.dev" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">Convex</a> is a backend-as-a-service platform that handles your database, real-time subscriptions, file storage, and serverless functions. What makes it different from alternatives like Supabase: everything is TypeScript-native and real-time by default.
           </p>
 
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
-            Every project we build uses Supabase. The database is PostgreSQL, which is industry-standard. The auth system handles login, signup, password reset, and social logins. The API is generated automatically from your database tables. For a non-technical founder, this eliminates weeks of backend work.
+            We switched to Convex after using Supabase on earlier projects. The difference for non-technical founders: Convex is simpler to reason about. Your schema lives in your code, not in a separate dashboard. Real-time updates happen automatically without configuring WebSockets or subscriptions. When you change data, every connected user sees it instantly with under 50ms latency.
           </p>
 
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
-            <span className="text-text-primary font-semibold">Cost:</span> Free tier covers most MVPs. Pro at $25/month when you scale.
+            Convex also integrates seamlessly with AI-assisted development. Because everything is TypeScript, Claude Code and Cursor understand your entire backend. No context-switching between SQL dashboards and code editors. No connection pooling issues or cold starts. It is built for the "vibe coding" workflow where you describe what you want and let AI build it.
+          </p>
+
+          <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
+            <span className="text-text-primary font-semibold">Cost:</span> Generous free tier with unlimited projects. Pro at $25/month when you scale. Unlike Supabase which limits you to 2 free projects, Convex lets you build as many prototypes as you want without hitting paywalls.
           </p>
 
           <h3 className="text-xl md:text-2xl font-bold mt-8 mb-3">Make.com: Automation Without Code</h3>
@@ -216,7 +220,7 @@ export default function BlogPost() {
             </div>
             <div className="bg-border-color/20 rounded-xl p-5">
               <p className="text-text-primary font-semibold mb-1">Full MVP with user accounts and database</p>
-              <p className="text-text-secondary text-base leading-relaxed">Use <span className="text-text-primary font-semibold">Claude Code + Supabase</span>. Claude Code builds the frontend and logic. Supabase handles auth and data. This combination ships production apps.</p>
+              <p className="text-text-secondary text-base leading-relaxed">Use <span className="text-text-primary font-semibold">Claude Code + Convex</span>. Claude Code builds the frontend and logic. Convex handles auth and data with real-time sync. This combination ships production apps.</p>
             </div>
             <div className="bg-border-color/20 rounded-xl p-5">
               <p className="text-text-primary font-semibold mb-1">Understanding or debugging existing code</p>
@@ -282,15 +286,15 @@ export default function BlogPost() {
             </div>
             <div className="bg-border-color/20 rounded-xl p-5">
               <p className="text-text-primary font-semibold mb-1">Bolt.new Pro</p>
-              <p className="text-text-secondary text-base leading-relaxed">$20/month (optional if free tier suffices)</p>
+              <p className="text-text-secondary text-base leading-relaxed">$25/month (optional if free tier suffices)</p>
             </div>
             <div className="bg-border-color/20 rounded-xl p-5">
               <p className="text-text-primary font-semibold mb-1">Cursor Pro</p>
               <p className="text-text-secondary text-base leading-relaxed">$20/month</p>
             </div>
             <div className="bg-border-color/20 rounded-xl p-5">
-              <p className="text-text-primary font-semibold mb-1">Supabase Pro</p>
-              <p className="text-text-secondary text-base leading-relaxed">$25/month (free tier works for most MVPs)</p>
+              <p className="text-text-primary font-semibold mb-1">Convex Pro</p>
+              <p className="text-text-secondary text-base leading-relaxed">$25/month (generous free tier works for most MVPs)</p>
             </div>
             <div className="bg-border-color/20 rounded-xl p-5">
               <p className="text-text-primary font-semibold mb-1">Make.com Core</p>
@@ -299,7 +303,7 @@ export default function BlogPost() {
           </div>
 
           <div className="bg-border-color/30 border border-border-color rounded-xl p-8 my-10 text-center">
-            <p className="text-3xl md:text-4xl font-bold text-text-primary mb-2">$95-135/month</p>
+            <p className="text-3xl md:text-4xl font-bold text-text-primary mb-2">$100-140/month</p>
             <p className="text-sm md:text-base text-text-secondary">Full production tool stack vs. $10,000+/month for a developer</p>
           </div>
 
@@ -352,9 +356,9 @@ export default function BlogPost() {
 
           <ol className="list-decimal list-inside space-y-2 text-text-secondary text-base md:text-lg mb-6">
             <li><span className="text-text-primary font-semibold">Day 1-2:</span> Sign up for Claude Pro ($20). Install Claude Code following <a href="https://code.claude.com/docs/en/overview" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">the official docs</a>. Build something trivial to get familiar with the workflow.</li>
-            <li><span className="text-text-primary font-semibold">Day 3:</span> Create a Supabase account (free). Set up a basic database table. Connect it to a simple app using Claude Code.</li>
+            <li><span className="text-text-primary font-semibold">Day 3:</span> Create a Convex account (free). Set up a basic database table following their quick start. Connect it to a simple app using Claude Code.</li>
             <li><span className="text-text-primary font-semibold">Day 4-5:</span> Use Bolt.new to prototype a real idea you have. Deploy it. Share the link with someone for feedback.</li>
-            <li><span className="text-text-primary font-semibold">Day 6-7:</span> Start your actual MVP. Define the simplest version that proves your idea works. Begin building with Claude Code and Supabase.</li>
+            <li><span className="text-text-primary font-semibold">Day 6-7:</span> Start your actual MVP. Define the simplest version that proves your idea works. Begin building with Claude Code and Convex.</li>
           </ol>
 
           <div className="border-l-4 border-accent-blue pl-6 my-8">
@@ -372,7 +376,7 @@ export default function BlogPost() {
           </p>
 
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
-            Five tools. $100-135/month. Three to four weeks to get productive. That is the reality of building as a non-technical founder in 2026. Not easy, but possible. And much more accessible than it was even a year ago.
+            Five tools. $100-140/month. Three to four weeks to get productive. That is the reality of building as a non-technical founder in 2026. Not easy, but possible. And much more accessible than it was even a year ago.
           </p>
 
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
