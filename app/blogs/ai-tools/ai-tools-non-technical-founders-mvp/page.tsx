@@ -242,6 +242,77 @@ export default function BlogPost() {
 
           <hr className="border-border-color my-12" />
 
+          <h2 className="text-2xl md:text-3xl font-bold mt-16 mb-4">The Building Workflow: Beginner vs Experienced</h2>
+
+          <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
+            The tools matter, but the workflow matters more. How you approach building determines whether you ship something useful or spend weeks in frustrating loops. Here are two tracks depending on your starting point.
+          </p>
+
+          <h3 className="text-xl md:text-2xl font-bold mt-8 mb-3">Track 1: Absolute Beginners</h3>
+
+          <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
+            If you have never built software before, start with browser-based tools that handle everything: <span className="text-text-primary font-semibold">Bolt.new, Replit, or Lovable</span>. These platforms manage frontend, backend, and deployment from a single browser tab. You do not need to understand architecture, servers, or databases to get something working.
+          </p>
+
+          <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
+            The honest reality: as you build more, you will hit walls. Something breaks and you do not know why. The AI suggests a fix that does not work. This is normal. No AI tool magically solves everything. You will naturally start learning basic architecture concepts because debugging requires understanding what is actually happening.
+          </p>
+
+          <div className="border-l-4 border-accent-blue pl-6 my-8">
+            <p className="text-base md:text-lg text-text-primary font-medium leading-relaxed">
+              The goal is not to stay a beginner forever. It is to start building immediately while learning as you go. Each wall you hit teaches you something the tutorials skip.
+            </p>
+          </div>
+
+          <h3 className="text-xl md:text-2xl font-bold mt-8 mb-3">Track 2: Some Experience (Comfortable with CLI or IDEs)</h3>
+
+          <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
+            If you have written some code before, used command-line tools, or feel comfortable in an IDE, you can handle more complex apps: multi-user systems, role-based access controls, CRMs, anything with 3-5 interconnected features. Here is the workflow we recommend:
+          </p>
+
+          <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-4">
+            <span className="text-text-primary font-semibold">Step 1: Write functional requirements first.</span> Before touching any building tool, use Claude or ChatGPT to brainstorm and document what you are building. This document should include, in order:
+          </p>
+
+          <ol className="list-decimal list-inside space-y-2 text-text-secondary text-base md:text-lg mb-6 ml-4">
+            <li>High-level objective (one sentence on what this does)</li>
+            <li>Target audience (who uses this and why)</li>
+            <li>Pain points solved (what problems disappear)</li>
+            <li>Tech stack (what tools and frameworks)</li>
+            <li>Design principles (how it should feel to use)</li>
+            <li>Functional requirements (specific features, to the point)</li>
+            <li>Basic navigation (how users move through the app)</li>
+          </ol>
+
+          <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
+            Iterate on this document until it feels complete. This is not wasted time. A clear requirements document is the difference between an AI that understands your intent and one that builds the wrong thing confidently.
+          </p>
+
+          <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-4">
+            <span className="text-text-primary font-semibold">Step 2: Use Plan Mode before building.</span> Once your requirements are ready, copy the entire document into Bolt.new, Claude Code, or Cursor. But do not hit build immediately. Use Plan Mode.
+          </p>
+
+          <div className="bg-border-color/30 border border-border-color rounded-xl p-6 my-8">
+            <p className="text-text-primary font-medium mb-2">Why Plan Mode matters:</p>
+            <p className="text-text-secondary">In Plan Mode, the AI first analyzes your request, asks clarifying questions, and generates a structured plan before writing any code. You review and approve the plan. This prevents the AI from confidently building the wrong thing. Claude Code's Plan Mode even searches your existing codebase for patterns to maintain consistency.</p>
+          </div>
+
+          <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
+            <span className="text-text-primary font-semibold">Step 3: Iterate in small batches.</span> After the initial build, do not try to add everything at once. Make one improvement, test it, confirm it works, then move to the next. This keeps problems small and traceable.
+          </p>
+
+          <h3 className="text-xl md:text-2xl font-bold mt-8 mb-3">How We Work at thelaunch.space</h3>
+
+          <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
+            Our process combines both tracks. For new client projects, we skip lengthy PRD documents and instead use Bolt.new to build a quick prototype in hours. This prototype is not production-ready. It is a conversation piece. We show it to the client to confirm we are aligned on direction before investing in proper architecture.
+          </p>
+
+          <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
+            Once direction is confirmed, we switch to Claude Code and Convex for the production build. Quick iterations to show progress. Then deliberate focus on stability, reliability, security, and scalability. The prototype got us alignment fast. The production build gets the client a system they can depend on.
+          </p>
+
+          <hr className="border-border-color my-12" />
+
           <h2 className="text-2xl md:text-3xl font-bold mt-16 mb-4">The Learning Curve: What to Actually Expect</h2>
 
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
