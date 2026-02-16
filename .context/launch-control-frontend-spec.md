@@ -2,7 +2,7 @@
 
 Status: LIVE IN PRODUCTION
 Created: 2026-02-15
-Last updated: 2026-02-16 (v4 — audit corrections: component names, schedule, preview row counts)
+Last updated: 2026-02-16 (v5 — GuidedTour FTUE, BlogsPanel, nav changes)
 
 ---
 
@@ -626,6 +626,8 @@ components/launch-control/             — 22 components total
 │
 ├── LiveFeed.tsx                       — Right column: real-time activity log with filter tabs (All/Tasks/Milestones) + inline feed entries
 │
+├── BlogsPanel.tsx                     — Blog posts list tab (admin) — uses BlogPost type + CATEGORY_LABELS from blog-labels.ts
+├── GuidedTour.tsx                     — FTUE spotlight tour for first-time non-admin visitors. 5 desktop steps (scoreboard, tab-bar, pipeline, agent-sidebar, live-feed) + 4 mobile steps (scoreboard, tab-bar, pipeline, agent-strip). Spotlight overlay via CSS box-shadow cutout, tooltip placement with viewport clamping, localStorage `lc_tour_completed` flag. Auto-starts 800ms after page load for non-admin visitors.
 ├── StatusDot.tsx                      — Green/orange/red animated dot
 └── WaitlistCTA.tsx                    — Email gate: krishna@thelaunch.space reveals Clerk auth, others → lead capture
 ```
@@ -664,6 +666,9 @@ components/launch-control/             — 22 components total
 | Communities preview data | Uses placeholder subreddit names (not real monitored communities) to avoid exposing competitive intelligence. Decided Feb 15. |
 | Tab component loading | All tab panel components use `next/dynamic` for lazy loading — prevents webpack compilation hang from static imports. Decided Feb 15. |
 | Waitlist in preview gate | PreviewGate includes inline email form posting to `/api/lead` with source `"launch-control-preview-gate"`. Same webhook as homepage modal. Decided Feb 15. |
+| FTUE guided tour | Spotlight tour for first-time non-admin visitors. 5 desktop steps / 4 mobile steps targeting `data-tour` attributes. localStorage tracking. Auto-starts 800ms after load. Scroll lock during tour. Decided Feb 16. |
+| Launch Control removed from navbar | LC now discoverable only via pitch page secondary CTA or direct URL. Part of the pitch → proof funnel redesign. Decided Feb 16. |
+| BlogsPanel added | New admin tab showing published blog posts with category badges and links. Uses `lib/blog-labels.ts` for category names. Decided Feb 16. |
 
 ## Open Questions (Resolved)
 

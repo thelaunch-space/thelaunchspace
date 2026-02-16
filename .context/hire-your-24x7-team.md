@@ -1,8 +1,8 @@
 # Hire Your 24x7 Team — Service Pitch Page
 
-Status: DECISIONS LOCKED — Ready to build
+Status: BUILT AND LIVE — 14 components under `components/pitch/`, live Convex data, deployed to production
 Created: 2026-02-16
-Last updated: 2026-02-16 (Session 2 — all open questions resolved)
+Last updated: 2026-02-16 (v2 — page built, FTUE tour built, nav updated)
 URL: `/hire-your-24x7-team`
 
 ---
@@ -334,32 +334,33 @@ Separate from the pitch page — these are changes to what public (non-admin) vi
 
 ---
 
-## Implementation Plan (when we're ready to build)
+## Implementation Status
 
-### Phase 1: Pitch Page
-1. Create route at `app/hire-your-24x7-team/page.tsx`
-2. Build Pokemon/WWE stat card component (flip on desktop, inline on mobile)
-3. Build tabbed "real work" section (questions/briefs/blogs) — pull live from Convex
-4. Build 4-week timeline visual component
-5. Build pricing section
-6. Build lead capture form (company name, website, challenge dropdown) → Calendly link
-7. Assemble full scrollable pitch page (sections 1-8)
+### Phase 1: Pitch Page — DONE
+- [x] Route at `app/hire-your-24x7-team/page.tsx` → renders `PitchPage`
+- [x] 14 components under `components/pitch/`: PitchPage, HookSection, HowItWorksSection, TeamSection, AgentStatCard, StatBar, TrustNudge, RecentWorkSection, TimelineSection, PricingSection, LeadCaptureSection, TimeSlotPicker, SecondaryCtaSection, FooterTease
+- [x] Pokemon/WWE stat cards with StatBars (pace/intel/saving), skills tags, weekly summaries from Convex
+- [x] Tabbed "real work" section (Questions/Briefs/Blogs) — live from Convex
+- [x] 4-week timeline visual (Setup → Trial → Iteration → Handoff)
+- [x] Pricing section ($200 POC + $1K Growth Partnership)
+- [x] Lead capture form (company, website, challenge dropdown) → Make.com + TimeSlotPicker
+- [x] Floating dual CTA (Watch live + Get your AI team)
 
-### Phase 2: Navigation & Redirects
-8. Update navbar: rename link to "Hire Your 24/7 Team" → `/hire-your-24x7-team`
-9. Remove "Launch Control" from navbar
-10. Set up 301 redirects: `/build-your-ai-team` → `/hire-your-24x7-team`
-11. Set up 301 redirects: `/build-your-ai-team/[agent]` → `/hire-your-24x7-team#team`
+### Phase 2: Navigation & Redirects — PARTIAL
+- [x] Navbar updated: "Hire Your 24/7 Team" → `/hire-your-24x7-team`
+- [x] "Launch Control" removed from navbar
+- [ ] Set up 301 redirects: `/build-your-ai-team` → `/hire-your-24x7-team`
+- [ ] Set up 301 redirects: `/build-your-ai-team/[agent]` → `/hire-your-24x7-team#team`
 
-### Phase 3: Launch Control Public View
-12. Questions tab: show all questions, hide relevance scores and admin dropdowns
-13. Briefs tab: show 5 in full, blur/gate the rest with CTA
-14. Blogs tab: show all freely, link to actual posts
-15. Add permanent FTUE labels to all sections
+### Phase 3: Launch Control Public View — PARTIAL
+- [x] FTUE spotlight tour built (GuidedTour.tsx — 5 desktop / 4 mobile steps)
+- [ ] Questions tab: show all questions openly (not just top 3)
+- [ ] Briefs tab: show 5 in full, blur/gate the rest
+- [ ] Blogs tab: show all freely, link to actual posts
 
 ### Phase 4: Polish
-16. Mobile QA (LinkedIn audience = phone traffic)
-17. Update LinkedIn/X post links to point to `/hire-your-24x7-team`
+- [x] Mobile layout + timeline card fixes
+- [ ] Update LinkedIn/X post links to point to `/hire-your-24x7-team`
 
 ---
 

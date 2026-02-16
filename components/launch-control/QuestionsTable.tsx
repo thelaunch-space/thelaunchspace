@@ -104,9 +104,9 @@ export default function QuestionsTable() {
   );
 
   return (
-    <div>
+    <div className="lg:flex lg:flex-col lg:flex-1 lg:min-h-0">
       {/* Filters */}
-      <div className="flex flex-wrap gap-2 mb-3">
+      <div className="flex flex-wrap gap-2 mb-3 shrink-0">
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
@@ -139,13 +139,13 @@ export default function QuestionsTable() {
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="hidden md:block overflow-x-auto scrollbar-hide rounded-lg border border-border-color/30"
+        className="hidden md:block overflow-auto scrollbar-hide rounded-lg border border-border-color/30 lg:flex-1 lg:min-h-0"
       >
         <table className="w-full text-xs min-w-[900px]">
-          <thead>
-            <tr className="border-b border-border-color/30 bg-surface-alt/50">
+          <thead className="sticky top-0 z-[3]">
+            <tr className="border-b border-border-color/30 bg-surface-alt">
               <th
-                className="sticky left-0 z-[2] bg-surface-alt/90 backdrop-blur-sm text-left px-3 py-2.5 font-medium text-text-secondary cursor-pointer hover:text-text-primary transition-colors"
+                className="sticky left-0 z-[4] bg-surface-alt text-left px-3 py-2.5 font-medium text-text-secondary cursor-pointer hover:text-text-primary transition-colors"
                 style={{ boxShadow: showShadow ? "4px 0 8px -2px rgba(0,0,0,0.06)" : "none" }}
                 onClick={() => toggleSort("title")}
               >

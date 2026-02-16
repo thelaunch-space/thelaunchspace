@@ -106,7 +106,7 @@ export default function LeadCaptureSection() {
   };
 
   return (
-    <section id="lead-capture">
+    <section id="lead-capture" className="scroll-mt-24">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -115,8 +115,14 @@ export default function LeadCaptureSection() {
         className="max-w-lg mx-auto"
       >
         <h2 className="font-display tracking-[-0.02em] text-2xl md:text-3xl text-text-primary text-center">
-          Get Your AI Team This Week
+          Get My AI Team This Week
         </h2>
+
+        <div className="mt-3 mb-2 flex flex-col items-center gap-1.5 text-xs text-text-secondary/70 text-center">
+          <span>No contracts. Cancel anytime.</span>
+          <span>Your agents start producing within 48 hours.</span>
+          <span>$99/month &mdash; less than one freelance blog post.</span>
+        </div>
 
         <AnimatePresence mode="wait">
           {/* Step 1 — Contact Info */}

@@ -29,7 +29,7 @@ export default function QuestionsPreview() {
   }
 
   return (
-    <>
+    <div className="lg:flex lg:flex-col lg:flex-1 lg:min-h-0">
       {/* Mobile: card view */}
       <div className="md:hidden space-y-3 p-3">
         {questions.map((q) => (
@@ -52,10 +52,10 @@ export default function QuestionsPreview() {
       </div>
 
       {/* Desktop: table view */}
-      <div className="hidden md:block">
+      <div className="hidden md:block overflow-auto lg:flex-1 lg:min-h-0 scrollbar-hide">
         <table className="w-full text-xs">
-          <thead>
-            <tr className="border-b border-border-color/30 bg-surface-alt/50">
+          <thead className="sticky top-0 z-[1]">
+            <tr className="border-b border-border-color/30 bg-surface-alt">
               <th className="text-left px-3 py-2.5 font-medium text-text-secondary">Title</th>
               <th className="text-left px-3 py-2.5 font-medium text-text-secondary">Subreddit</th>
               <th className="text-left px-3 py-2.5 font-medium text-text-secondary">Scanned</th>
@@ -83,6 +83,6 @@ export default function QuestionsPreview() {
           </tbody>
         </table>
       </div>
-    </>
+    </div>
   );
 }

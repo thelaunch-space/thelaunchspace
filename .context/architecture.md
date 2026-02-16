@@ -1,6 +1,6 @@
 # Architecture — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-16
+Last updated: 2026-02-16 (v2 — pitch page, FTUE tour, BlogsPanel, blog-labels)
 
 ## Overview
 Next.js 14 App Router application. Server-side rendered for SEO/crawlability. Landing page content rendered as a client component for interactivity. Blog posts are static Server Components created by an AI agent via GitHub PRs. "Build Your AI Team" section showcases 5 AI agents with index + detail pages. Webhook proxy via API route (server-side, no secrets exposed to browser). Hosted on Netlify. Google Analytics (GA4) tracking via `next/script`. **Convex** real-time database for Launch Control dashboard (agent activity, questions, briefs, blogs). **Clerk** authentication for admin access. Entire app wrapped in ConvexProviderWithClerk + ClerkProvider.
@@ -28,7 +28,9 @@ app/
 │   └── hire-developer-vs-build-with-ai/
 ├── blogs/founder-advice/   # Blog topic folder (1 post)
 │   └── validate-startup-idea-domain-expert/
-├── build-your-ai-team/     # AI team showcase section (renamed from my-ai-employees)
+├── blogs/ai-tools/         # Blog topic folder (1 post)
+│   └── ai-tools-non-technical-founders-mvp/
+├── build-your-ai-team/     # AI team showcase section (legacy, redirects planned to /hire-your-24x7-team)
 │   ├── layout.tsx          # Section layout
 │   ├── page.tsx            # Agent index page (card grid)
 │   ├── parthasarathi/      # Agent detail pages (one per agent)
@@ -38,12 +40,14 @@ app/
 │   ├── valmiki/
 │   ├── vibhishana/
 │   └── vyasa/
+├── hire-your-24x7-team/
+│   └── page.tsx            # Server component → <PitchPage /> (service pitch page with live Convex data)
 ├── launch-control/
 │   └── page.tsx            # Server component — metadata + renders LaunchControlDashboard
 └── tools/[tool-slug]/      # Future tool routes (placeholder)
 middleware.ts               # Clerk middleware (permissive — no route blocking, makes auth available)
 components/
-├── NavBar.tsx              # "use client" — site-wide nav (hidden on /launch-control). Logo, blog, AI Team, Launch Control, socials, hamburger mobile, scroll CTA on blog pages
+├── NavBar.tsx              # "use client" — site-wide nav (hidden on /launch-control). Logo, Blog, "Hire Your 24/7 Team", socials, hamburger mobile, scroll CTA on blog pages. NO Launch Control link.
 ├── LandingPage.tsx         # "use client" — main landing page (hero + services)
 ├── AgentCard.tsx           # "use client" — agent showcase card (highlight/standard/compact sizes)
 ├── AgentDetailPage.tsx     # "use client" — full agent detail view (KRAs, rhythm, proof points)
@@ -53,7 +57,22 @@ components/
 ├── ui/
 │   ├── dock.tsx            # "use client" — macOS-style magnification dock
 │   └── sparkles.tsx        # "use client" — tsparticles background
-└── launch-control/         # 22 components for the Launch Control dashboard
+├── pitch/                  # 14 components for the /hire-your-24x7-team service pitch page
+│   ├── PitchPage.tsx              # Master orchestrator. Live Convex data (weeklyStats, allTimeStats, agent summaries, questions, briefs, blogs). Floating dual CTA.
+│   ├── HookSection.tsx            # Above-fold hook — headline, subhead, live weekly stats from Convex, CTA
+│   ├── HowItWorksSection.tsx      # 4-step "here's what happens daily" workflow in plain English
+│   ├── TeamSection.tsx            # 3 Pokemon/WWE-style agent stat cards with live Convex data
+│   ├── AgentStatCard.tsx          # Individual agent card — portrait, plain-English title, StatBars, skills tags, weekly summary
+│   ├── StatBar.tsx                # Animated stat bar (pace/intel/saving) with in-view trigger
+│   ├── TrustNudge.tsx             # Inline social proof nudge with arrow animation → links to Launch Control
+│   ├── RecentWorkSection.tsx      # Tabbed section (Questions/Briefs/Blogs) showing real Convex data
+│   ├── TimelineSection.tsx        # 4-week engagement timeline (Setup → Trial → Iteration → Handoff)
+│   ├── PricingSection.tsx         # $200 POC + $1K Growth Partnership cards
+│   ├── LeadCaptureSection.tsx     # Lead form (company, website, challenge dropdown) → Make.com + TimeSlotPicker
+│   ├── TimeSlotPicker.tsx         # Inline time slot selector for booking calls
+│   ├── SecondaryCtaSection.tsx    # "See the proof" → /launch-control secondary CTA
+│   └── FooterTease.tsx            # "More workstreams coming" footer text
+└── launch-control/         # 23 components for the Launch Control dashboard
     ├── LaunchControlDashboard.tsx  # Master orchestrator. CSS Grid 3-col. Top-level useQuery hooks
     ├── HeaderBar.tsx               # Sticky top bar: "Launch Control" title, stat pills, date, Clerk UserButton
     ├── AgentSidebar.tsx            # Left column: 5 agents with avatars, status dots, click-to-expand
@@ -75,10 +94,13 @@ components/
     ├── PreviewGate.tsx             # Blur overlay wrapper with waitlist CTA form (shared by all preview components)
     ├── BriefCard.tsx               # Single brief card with color-coded status badge
     ├── BriefReaderModal.tsx        # Near-fullscreen modal: react-markdown content + SEO metadata sidebar
+    ├── BlogsPanel.tsx              # Blog posts list tab (admin) — uses BlogPost type + CATEGORY_LABELS from blog-labels.ts
+    ├── GuidedTour.tsx              # FTUE spotlight tour for first-time visitors (5 desktop / 4 mobile steps, localStorage tracking)
     └── WaitlistCTA.tsx             # Email input: krishna@thelaunch.space reveals Clerk auth, others → lead capture
 lib/
 ├── agents.ts              # Agent data layer (5 agents, typed interfaces, structured for future DB migration)
-├── blog.ts                # Blog discovery utility (shared by sitemap.ts + blogs/page.tsx)
+├── blog.ts                # Blog discovery utility (shared by sitemap.ts + blogs/page.tsx). Server-only (uses fs).
+├── blog-labels.ts         # CATEGORY_LABELS extracted for client components (no fs import). Used by BlogsPanel, blog index.
 ├── launch-control-types.ts # LC TypeScript interfaces, agent schedule data (IST times), status badge configs
 ├── useCountUp.ts          # Custom hook: animated count-up with requestAnimationFrame + easing
 ├── utils.ts               # cn() (clsx+tailwind-merge), scaleValue()
@@ -111,8 +133,8 @@ netlify.toml                # Netlify build config (npx convex deploy --cmd 'npm
 ```
 RootLayout (Server)
 ├── ConvexClientProvider ("use client") — ClerkProvider + ConvexProviderWithClerk (wraps everything below)
-├── AnnouncementRibbon              — Top banner (only visible on / and /build-your-ai-team paths)
-├── NavBar ("use client")           — Logo (link to /), Blog link, AI Team link, Launch Control link, X + LinkedIn icons, scroll CTA on blog pages
+├── AnnouncementRibbon              — Top banner (only visible on / and /hire-your-24x7-team paths)
+├── NavBar ("use client")           — Logo (link to /), Blog link, "Hire Your 24/7 Team" link, X + LinkedIn icons, scroll CTA on blog pages. NO Launch Control link.
 ├── page.tsx (Server)
 │   └── Suspense
 │       └── LandingPage ("use client")
@@ -131,6 +153,19 @@ RootLayout (Server)
 ├── build-your-ai-team/<agent>/page.tsx (Server)
 │   ├── AgentDetailPage ("use client") — Full agent profile (KRAs, rhythm, proof)
 │   └── FloatingCTA ("use client")     — Scroll-triggered sticky CTA
+├── hire-your-24x7-team/page.tsx (Server)
+│   └── PitchPage ("use client")
+│       ├── HookSection             — Headline, subhead, live weekly stats from Convex, CTA
+│       ├── HowItWorksSection       — 4-step daily workflow
+│       ├── TeamSection             — 3 AgentStatCards (Pokemon-style) with live Convex data
+│       │   └── AgentStatCard       — Portrait, title, StatBars, skills, weekly summary
+│       ├── TrustNudge              — Social proof nudge → Launch Control
+│       ├── RecentWorkSection       — Tabbed (Questions/Briefs/Blogs) live Convex data
+│       ├── TimelineSection         — 4-week engagement timeline
+│       ├── PricingSection          — $200 POC + $1K Growth
+│       ├── LeadCaptureSection      — Form → Make.com + TimeSlotPicker
+│       ├── SecondaryCtaSection     — "See the proof" → /launch-control
+│       └── FooterTease             — "More workstreams coming"
 └── launch-control/page.tsx (Server)
     └── LaunchControlDashboard ("use client")
         ├── HeaderBar              — Title, stat pills, date, Clerk UserButton
@@ -142,12 +177,14 @@ RootLayout (Server)
         │   ├── Questions tab      — QuestionsPreview (public, top 3 rows + blur) / QuestionsTable (admin)
         │   └── Briefs tab         — BriefsPreview (public, top 3 clickable + blur) / BriefsPanel → BriefCard → BriefReaderModal (admin)
         ├── LiveFeed (right)       — Real-time activity feed (feed items rendered inline)
-        └── WaitlistCTA (right)    — Email gate (admin auth or lead capture)
+        ├── WaitlistCTA (right)    — Email gate (admin auth or lead capture)
+        └── GuidedTour             — FTUE spotlight tour (non-admin first visit, 5 desktop / 4 mobile steps)
 ```
 
 ## NavBar
-- Rendered in `app/layout.tsx`, visible on ALL pages
-- Left: Logo linked to `/` (h-11 mobile, h-13 desktop) — Right: "Blog" link, "Build Your AI Team" link, "Launch Control" link, X icon, LinkedIn icon
+- Rendered in `app/layout.tsx`, visible on ALL pages except `/launch-control`
+- Left: Logo linked to `/` (h-11 mobile, h-13 desktop) — Right: "Blog" link, "Hire Your 24/7 Team" link, X icon, LinkedIn icon
+- **No "Launch Control" link** — LC is discoverable only via pitch page secondary CTA or direct URL
 - Active link indicators: subtle blue pill background (`bg-accent-blue/[0.07]`) on current page link, hover shows faint tint
 - Desktop: full nav inline — Mobile: hamburger menu (Menu/X icons from lucide), dropdown with links + socials
 - Dropdown closes on route change or click outside (useRef + mousedown listener)
@@ -177,7 +214,18 @@ RootLayout (Server)
 - Blog index at `/blogs` auto-discovers and lists all posts — inline title row (no container), horizontal card rows per category, CTA in NavBar on scroll (no footer)
 - Category index at `/blogs/[topic]/` filters posts by topic slug, returns 404 for empty/unknown topics
 
-## Build Your AI Team Section
+## Hire Your 24/7 Team — Service Pitch Page
+- Full scrolling pitch page at `/hire-your-24x7-team` — the ICP-facing entry point
+- 14 components under `components/pitch/`
+- **Live Convex data:** weeklyStats, allTimeStats, agentStatuses, per-agent weeklySummary, recent questions/briefs/blogs — all pulled via `useQuery()` in PitchPage.tsx
+- **Sections (in order):** HookSection (headline + live stats + CTA) → HowItWorksSection (4-step daily workflow) → TeamSection (3 Pokemon-style AgentStatCards with StatBars, portraits, skills tags, weekly summaries) → TrustNudge ("I'm my own first customer") → RecentWorkSection (tabbed Questions/Briefs/Blogs) → TrustNudge ("Not a demo") → TimelineSection (4-week engagement) → PricingSection ($200 POC + $1K Growth) → LeadCaptureSection (form + TimeSlotPicker) → SecondaryCtaSection (→ Launch Control) → FooterTease
+- **Floating dual CTA:** Appears after 600px scroll — "Watch live" (→ /launch-control) + "Get your AI team" (→ #lead-capture anchor)
+- **Lead capture:** Company name + website + challenge dropdown → POSTs to `/api/lead` (same Make.com webhook). TimeSlotPicker for booking.
+- **Agent cards:** 3 active agents (Parthasarathi "The Manager", Vibhishana "The Scout", Vyasa "The Writer") with stat bars (pace, intelligence, monthly savings), skills tags, and "This Week" live feed from Convex
+- **Data note:** Same Convex backend as Launch Control — one-time setup, always live
+- Full brainstorm: `.context/hire-your-24x7-team.md`
+
+## Build Your AI Team Section (Legacy)
 - Index page at `/build-your-ai-team` — left-sticky hero + right-scrolling 2-column card grid
 - Hero: "Your Brain. Your Agents. Real Output." → "Meet My AI Employees" → scaling-thinking copy → WhatsApp/LinkedIn/email CTAs
 - Agent order: Parthasarathi (highlight card, full-width), then 2-col grid: Vyasa+Vibhishana, Sanjaya+Valmiki

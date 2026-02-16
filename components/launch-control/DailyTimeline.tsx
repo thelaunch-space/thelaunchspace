@@ -56,7 +56,7 @@ export default function DailyTimeline() {
           <p className="meta-label text-text-secondary">Today&apos;s Pipeline</p>
           <span className="text-sm text-text-secondary font-mono">{today}</span>
         </div>
-        <p className="text-xs text-text-secondary mt-1">Your AI team runs this schedule every day, automatically.</p>
+        <p className="text-xs text-text-secondary mt-1">The agents run this schedule every day, automatically.</p>
       </div>
 
       <div className="relative pl-6">

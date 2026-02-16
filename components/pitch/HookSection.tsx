@@ -143,10 +143,10 @@ export default function HookSection({ weeklyStats }: HookSectionProps) {
             className="mt-4 flex flex-col sm:flex-row items-start sm:items-center gap-3"
           >
             <a
-              href="#lead-capture"
+              href="#how-it-works"
               className="inline-block rounded-xl bg-gradient-to-r from-accent-blue to-accent-purple px-6 py-3 text-sm font-semibold text-white shadow-cta hover:-translate-y-0.5 hover:shadow-cta-hover transition-all duration-300"
             >
-              Get your AI team this week
+              See how it works
             </a>
             <a
               href="/launch-control"

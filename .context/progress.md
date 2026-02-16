@@ -1,6 +1,6 @@
 # Progress — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-16
+Last updated: 2026-02-16 (v2 — pitch page, FTUE tour, blogs panel, new blog)
 
 ## Completed
 - [x] Project scaffolding (originally Vite + React 18, later migrated to Next.js 14)
@@ -140,6 +140,24 @@ Last updated: 2026-02-16
 - [x] **AnnouncementRibbon updated** — changed from "Coming Soon" to "Live Now" with link to `/launch-control` instead of LinkedIn DM (2026-02-16)
 - [x] **Context docs audit & update** — all 10 `.context/` files audited against codebase and corrected (2026-02-16)
 
+- [x] **`/hire-your-24x7-team` pitch page — BUILT** — Full scrolling service pitch page with 14 components under `components/pitch/`. Sections: HookSection (live weekly stats from Convex), HowItWorksSection, TeamSection (Pokemon-style AgentStatCard with stat bars + live Convex data), TrustNudge, RecentWorkSection (tabbed questions/briefs/blogs from Convex), TimelineSection (4-week engagement), PricingSection ($200 POC + $1K growth), LeadCaptureSection (form → Make.com + TimeSlotPicker), SecondaryCtaSection (→ Launch Control), FooterTease. Floating dual CTA (Watch live + Get your AI team) appears after 600px scroll. All data live from Convex.
+- [x] **NavBar updated** — "Launch Control" link removed. "Build Your AI Team" replaced with "Hire Your 24/7 Team" pointing to `/hire-your-24x7-team`. Desktop + mobile.
+- [x] **AnnouncementRibbon updated** — Now visible on `/` and `/hire-your-24x7-team` (removed `/build-your-ai-team`). Links to `/launch-control`.
+- [x] **Sitemap updated** — `/hire-your-24x7-team` added (priority 0.9), `/build-your-ai-team` agent pages removed.
+- [x] **LC: FTUE Guided Tour (`GuidedTour.tsx`)** — Spotlight tour for first-time non-admin visitors. 5 desktop steps (scoreboard, tab-bar, pipeline, agent-sidebar, live-feed) + 4 mobile steps (scoreboard, tab-bar, pipeline, agent-strip). Uses `data-tour` attributes, spotlight overlay with CSS box-shadow cutout, tooltip placement logic with viewport clamping, localStorage `lc_tour_completed` flag. Auto-starts after 800ms for non-admin visitors. Scroll lock during tour.
+- [x] **LC: BlogsPanel component** — New tab panel showing published blog posts in Launch Control admin view. Uses `BlogPost` type from `lib/blog.ts` + `CATEGORY_LABELS` from new `lib/blog-labels.ts`. Category badges, links to blog URLs.
+- [x] **`lib/blog-labels.ts`** — Extracted `CATEGORY_LABELS` from `lib/blog.ts` into a separate client-safe module (no `fs` import). Used by BlogsPanel and other client components.
+- [x] **New blog category: "AI Tools"** — Added `ai-tools` to category labels.
+- [x] **New blog post: "Best AI Tools for Non-Technical Founders to Build MVPs"** — `app/blogs/ai-tools/ai-tools-non-technical-founders-mvp/page.tsx`. Published 2026-02-16.
+- [x] **Team hero image** — `public/agents/team-hero.png` added for pitch page TeamSection.
+- [x] **`.context/thelaunch-space-icp.md` created** — Full ICP profile doc (domain-expert founders, 35-50, $100K-$2M services businesses). Was previously a todo item.
+- [x] **Pitch page mobile layout + timeline cards fixed** — Responsive layout fixes for mobile pitch page.
+- [x] **LC: Live stats on pitch page** — HookSection shows "This week: X questions found, Y briefs written, Z blogs published" with real Convex data + "all time" comparison line.
+
+- [x] **LC: Sticky tabs + frozen headers** — Center column now height-constrained on desktop (`lg:max-h`, flex column). Tab bar sticky on mobile (below header). Questions/Communities tables have sticky `<thead>` + frozen first column with proper z-index layering. QuestionsPreview also gets sticky thead. (2026-02-16)
+- [x] **LC: Communities tab → table with reasoning** — Replaced card grid with sortable table: Community | Why It Was Picked | Relevant Qs | Last Scanned. New `lib/community-data.ts` with strategic reasons per subreddit. CommunitiesPreview also rebuilt as table. Mobile shows card view with reasons. (2026-02-16)
+- [x] **LC: Voice/addressing fix** — Dashboard copy changed from "your AI team" to "the AI team" / "the agents" across 6 files (CenterTabs, DailyTimeline, GuidedTour, HeaderBar). New center tagline in header: "This runs on my business daily. Yours will be trained on yours." (desktop only). PreviewGate/WaitlistCTA "your" language preserved (correctly addresses visitor). (2026-02-16)
+
 ## In Progress
 - Nothing currently in progress
 
@@ -151,7 +169,15 @@ Last updated: 2026-02-16
 - Daily Timeline times are hardcoded in `lib/launch-control-types.ts` — need Partha to verify they match actual VPS cron jobs.
 
 ## Recent Changes (latest first)
-1. Context docs audit — all 10 `.context/` files corrected against codebase (stale URLs, wrong component names, outdated statuses). AnnouncementRibbon fixed from "Coming Soon" to "Live Now" with `/launch-control` link. (2026-02-16)
+1. LC dashboard improvements — sticky tabs + frozen headers, communities table with reasoning, voice fix ("the AI team" not "your AI team") (2026-02-16)
+2. FTUE spotlight tour for Launch Control + live stats on pitch page (2026-02-16)
+2. Team hero image + pitch page mobile layout + timeline card fixes (2026-02-16)
+3. `/hire-your-24x7-team` pitch page built — 14 components, live Convex data, Pokemon stat cards, lead capture, pricing, timeline (2026-02-16)
+4. NavBar updated — "Launch Control" removed, "Hire Your 24/7 Team" added (2026-02-16)
+5. New blog: "Best AI Tools for Non-Technical Founders to Build MVPs" + new `ai-tools` category (2026-02-16)
+6. BlogsPanel + blog-labels.ts added to Launch Control (2026-02-16)
+7. ICP doc (`.context/thelaunch-space-icp.md`) created (2026-02-16)
+8. Context docs audit — all 10 `.context/` files corrected against codebase (stale URLs, wrong component names, outdated statuses). AnnouncementRibbon fixed from "Coming Soon" to "Live Now" with `/launch-control` link. (2026-02-16)
 2. Public preview tabs + scoreboard toggle — all 4 tabs visible to visitors with blur gate, briefs clickable, dynamic imports fix, new `getPublicBrief` Convex query (2026-02-15)
 2. Partha historical data backfill complete — 605 records in production Convex (554 questions, 14 briefs, 7 blogs, 30 activity) (2026-02-15)
 3. Production deployment — Clerk prod instance (5 CNAMEs), Convex prod (`curious-iguana-738`), Netlify env vars, VPS skills updated, deployed to main (2026-02-15)

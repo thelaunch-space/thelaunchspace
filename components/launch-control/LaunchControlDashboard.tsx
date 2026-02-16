@@ -42,7 +42,7 @@ export default function LaunchControlDashboard({ blogPosts }: LaunchControlDashb
           </aside>
 
           {/* Center — Tabbed content */}
-          <main className="min-w-0 pt-4">
+          <main className="min-w-0 pt-4 lg:max-h-[calc(100vh-52px)] lg:overflow-hidden lg:flex lg:flex-col">
             <CenterTabs
               weeklyStats={weeklyStats}
               allTimeStats={allTimeStats}

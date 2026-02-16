@@ -43,7 +43,7 @@ export default function RecentWorkSection({
   const [activeTab, setActiveTab] = useState<Tab>("questions");
 
   return (
-    <section>
+    <section id="real-work" className="scroll-mt-24">
       <motion.h2
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}

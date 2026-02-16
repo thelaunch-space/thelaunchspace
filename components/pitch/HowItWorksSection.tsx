@@ -11,7 +11,7 @@ const STEPS = [
 
 export default function HowItWorksSection() {
   return (
-    <section>
+    <section id="how-it-works" className="scroll-mt-24">
       <motion.h2
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -73,6 +73,26 @@ export default function HowItWorksSection() {
       >
         You wake up, there&apos;s a new blog post on your site targeting keywords your customers actually search for.
       </motion.p>
+
+      <motion.a
+        href="#team"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.6 }}
+        className="inline-flex items-center gap-1.5 mt-4 text-accent-blue hover:text-accent-blue/80 text-sm font-semibold transition-colors"
+      >
+        Meet the team behind it
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="mt-px">
+          <path
+            d="M3 8h10M9 4l4 4-4 4"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </motion.a>
     </section>
   );
 }

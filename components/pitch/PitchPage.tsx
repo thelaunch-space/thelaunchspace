@@ -71,7 +71,7 @@ export default function PitchPage() {
         {/* Trust nudge: after meeting the team */}
         <div className="max-w-6xl mx-auto px-5 md:px-10">
           <TrustNudge
-            message={`"I\u2019m my own first customer \u2014 these agents run thelaunch.space every day."`}
+            message={`"I'm my own first customer — these agents run thelaunch.space every day."`}
             linkText="Watch them work live"
             linkHref="/launch-control"
             arrow="swoop"
@@ -85,11 +85,32 @@ export default function PitchPage() {
         {/* Trust nudge: after seeing real work */}
         <div className="max-w-6xl mx-auto px-5 md:px-10">
           <TrustNudge
-            message="Not a demo. That\u2019s real output from this week."
+            message="Not a demo. That's real output from this week."
             linkText="Check their progress"
             linkHref="/launch-control"
             arrow="bounce"
           />
+        </div>
+
+        {/* Inline conversion CTA — first ask after proof */}
+        <div className="max-w-6xl mx-auto px-5 md:px-10">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.5 }}
+            className="text-center py-4"
+          >
+            <p className="font-display tracking-[-0.02em] text-xl md:text-2xl text-text-primary">
+              Ready to put them to work for you?
+            </p>
+            <a
+              href="#lead-capture"
+              className="inline-block mt-4 rounded-xl bg-gradient-to-r from-accent-blue to-accent-purple px-6 py-3 text-sm font-semibold text-white shadow-cta hover:-translate-y-0.5 hover:shadow-cta-hover transition-all duration-300"
+            >
+              Get my AI team &rarr;
+            </a>
+          </motion.div>
         </div>
 
         <div className="max-w-6xl mx-auto px-5 md:px-10">
@@ -138,7 +159,7 @@ export default function PitchPage() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.97 }}
         >
-          Get your AI team
+          Get my AI team
         </motion.a>
       </motion.div>
     </div>

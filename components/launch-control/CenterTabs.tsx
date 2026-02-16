@@ -21,7 +21,7 @@ const MeetingsPanel = dynamic(() => import("./MeetingsPanel"));
 type Tab = "overview" | "blogs" | "communities" | "questions" | "briefs" | "meetings";
 
 const TAB_DESCRIPTIONS: Record<Tab, string> = {
-  overview: "A summary of what your AI team produced",
+  overview: "A summary of what the AI team produced this week",
   blogs: "SEO blogs Vyasa, The Writer published from Vibhishana\u2019s research briefs",
   communities: "The communities Vibhishana, The Scout is monitoring",
   questions: "Customer questions Vibhishana, The Scout found across Reddit and forums",
@@ -49,9 +49,9 @@ export default function CenterTabs({ weeklyStats, allTimeStats, blogPosts }: Cen
   const [activeTab, setActiveTab] = useState<Tab>("overview");
 
   return (
-    <div>
+    <div className="lg:flex lg:flex-col lg:flex-1 lg:min-h-0">
       {/* Tab bar */}
-      <div data-tour="tab-bar" className="flex items-center gap-1 mb-4 overflow-x-auto scrollbar-hide -mx-1 px-1">
+      <div data-tour="tab-bar" className="sticky top-[68px] md:top-[46px] lg:static z-10 bg-background py-2 -my-2 flex items-center gap-1 mb-4 overflow-x-auto scrollbar-hide -mx-1 px-1 shrink-0">
         {TABS.filter((t) => t.value !== "meetings" || isSignedIn).map((tab) => (
           <button
             key={tab.value}
@@ -69,39 +69,47 @@ export default function CenterTabs({ weeklyStats, allTimeStats, blogPosts }: Cen
 
       {/* Tab description */}
       {TAB_DESCRIPTIONS[activeTab] && (
-        <p className="text-xs text-text-secondary mb-3">{TAB_DESCRIPTIONS[activeTab]}</p>
+        <p className="text-xs text-text-secondary mb-3 shrink-0">{TAB_DESCRIPTIONS[activeTab]}</p>
       )}
 
       {/* Tab content */}
       {activeTab === "overview" && (
-        <div className="space-y-5">
-          <Scoreboard weeklyStats={weeklyStats} allTimeStats={allTimeStats} />
-          <DailyTimeline />
+        <div className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto lg:scrollbar-hide">
+          <div className="space-y-5">
+            <Scoreboard weeklyStats={weeklyStats} allTimeStats={allTimeStats} />
+            <DailyTimeline />
+          </div>
         </div>
       )}
       {activeTab === "blogs" && (
-        <div className="rounded-2xl border border-border-color/40 bg-surface overflow-hidden">
-          <BlogsPanel blogPosts={blogPosts} />
+        <div className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto lg:scrollbar-hide">
+          <div className="rounded-2xl border border-border-color/40 bg-surface overflow-hidden">
+            <BlogsPanel blogPosts={blogPosts} />
+          </div>
         </div>
       )}
       {activeTab === "questions" && (
-        <div className="rounded-2xl border border-border-color/40 bg-surface overflow-hidden">
+        <div className="rounded-2xl border border-border-color/40 bg-surface overflow-hidden lg:flex lg:flex-col lg:flex-1 lg:min-h-0">
           {isSignedIn ? <QuestionsTable /> : <QuestionsPreview />}
         </div>
       )}
       {activeTab === "briefs" && (
-        <div className="rounded-2xl border border-border-color/40 bg-surface overflow-hidden">
-          {isSignedIn ? <BriefsPanel /> : <BriefsPreview />}
+        <div className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto lg:scrollbar-hide">
+          <div className="rounded-2xl border border-border-color/40 bg-surface overflow-hidden">
+            {isSignedIn ? <BriefsPanel /> : <BriefsPreview />}
+          </div>
         </div>
       )}
       {activeTab === "communities" && (
-        <div className="rounded-2xl border border-border-color/40 bg-surface overflow-hidden">
+        <div className="rounded-2xl border border-border-color/40 bg-surface overflow-hidden lg:flex lg:flex-col lg:flex-1 lg:min-h-0">
           {isSignedIn ? <CommunitiesPanel /> : <CommunitiesPreview />}
         </div>
       )}
       {activeTab === "meetings" && isSignedIn && (
-        <div className="rounded-2xl border border-border-color/40 bg-surface overflow-hidden">
-          <MeetingsPanel />
+        <div className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto lg:scrollbar-hide">
+          <div className="rounded-2xl border border-border-color/40 bg-surface overflow-hidden">
+            <MeetingsPanel />
+          </div>
         </div>
       )}
     </div>

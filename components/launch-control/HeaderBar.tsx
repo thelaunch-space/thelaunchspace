@@ -31,6 +31,11 @@ export default function HeaderBar() {
           </div>
         </div>
 
+        {/* Center: Voice tagline — desktop only */}
+        <p className="hidden lg:block text-[11px] text-text-secondary font-medium italic tracking-wide">
+          These agents run on my business daily. Yours will be trained on yours.
+        </p>
+
         {/* Right: Date + Stats + Auth */}
         <div className="flex items-center gap-3 shrink-0">
           <span className="hidden sm:block text-xs text-text-secondary font-mono">{today}</span>

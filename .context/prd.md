@@ -1,6 +1,6 @@
 # Product Requirements — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-16
+Last updated: 2026-02-16 (v2 — pitch page, FTUE tour, nav changes)
 
 ## Core Concept
 "Tweet-sized" landing page — deliver the full value prop instantly, no scrolling. Reflects agency ethos: cut bureaucracy, deliver fast. Also hosts SEO-optimized blog posts for programmatic content marketing.
@@ -45,9 +45,20 @@ Ambitious founders and product leaders who prioritize execution and clarity over
 - Light "Quiet Luxury" theme — off-white base, surface elevation, layered shadows, noise grain texture, blue/purple accents
 - Google Fonts: Inter (body), Cormorant Garamond (headings), JetBrains Mono (labels)
 
+### Hire Your 24/7 Team — Service Pitch Page (LIVE)
+- Full scrolling ICP-focused pitch page at `/hire-your-24x7-team`
+- **The front door.** LinkedIn/X posts → this page → lead capture or Launch Control (proof).
+- 14 components under `components/pitch/`
+- **Live data from Convex:** Weekly stats, agent summaries, recent questions/briefs/blogs — all real-time via `useQuery()`
+- **Sections:** Hook (headline + live stats) → How It Works (4-step daily workflow) → Meet Your Team (3 Pokemon-style stat cards) → Trust Nudge → Recent Work (tabbed Q/B/B from Convex) → 4-Week Timeline → Pricing ($200 POC + $1K Growth) → Lead Capture (form + time slots) → Secondary CTA (→ Launch Control) → Footer Tease
+- **Agent cards:** Parthasarathi "The Manager", Vibhishana "The Scout", Vyasa "The Writer" — with stat bars, skills, weekly feed
+- **Floating dual CTA** after 600px scroll: "Watch live" + "Get your AI team"
+- Full brainstorm: `.context/hire-your-24x7-team.md`
+
 ### Site-Wide Navigation (NavBar)
-- Rendered in root layout, visible on ALL pages
-- Left: Logo linked to `/` — Right: "Blog" link, "Build Your AI Team" link, "Launch Control" link, X icon, LinkedIn icon
+- Rendered in root layout, visible on ALL pages except `/launch-control`
+- Left: Logo linked to `/` — Right: "Blog" link, "Hire Your 24/7 Team" link, X icon, LinkedIn icon
+- **No "Launch Control" link** — LC is discoverable only via pitch page secondary CTA or direct URL
 - Active link highlighting via `usePathname()`
 - Scroll-aware CTA on blog pages: "Get Your Launch Roadmap" button appears in navbar after 100px scroll (rounded-xl, matches navbar radius). On mobile, replaces social icons; on desktop, coexists.
 
@@ -59,6 +70,8 @@ Ambitious founders and product leaders who prioritize execution and clarity over
 - Blog CTAs link to `/?cta=open` (directly opens lead capture modal)
 - Human reviews and merges every post before it goes live
 - Category index pages at `/blogs/<topic>/` show filtered post listings per topic
+- **Categories:** startup-mvps (6 posts), founder-advice (1 post), ai-tools (1 post)
+- `lib/blog-labels.ts` — client-safe category labels (extracted from `lib/blog.ts` to avoid `fs` import in client components)
 
 ### Build Your AI Team Section
 - Showcase page at `/build-your-ai-team` presenting all 5 AI agents as a team
@@ -84,6 +97,9 @@ Ambitious founders and product leaders who prioritize execution and clarity over
 - **Public view (DONE):** All 4 tabs visible (Overview, Communities, Questions, Briefs) with preview components — top rows of real data with blur overlay + waitlist CTA for non-authenticated visitors. Scoreboard with "This Week"/"All Time" toggle, daily timeline, live activity feed.
 - **Admin view (DONE):** Full brief content (markdown rendered as HTML), full activity log, SEO metadata, sortable/scrollable tables.
 - **Real-time:** Convex WebSocket subscriptions — instant UI updates when agents push data (no polling, no refresh)
+- **FTUE Guided Tour (DONE):** Spotlight tour for first-time non-admin visitors — 5 desktop steps / 4 mobile steps highlighting scoreboard, tabs, pipeline, agents, live feed. localStorage tracking.
+- **BlogsPanel (DONE):** Admin tab showing published blog posts with category badges.
+- **Navigation:** Removed from navbar. Discoverable via pitch page secondary CTA ("Watch them work live →") or direct URL only.
 - **Dual purpose:** Internal review tool (Krishna reads briefs without SSH) + marketing asset (audience watches agents work live)
 - Full spec: `.context/launch-control-frontend-spec.md` and `.context/live-dashboard-convex.md`
 

@@ -126,7 +126,7 @@ export const PRICING_TIERS: PricingTier[] = [
       "Agents learn your brand, ICP, and voice",
     ],
     highlight: true,
-    cta: "Start for $99/mo",
+    cta: "Start my team — $99/mo",
   },
   {
     name: "Growth Partnership",

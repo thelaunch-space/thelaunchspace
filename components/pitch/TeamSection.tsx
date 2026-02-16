@@ -15,7 +15,7 @@ export default function TeamSection({ agentStatuses, weeklySummaries }: TeamSect
   const comingSoonAgents = PITCH_AGENTS.filter((pa) => pa.comingSoon);
 
   return (
-    <section>
+    <section id="team" className="scroll-mt-24">
       <motion.h2
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -80,6 +80,30 @@ export default function TeamSection({ agentStatuses, weeklySummaries }: TeamSect
           );
         })}
       </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.2 }}
+        className="mt-6"
+      >
+        <a
+          href="#real-work"
+          className="inline-flex items-center gap-2 rounded-xl border-2 border-accent-blue px-5 py-2.5 text-sm font-semibold text-accent-blue hover:bg-accent-blue hover:text-white transition-all duration-300 hover:-translate-y-0.5"
+        >
+          See their real output this week
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="mt-px">
+            <path
+              d="M3 8h10M9 4l4 4-4 4"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </a>
+      </motion.div>
     </section>
   );
 }
