@@ -36,6 +36,7 @@ export default function LaunchControlDashboard() {
 
           {/* Center — Tabbed content */}
           <main className="min-w-0 pt-4">
+            <p className="text-xs text-text-secondary mb-2">Your AI team runs this schedule every day, automatically.</p>
             <CenterTabs
               weeklyStats={weeklyStats}
               allTimeStats={allTimeStats}
@@ -46,6 +47,7 @@ export default function LaunchControlDashboard() {
           <aside className="hidden lg:block">
             <div className="sticky top-[52px] pt-4 flex flex-col gap-3 max-h-[calc(100vh-52px)]">
               <div className="flex-1 min-h-0">
+                <p className="text-xs text-text-secondary mb-1">Real-time log of what the agents are doing right now.</p>
                 <LiveFeed feed={recentFeed} />
               </div>
               <WaitlistCTA />
@@ -55,6 +57,7 @@ export default function LaunchControlDashboard() {
 
         {/* Mobile: Live Feed + CTA stacked below the grid */}
         <div className="lg:hidden mt-4 space-y-3">
+          <p className="text-xs text-text-secondary mb-1">Real-time log of what the agents are doing right now.</p>
           <LiveFeed feed={recentFeed} />
           <WaitlistCTA />
         </div>

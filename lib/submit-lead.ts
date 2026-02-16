@@ -1,8 +1,14 @@
 interface LeadPayload {
-  project_description: string;
-  email: string | null;
-  whatsapp_number: string | null;
-  prefer_whatsapp: boolean;
+  // Original modal fields
+  project_description?: string;
+  email?: string | null;
+  whatsapp_number?: string | null;
+  prefer_whatsapp?: boolean;
+  // Pitch page fields
+  company_name?: string;
+  website_url?: string;
+  content_challenge?: string;
+  source?: string;
 }
 
 interface SubmitResponse {

@@ -1,6 +1,6 @@
 # Design System v2 — thelaunch.space
 
-Last updated: 2026-02-14
+Last updated: 2026-02-16
 
 ---
 
@@ -32,8 +32,9 @@ Last updated: 2026-02-14
 | `shadow-card-hover` | `0 2px 4px rgba(15,23,42,0.08), 0 8px 24px rgba(50,50,93,0.12)` | Hovered cards |
 | `shadow-nav` | `0 1px 0 rgba(15,23,42,0.04)` | NavBar at rest |
 | `shadow-nav-scroll` | `0 1px 2px rgba(15,23,42,0.06), 0 8px 24px rgba(50,50,93,0.06)` | NavBar after scroll |
-| `shadow-cta` | `0 1px 2px rgba(0,61,165,0.2), 0 12px 32px rgba(0,61,165,0.18)` | CTA buttons (brand-blue tinted) |
-| `shadow-cta-hover` | `0 2px 4px rgba(0,61,165,0.25), 0 16px 40px rgba(0,61,165,0.22)` | CTA buttons on hover |
+| `shadow-slab` | `0 1px 2px rgba(15,23,42,0.04), 0 2px 8px rgba(50,50,93,0.06), 0 8px 24px rgba(50,50,93,0.04)` | NavBar container, dropdown menus |
+| `shadow-cta` | `0 2px 4px rgba(0,61,165,0.25), 0 8px 20px rgba(0,61,165,0.2), 0 20px 48px rgba(0,61,165,0.15)` | CTA buttons (brand-blue tinted) |
+| `shadow-cta-hover` | `0 4px 8px rgba(0,61,165,0.3), 0 12px 28px rgba(0,61,165,0.25), 0 28px 56px rgba(0,61,165,0.18)` | CTA buttons on hover |
 
 ### Texture & Atmosphere
 
@@ -209,9 +210,12 @@ Composition: Full body visible from head to feet. Character centered in frame. H
 ## 5. Avatar Usage Guidelines
 
 ### On the Website
-- **Agent index page** (`/my-ai-employees`): Show all 5 avatars at card size (~280px wide). Current fallback is initials — replace with these renders.
-- **Agent detail pages** (`/my-ai-employees/[agent]`): Hero-size avatar (~400-500px) alongside agent name and role.
-- **File naming**: Save as `public/agents/{agent-id}.png` (e.g., `public/agents/parthasarathi.png`). These paths are already referenced in `lib/agents.ts` → `avatarPath`.
+- **Agent index page** (`/build-your-ai-team`): Show all 5 avatars at card size (~280px wide). Current fallback is initials — replace with these renders.
+- **Agent detail pages** (`/build-your-ai-team/[agent]`): Hero-size avatar (~400-500px) alongside agent name and role.
+- **File naming**: Two avatar directories exist:
+  - `public/agents/{agent-id}.png` — referenced by `lib/agents.ts` → `avatarPath` (used by AgentCard, detail pages)
+  - `public/agent-avatars/{agent-id}.png` — referenced by LiveFeed in Launch Control dashboard
+  - Both directories contain the same 5 agent PNGs. Keep both in sync when updating avatars.
 - **Background**: All avatars should be on transparent or white background. The drop shadow in the prompt ensures they look "placed" on the white card surfaces.
 
 ### For Social Media

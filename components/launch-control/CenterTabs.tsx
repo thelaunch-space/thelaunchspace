@@ -14,14 +14,16 @@ const QuestionsTable = dynamic(() => import("./QuestionsTable"));
 const QuestionsPreview = dynamic(() => import("./QuestionsPreview"));
 const BriefsPanel = dynamic(() => import("./BriefsPanel"));
 const BriefsPreview = dynamic(() => import("./BriefsPreview"));
+const MeetingsPanel = dynamic(() => import("./MeetingsPanel"));
 
-type Tab = "overview" | "communities" | "questions" | "briefs";
+type Tab = "overview" | "communities" | "questions" | "briefs" | "meetings";
 
 const TABS: { label: string; value: Tab }[] = [
   { label: "Overview", value: "overview" },
   { label: "Communities", value: "communities" },
   { label: "Questions", value: "questions" },
   { label: "Briefs", value: "briefs" },
+  { label: "Meetings", value: "meetings" },
 ];
 
 interface CenterTabsProps {
@@ -37,7 +39,7 @@ export default function CenterTabs({ weeklyStats, allTimeStats }: CenterTabsProp
     <div>
       {/* Tab bar */}
       <div className="flex items-center gap-1 mb-4 overflow-x-auto scrollbar-hide -mx-1 px-1">
-        {TABS.map((tab) => (
+        {TABS.filter((t) => t.value !== "meetings" || isSignedIn).map((tab) => (
           <button
             key={tab.value}
             onClick={() => setActiveTab(tab.value)}
@@ -72,6 +74,11 @@ export default function CenterTabs({ weeklyStats, allTimeStats }: CenterTabsProp
       {activeTab === "communities" && (
         <div className="rounded-2xl border border-border-color/40 bg-surface overflow-hidden">
           {isSignedIn ? <CommunitiesPanel /> : <CommunitiesPreview />}
+        </div>
+      )}
+      {activeTab === "meetings" && isSignedIn && (
+        <div className="rounded-2xl border border-border-color/40 bg-surface overflow-hidden">
+          <MeetingsPanel />
         </div>
       )}
     </div>

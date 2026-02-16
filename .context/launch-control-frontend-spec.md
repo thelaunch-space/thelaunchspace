@@ -2,7 +2,7 @@
 
 Status: LIVE IN PRODUCTION
 Created: 2026-02-15
-Last updated: 2026-02-15 (v3 — public preview tabs, scoreboard toggle, clickable briefs)
+Last updated: 2026-02-16 (v4 — audit corrections: component names, schedule, preview row counts)
 
 ---
 
@@ -14,7 +14,7 @@ Launch Control is a **public storefront window**, not an admin panel. Visitors f
 
 **One rule:** Everything on the public view answers one question: **"Is this real?"**
 
-**ICP context:** Domain-expert founders (35-50), running $100K-$2M services businesses. They think in dollars and time. They're skeptical but AI-curious. They need to see: (1) this is real, (2) these agents produce tangible output, (3) this would save them money. See `.context/thelaunch-space-icp.md` for full profile.
+**ICP context:** Domain-expert founders (35-50), running $100K-$2M services businesses. They think in dollars and time. They're skeptical but AI-curious. They need to see: (1) this is real, (2) these agents produce tangible output, (3) this would save them money.
 
 ---
 
@@ -292,14 +292,9 @@ TODAY — Saturday, Feb 15
 
 This gives visitors a real-time sense of the pipeline moving. The ICP sees: "These agents have a daily rhythm. This is a system, not a hack."
 
-#### Section 3: Footer CTA
+#### CTA (Inline in Live Feed Column)
 
-```
-"Want an AI team like this? Let's talk."
-[Get Your Launch Roadmap →]
-```
-
-Links to `/?cta=open` (opens lead capture modal on homepage).
+CTA moved inline into the live feed column (not a separate footer section). WaitlistCTA component handles conversion.
 
 ### Tab Bar (Visible to Everyone)
 
@@ -476,17 +471,22 @@ This lets Krishna read the full brief AND see all the strategic context without 
 - **Paused/Coming Soon (red):** Agent marked as paused, or hasn't reported in 24+ hours, or is a "coming soon" agent (Sanjaya, Valmiki).
 
 ### Agent Schedules (for "Today's Timeline" + expanded panel)
+
+As implemented in `lib/launch-control-types.ts` — 11 scheduled items:
+
 | Agent | Schedule (IST) | Task |
 |-------|---------------|------|
-| Vibhishana | 9:00 AM | Reddit scan (~50-100 questions) |
-| Vibhishana | 11:00 AM | SEO Brief #1 |
-| Vibhishana | 2:00 PM | SEO Brief #2 |
-| Vibhishana | 5:00 PM | SEO Brief #3 |
-| Vyasa | 4:00 PM | Blog writing |
-| Parthasarathi | 7:00 PM | Due diligence review |
-| Parthasarathi | Continuous | Health checks, orchestration |
-
-For Parthasarathi (no strict fixed schedule beyond 7 PM): show "Last active X ago" instead of countdown.
+| Parthasarathi | 8:00 AM | Morning health check |
+| Vibhishana | 9:00 AM | Reddit community scan |
+| Vibhishana | 11:00 AM | First research brief |
+| Parthasarathi | 1:00 PM | Midday check & task routing |
+| Vibhishana | 2:00 PM | Second research brief |
+| Parthasarathi | 3:00 PM | Pre-delivery check |
+| Vyasa | 3:30 PM | Blog writing begins |
+| Vibhishana | 5:00 PM | Third research brief |
+| Vyasa | 5:30 PM | Blog published via PR |
+| Vibhishana | 6:00 PM | Evening pattern report |
+| Parthasarathi | 7:00 PM | Due diligence report |
 
 ---
 
@@ -594,47 +594,43 @@ Full 3-column layout as designed. All columns visible simultaneously.
 
 ---
 
-## Component Breakdown
+## Component Breakdown (As Implemented)
 
 ```
 app/launch-control/
-├── page.tsx                           — Server component, route entry
-└── layout.tsx                         — Optional layout wrapper
+├── page.tsx                           — Server component, route entry + metadata
 
-components/launch-control/
-├── LaunchControlPage.tsx              — Main client component (3-column orchestrator)
-├── HeaderBar.tsx                      — Top bar: title, stats, date, login
+components/launch-control/             — 22 components total
+├── LaunchControlDashboard.tsx         — Main client component (3-column CSS Grid orchestrator, top-level useQuery hooks)
+├── HeaderBar.tsx                      — Top bar: title, stat pills, date, Clerk UserButton
 │
-├── AgentSidebar.tsx                   — Left column: agent list
-├── AgentRow.tsx                       — Single agent row in sidebar (avatar, dot, name)
-├── AgentExpandedPanel.tsx             — Click-to-open agent detail (modal/panel)
+├── AgentSidebar.tsx                   — Left column: agent list (avatar + dot + name + role per row, click-to-expand)
+├── AgentExpandedPanel.tsx             — Slide-out agent detail (portrait with CSS mask-image, stats, schedule)
+├── AgentAvatarStrip.tsx               — Mobile-only horizontal avatar scroll strip
 │
-├── CenterContent.tsx                  — Center column wrapper (public vs admin routing)
-├── Scoreboard.tsx                     — Impact metrics with count-up animation
-├── ScoreboardNumber.tsx               — Single animated number with label
-├── DailyTimeline.tsx                  — Today's pipeline chronological view
+├── Scoreboard.tsx                     — Impact metrics with count-up animation + "This Week"/"All Time" toggle
+├── DailyTimeline.tsx                  — Today's pipeline chronological view (11 scheduled items from lib/launch-control-types.ts)
 ├── TimelineItem.tsx                   — Single timeline entry (completed/active/upcoming)
 │
-├── CenterTabs.tsx                     — Tab bar (Overview | Communities | Questions | Briefs) — visible to all visitors
-├── CommunitiesPanel.tsx               — Admin: subreddit breakdown view
+├── AdminTabs.tsx                      — Admin-only tab management
+├── CenterTabs.tsx                     — Tab bar (Overview | Communities | Questions | Briefs) — visible to all visitors, preview vs full based on auth
+├── CommunitiesPanel.tsx               — Admin: subreddit breakdown view (communityBreakdown query)
 ├── CommunitiesPreview.tsx             — Public: placeholder communities with blur overlay
-├── QuestionsTable.tsx                 — Admin: scrollable table with frozen header + left column
-├── QuestionsPreview.tsx               — Public: top rows with clickable Reddit links + blur overlay
+├── QuestionsTable.tsx                 — Admin: scrollable table with frozen header + left column, mobile card view
+├── QuestionsPreview.tsx               — Public: top 3 rows with clickable Reddit links + blur overlay
 ├── BriefsPanel.tsx                    — Admin: brief cards list with filters
-├── BriefsPreview.tsx                  — Public: top 3 clickable briefs + blur overlay + public reader modal
+├── BriefsPreview.tsx                  — Public: top 3 clickable briefs + blur overlay + public reader modal (getPublicBrief query)
 ├── PreviewGate.tsx                    — Blur overlay wrapper with waitlist CTA form (shared by all preview components)
 ├── BriefCard.tsx                      — Individual brief card (title, status, metadata)
-├── BriefReaderModal.tsx               — Admin: near-fullscreen markdown reader with SEO metadata sidebar
+├── BriefReaderModal.tsx               — Near-fullscreen markdown reader with SEO metadata sidebar
 │
-├── LiveFeed.tsx                       — Right column: real-time activity log
-├── LiveFeedEntry.tsx                  — Single feed entry
-├── LiveFeedFilters.tsx                — All/Tasks/Milestones filter tabs
+├── LiveFeed.tsx                       — Right column: real-time activity log with filter tabs (All/Tasks/Milestones) + inline feed entries
 │
 ├── StatusDot.tsx                      — Green/orange/red animated dot
-├── StatusBadge.tsx                    — Status tag badges (pending_review, approved, etc.)
-├── CountdownTimer.tsx                 — Live countdown to next agent run
-└── FooterCTA.tsx                      — "Want an AI team like this?" CTA
+└── WaitlistCTA.tsx                    — Email gate: krishna@thelaunch.space reveals Clerk auth, others → lead capture
 ```
+
+**Note:** Feed item rendering, feed filters, status badges, and CTA are all handled inline within their parent components (LiveFeed, BriefCard, etc.) rather than as separate component files.
 
 ---
 
@@ -681,8 +677,8 @@ components/launch-control/
 
 | Data | Public? | Notes |
 |------|---------|-------|
-| Questions (titles, subreddits, URLs) | Top 6 rows | Via `listRecent({limit: 6})`. Titles link to Reddit. |
-| Brief metadata (titles, status) | Top 6 rows | Via `listMetadata({limit: 6})`. |
+| Questions (titles, subreddits, URLs) | Top 3 rows | Via QuestionsPreview. Titles link to Reddit. |
+| Brief metadata (titles, status) | Top 3 rows | Via BriefsPreview. |
 | Brief content (markdown) | Top 3 only | Via `getPublicBrief`. Strips: competitiveGap, launchSpaceAngle, finalKeywords, longTailKeywords, icpProblem, suggestedStructure, researchNotes, rankingNotes, sourceUrls. |
 | Communities (subreddits monitored) | Placeholder only | CommunitiesPreview uses hardcoded fake subreddit names. Real monitored subreddits are admin-only. |
 | Agent statuses | Yes | Public query. |

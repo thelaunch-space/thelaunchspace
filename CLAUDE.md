@@ -36,6 +36,9 @@ Reference `.context/` files when needed:
 | architecture.md | Understanding component structure, data flow |
 | feedback-and-bugs.md | Logging bugs, design feedback, and issues from Krishna |
 | design-system-v2.md | Brand colors, typography, shadows, AI employee character designs, NBP avatar prompts |
+| hire-your-24x7-team.md | **START HERE** — Full brainstorm for `/hire-your-24x7-team` service pitch page. Pricing ($200 POC), 4-week timeline, Pokemon stat cards for agents, Launch Control hidden behind secondary CTA. |
+| launch-control-frontend-spec.md | Full frontend spec for the LC dashboard (what's built and live) |
+| live-dashboard-convex.md | LC backend architecture, Convex schema, build progress, agent skill files |
 
 ## Key Patterns
 - **No scrolling:** All primary content must be above the fold on all devices. This is non-negotiable.
@@ -67,3 +70,5 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 IMPORTANT: After ANY code change, update relevant .context/ docs to keep this system alive and accurate.
 
 IMPORTANT: When Krishna reports bugs, design feedback, or issues during a session, ALWAYS log them to `.context/feedback-and-bugs.md` — include the date, description, root cause (if known), fix status, and affected files. This is the living record of all feedback.
+
+IMPORTANT: When brainstorming or making decisions with Krishna, do NOT leave open questions in docs for "next session." Use the AskUserQuestion tool to ask Krishna immediately. Only mark something as an open question if Krishna explicitly says he doesn't know the answer yet and needs to think about it.

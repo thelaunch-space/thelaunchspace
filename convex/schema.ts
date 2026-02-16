@@ -95,6 +95,25 @@ export default defineSchema({
     .index("by_agentName", ["agentName"])
     .index("by_createdAt", ["createdAt"]),
 
+  // Pitch page meeting bookings
+  pitchBookings: defineTable({
+    companyName: v.string(),
+    websiteUrl: v.string(),
+    email: v.string(),
+    contentChallenge: v.optional(v.string()),
+    whatsappNumber: v.optional(v.string()),
+    whatsappCountryCode: v.optional(v.string()),
+    whatsappConsent: v.boolean(),
+    selectedDate: v.string(),        // ISO date e.g. "2026-02-17"
+    selectedTimeIST: v.string(),     // e.g. "11:00", "15:00"
+    isCustomTime: v.boolean(),
+    source: v.string(),              // "pitch-page"
+    createdAt: v.string(),           // ISO timestamp
+    status: v.string(),              // "new" | "contacted" | "scheduled" | "completed"
+  })
+    .index("by_createdAt", ["createdAt"])
+    .index("by_status", ["status"]),
+
   // All agents — milestone activity log
   agentActivity: defineTable({
     agentName: v.string(),          // "Parthasarathi" | "Vibhishana" | "Vyasa"

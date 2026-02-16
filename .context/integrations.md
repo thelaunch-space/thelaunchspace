@@ -1,6 +1,6 @@
 # Integrations — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-15
+Last updated: 2026-02-16
 
 ## Make.com Webhook (Active)
 - **Purpose:** Lead capture → CRM pipeline
@@ -54,9 +54,9 @@ Last updated: 2026-02-15
 
 ## Convex (Active — Launch Control Backend)
 - **Purpose:** Real-time database for Launch Control dashboard — stores agent activity, scanned questions, briefs, blog metadata
-- **Deployment:** `impartial-pelican-672` (dev). Production deployment TBD.
-- **Client URL:** `https://impartial-pelican-672.convex.cloud`
-- **HTTP Actions URL:** `https://impartial-pelican-672.convex.site`
+- **Deployments:** Dev: `impartial-pelican-672` / Production: `curious-iguana-738`
+- **Client URL (prod):** `https://curious-iguana-738.convex.cloud`
+- **HTTP Actions URL (prod):** `https://curious-iguana-738.convex.site`
 - **Env vars (`.env.local`):** `NEXT_PUBLIC_CONVEX_URL`, `CONVEX_DEPLOYMENT`, `NEXT_PUBLIC_CONVEX_SITE_URL`, `CONVEX_DEPLOY_KEY`
 - **Env vars (Convex Dashboard):** `AGENT_API_KEY` (shared secret for HTTP endpoint auth), `CLERK_ISSUER_URL` (Clerk identity provider)
 - **Schema:** 4 tables (questions, briefs, blogs, agentActivity) with 11 indexes
@@ -69,14 +69,15 @@ Last updated: 2026-02-15
 
 ## Clerk (Active — Authentication)
 - **Purpose:** Authentication for Launch Control admin features (Krishna's login only)
-- **Instance (dev):** `famous-krill-26.clerk.accounts.dev` — separate from production instance (TBD)
+- **Instance (dev):** `famous-krill-26.clerk.accounts.dev`
+- **Instance (prod):** Production instance created with `thelaunch.space` domain, 5 CNAME records verified (clerk, accounts, clk._domainkey, clk2._domainkey, mail)
 - **Env vars (`.env.local`):** `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`
 - **Middleware:** `middleware.ts` at project root — permissive `clerkMiddleware()`, does NOT block any route
 - **Integration with Convex:** `ConvexProviderWithClerk` passes Clerk auth tokens to Convex for admin query validation
 - **Admin queries:** Check `ctx.auth.getUserIdentity()` in Convex — throw if not authenticated
 - **No route protection:** All existing pages work without login. Auth is only checked inside admin query functions.
 - **Waitlist gate (UI hack):** No public "Sign in" button. `WaitlistCTA.tsx` shows email input; only `krishna@thelaunch.space` reveals Clerk SignIn/SignUp. Other emails captured as leads via `/api/lead`. This avoids Clerk Pro ($25/mo) allowlist requirement.
-- **Dev vs Prod:** Dev and prod are separate Clerk instances with separate user databases. Dev uses `pk_test_`/`sk_test_` keys, prod needs `pk_live_`/`sk_live_` keys. Must create prod instance and re-register when deploying.
+- **Dev vs Prod:** Dev and prod are separate Clerk instances with separate user databases. Dev uses `pk_test_`/`sk_test_` keys, prod uses `pk_live_`/`sk_live_` keys. Both instances active and deployed.
 
 ## GitHub (Active)
 - **Repo:** `thelaunch-space/thelaunch-space-tweet-sized-landing-page`

@@ -27,7 +27,8 @@
       "Bash(lsof:*)",
       "Bash(npx convex dev:*)",
       "Bash(npx convex run:*)",
-      "Bash(npx convex data questions:*)"
+      "Bash(npx convex data questions:*)",
+      "Bash(find:*)"
     ]
   }
 }

@@ -1,6 +1,6 @@
 # Architecture — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-15
+Last updated: 2026-02-16
 
 ## Overview
 Next.js 14 App Router application. Server-side rendered for SEO/crawlability. Landing page content rendered as a client component for interactivity. Blog posts are static Server Components created by an AI agent via GitHub PRs. "Build Your AI Team" section showcases 5 AI agents with index + detail pages. Webhook proxy via API route (server-side, no secrets exposed to browser). Hosted on Netlify. Google Analytics (GA4) tracking via `next/script`. **Convex** real-time database for Launch Control dashboard (agent activity, questions, briefs, blogs). **Clerk** authentication for admin access. Entire app wrapped in ConvexProviderWithClerk + ClerkProvider.
@@ -53,26 +53,29 @@ components/
 ├── ui/
 │   ├── dock.tsx            # "use client" — macOS-style magnification dock
 │   └── sparkles.tsx        # "use client" — tsparticles background
-└── launch-control/         # 20 components for the Launch Control dashboard
+└── launch-control/         # 22 components for the Launch Control dashboard
     ├── LaunchControlDashboard.tsx  # Master orchestrator. CSS Grid 3-col. Top-level useQuery hooks
     ├── HeaderBar.tsx               # Sticky top bar: "Launch Control" title, stat pills, date, Clerk UserButton
     ├── AgentSidebar.tsx            # Left column: 5 agents with avatars, status dots, click-to-expand
     ├── AgentExpandedPanel.tsx      # Slide-out agent detail (portrait with CSS mask-image feathering, stats, schedule)
     ├── AgentAvatarStrip.tsx        # Mobile-only horizontal avatar scroll strip
     ├── StatusDot.tsx               # Animated status dot (green pulse / orange static / red blink / gray)
-    ├── CenterTabs.tsx              # Tabbed center: "Overview" (public) + Communities/Questions/Briefs (admin-only)
-    ├── Scoreboard.tsx              # Count-up stat cards (questions/briefs/blogs/hours/cost saved)
-    ├── DailyTimeline.tsx           # Today's pipeline chronological view
+    ├── AdminTabs.tsx               # Admin-only tab management for Communities/Questions/Briefs (when signed in)
+    ├── CenterTabs.tsx              # Tabbed center: "Overview" + Communities/Questions/Briefs (all visible; preview vs full based on auth)
+    ├── Scoreboard.tsx              # Count-up stat cards with "This Week"/"All Time" toggle
+    ├── DailyTimeline.tsx           # Today's pipeline chronological view (11 scheduled items)
     ├── TimelineItem.tsx            # Timeline entry (completed/active/upcoming states)
-    ├── LiveFeed.tsx                # Right column: real-time activity log with filter tabs (All/Tasks/Milestones)
-    ├── FeedItem.tsx                # Single feed entry with avatar, agent name, message, timestamp
+    ├── LiveFeed.tsx                # Right column: real-time activity log with filter tabs (All/Tasks/Milestones) + inline feed items
     ├── CommunitiesPanel.tsx        # Subreddit card grid (admin)
+    ├── CommunitiesPreview.tsx      # Placeholder community cards with blur overlay (public)
     ├── QuestionsTable.tsx          # Sortable table with frozen header/column, mobile card view (admin)
+    ├── QuestionsPreview.tsx        # Top 3 rows of questions with Reddit links + blur overlay (public)
     ├── BriefsPanel.tsx             # Brief card list (admin)
+    ├── BriefsPreview.tsx           # Top 3 clickable briefs + blur overlay + public reader modal (public)
+    ├── PreviewGate.tsx             # Blur overlay wrapper with waitlist CTA form (shared by all preview components)
     ├── BriefCard.tsx               # Single brief card with color-coded status badge
     ├── BriefReaderModal.tsx        # Near-fullscreen modal: react-markdown content + SEO metadata sidebar
-    ├── WaitlistCTA.tsx             # Email input: krishna@thelaunch.space reveals Clerk auth, others → lead capture
-    └── Skeleton.tsx                # Reusable skeleton loading components (SkeletonLine, SkeletonCard, SkeletonAvatar)
+    └── WaitlistCTA.tsx             # Email input: krishna@thelaunch.space reveals Clerk auth, others → lead capture
 lib/
 ├── agents.ts              # Agent data layer (5 agents, typed interfaces, structured for future DB migration)
 ├── blog.ts                # Blog discovery utility (shared by sitemap.ts + blogs/page.tsx)
@@ -85,7 +88,8 @@ docs/
 ├── BLOG-STYLE-REFERENCE.md     # Code template, design tokens for blog pages
 └── BLOG-OWNER-GUIDE.md         # Human guide for PR review workflow
 public/
-├── agents/                 # Agent avatar images (+ AVATAR-PROMPTS.md for generation)
+├── agent-avatars/          # Agent avatar images used by LiveFeed (parthasarathi, sanjaya, valmiki, vibhishana, vyasa)
+├── agents/                 # Agent avatar images used by AgentCard/detail pages (+ AVATAR-PROMPTS.md for generation)
 └── ...                     # Static assets (logos, OG image, favicon)
 convex/
 ├── _generated/             # Auto-generated types + API references (do not edit)
@@ -107,8 +111,8 @@ netlify.toml                # Netlify build config (npx convex deploy --cmd 'npm
 ```
 RootLayout (Server)
 ├── ConvexClientProvider ("use client") — ClerkProvider + ConvexProviderWithClerk (wraps everything below)
-├── AnnouncementRibbon              — Top banner
-├── NavBar ("use client")           — Logo (link to /), Blog link, AI Team link, X + LinkedIn icons, scroll CTA on blog pages
+├── AnnouncementRibbon              — Top banner (only visible on / and /build-your-ai-team paths)
+├── NavBar ("use client")           — Logo (link to /), Blog link, AI Team link, Launch Control link, X + LinkedIn icons, scroll CTA on blog pages
 ├── page.tsx (Server)
 │   └── Suspense
 │       └── LandingPage ("use client")
@@ -132,18 +136,18 @@ RootLayout (Server)
         ├── HeaderBar              — Title, stat pills, date, Clerk UserButton
         ├── AgentSidebar (left)    — 5 agents, StatusDots, click → AgentExpandedPanel
         │   └── AgentAvatarStrip   — Mobile-only horizontal strip
-        ├── CenterTabs (center)    — Tabbed: Overview (public) + admin tabs (auth-gated)
-        │   ├── Overview tab       — Scoreboard + DailyTimeline (always visible)
-        │   ├── Communities tab    — CommunitiesPanel (admin only)
-        │   ├── Questions tab      — QuestionsTable (admin only)
-        │   └── Briefs tab         — BriefsPanel → BriefCard → BriefReaderModal (admin only)
-        ├── LiveFeed (right)       — Real-time activity feed, FeedItems
+        ├── CenterTabs (center)    — Tabbed: all 4 tabs visible to everyone (preview vs full based on auth)
+        │   ├── Overview tab       — Scoreboard ("This Week"/"All Time" toggle) + DailyTimeline
+        │   ├── Communities tab    — CommunitiesPreview (public, placeholder data) / CommunitiesPanel (admin)
+        │   ├── Questions tab      — QuestionsPreview (public, top 3 rows + blur) / QuestionsTable (admin)
+        │   └── Briefs tab         — BriefsPreview (public, top 3 clickable + blur) / BriefsPanel → BriefCard → BriefReaderModal (admin)
+        ├── LiveFeed (right)       — Real-time activity feed (feed items rendered inline)
         └── WaitlistCTA (right)    — Email gate (admin auth or lead capture)
 ```
 
 ## NavBar
 - Rendered in `app/layout.tsx`, visible on ALL pages
-- Left: Logo linked to `/` (h-14 mobile, h-16 desktop) — Right: "Blog" link, "Build Your AI Team" link, X icon, LinkedIn icon
+- Left: Logo linked to `/` (h-11 mobile, h-13 desktop) — Right: "Blog" link, "Build Your AI Team" link, "Launch Control" link, X icon, LinkedIn icon
 - Active link indicators: subtle blue pill background (`bg-accent-blue/[0.07]`) on current page link, hover shows faint tint
 - Desktop: full nav inline — Mobile: hamburger menu (Menu/X icons from lucide), dropdown with links + socials
 - Dropdown closes on route change or click outside (useRef + mousedown listener)
@@ -173,20 +177,20 @@ RootLayout (Server)
 - Blog index at `/blogs` auto-discovers and lists all posts — inline title row (no container), horizontal card rows per category, CTA in NavBar on scroll (no footer)
 - Category index at `/blogs/[topic]/` filters posts by topic slug, returns 404 for empty/unknown topics
 
-## AI Employees Section
-- Index page at `/my-ai-employees` — left-sticky hero + right-scrolling 2-column card grid
+## Build Your AI Team Section
+- Index page at `/build-your-ai-team` — left-sticky hero + right-scrolling 2-column card grid
 - Hero: "Your Brain. Your Agents. Real Output." → "Meet My AI Employees" → scaling-thinking copy → WhatsApp/LinkedIn/email CTAs
 - Agent order: Parthasarathi (highlight card, full-width), then 2-col grid: Vyasa+Vibhishana, Sanjaya+Valmiki
 - Card sizes: `highlight` (h-48 md:h-64), `standard` (h-40 md:h-48), `compact` (h-28 md:h-36) — controlled via `size` prop
 - Pipeline visualization + bottom CTA (WhatsApp/LinkedIn/email) below card grid
-- Detail pages at `/my-ai-employees/<agent>` show full profile: KRAs, daily rhythm, proof points
+- Detail pages at `/build-your-ai-team/<agent>` show full profile: KRAs, daily rhythm, proof points
 - Agent data in `lib/agents.ts` — static TypeScript objects, structured for future Convex DB migration
 - 5 agents: Parthasarathi (ops), Sanjaya (lead intel), Valmiki (social content), Vibhishana (research), Vyasa (SEO blog)
 - Each agent has: accent color, avatar, KRAs with outcomes/frequency, daily rhythm, proof points
 - `AgentCard.tsx` — highlight/standard/compact sizes, fixed image heights, accent-colored gradients, image fallback to initials
 - `AgentDetailPage.tsx` — full detail view with breadcrumb, sections for KRAs/rhythm/proof
 - `FloatingCTA.tsx` — appears after 600px scroll, links to external booking/contact
-- NavBar includes "My AI Employees" link
+- NavBar includes "Build Your AI Team" link
 - Sitemap includes agent pages
 
 ## Google Analytics (GA4)
@@ -205,7 +209,7 @@ RootLayout (Server)
 | `agentActivity` | All agent milestones | Single via `/ingestActivity` |
 
 ### HTTP Ingestion Endpoints
-Base URL: `https://impartial-pelican-672.convex.site` (dev deployment)
+Base URL: `https://curious-iguana-738.convex.site` (production deployment)
 - All 4 POST endpoints require `Authorization: Bearer <AGENT_API_KEY>`
 - AGENT_API_KEY stored in Convex env vars (server-side only)
 - CORS preflight (OPTIONS) handled for all endpoints
@@ -251,10 +255,11 @@ Terminal 2: npm run dev       (Next.js dev server at localhost:3000)
 
 ### Center Column Tabs
 - `CenterTabs.tsx` manages a tabbed interface in the center column
-- **Overview tab** (always visible): Scoreboard + DailyTimeline
-- **Communities tab** (admin only): CommunitiesPanel
-- **Questions tab** (admin only): QuestionsTable
-- **Briefs tab** (admin only): BriefsPanel → click card → BriefReaderModal
+- All 4 tabs visible to ALL visitors — preview components (with blur + waitlist CTA) shown to non-authenticated users, full components shown to admin
+- **Overview tab**: Scoreboard (with "This Week"/"All Time" toggle) + DailyTimeline
+- **Communities tab**: CommunitiesPreview (public, placeholder data) / CommunitiesPanel (admin)
+- **Questions tab**: QuestionsPreview (public, top 3 rows + blur) / QuestionsTable (admin)
+- **Briefs tab**: BriefsPreview (public, top 3 clickable + blur) / BriefsPanel → click card → BriefReaderModal (admin)
 
 ### Brief Reader Modal
 - Near-fullscreen (~90vh × 1200px max-width)
@@ -293,4 +298,4 @@ Terminal 2: npm run dev       (Next.js dev server at localhost:3000)
 - API route + Clerk middleware run server-side
 - Hosted on Netlify with `@netlify/plugin-nextjs`
 - Auto-deploys on merge to `main`
-- Convex dev deployment: `impartial-pelican-672` (production deployment TBD)
+- Convex deployments: dev `impartial-pelican-672`, production `curious-iguana-738`

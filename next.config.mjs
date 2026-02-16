@@ -4,13 +4,23 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: "/my-ai-employees/:path*",
-        destination: "/build-your-ai-team/:path*",
+        source: "/build-your-ai-team",
+        destination: "/hire-your-24x7-team",
+        permanent: true,
+      },
+      {
+        source: "/build-your-ai-team/:path*",
+        destination: "/hire-your-24x7-team#team",
         permanent: true,
       },
       {
         source: "/my-ai-employees",
-        destination: "/build-your-ai-team",
+        destination: "/hire-your-24x7-team",
+        permanent: true,
+      },
+      {
+        source: "/my-ai-employees/:path*",
+        destination: "/hire-your-24x7-team",
         permanent: true,
       },
     ];

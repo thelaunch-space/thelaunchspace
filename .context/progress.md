@@ -1,9 +1,9 @@
 # Progress — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-15
+Last updated: 2026-02-16
 
 ## Completed
-- [x] Project scaffolding (Vite + React 18 + TS + Tailwind)
+- [x] Project scaffolding (originally Vite + React 18, later migrated to Next.js 14)
 - [x] Hero section with headline, tagline, CTA
 - [x] Social links (X, LinkedIn) in header
 - [x] "What We Do" services page with pricing tiers
@@ -137,6 +137,8 @@ Last updated: 2026-02-15
 - [x] **LC: Dynamic imports** — Tab panel components lazy-loaded via `next/dynamic` to prevent webpack compilation hang on initial page load.
 - [x] **LC: New Convex query `briefs.getPublicBrief`** — Public read-only query returning brief content without sensitive SEO fields (keywords, competitive gaps, angles). Deployed to both dev and prod.
 - [x] **LC: New components** — `PreviewGate.tsx` (blur overlay + waitlist CTA), `QuestionsPreview.tsx` (3-row public table), `BriefsPreview.tsx` (clickable cards + public reader modal), `CommunitiesPreview.tsx` (placeholder cards with blur).
+- [x] **AnnouncementRibbon updated** — changed from "Coming Soon" to "Live Now" with link to `/launch-control` instead of LinkedIn DM (2026-02-16)
+- [x] **Context docs audit & update** — all 10 `.context/` files audited against codebase and corrected (2026-02-16)
 
 ## In Progress
 - Nothing currently in progress
@@ -149,7 +151,8 @@ Last updated: 2026-02-15
 - Daily Timeline times are hardcoded in `lib/launch-control-types.ts` — need Partha to verify they match actual VPS cron jobs.
 
 ## Recent Changes (latest first)
-1. Public preview tabs + scoreboard toggle — all 4 tabs visible to visitors with blur gate, briefs clickable, dynamic imports fix, new `getPublicBrief` Convex query (2026-02-15)
+1. Context docs audit — all 10 `.context/` files corrected against codebase (stale URLs, wrong component names, outdated statuses). AnnouncementRibbon fixed from "Coming Soon" to "Live Now" with `/launch-control` link. (2026-02-16)
+2. Public preview tabs + scoreboard toggle — all 4 tabs visible to visitors with blur gate, briefs clickable, dynamic imports fix, new `getPublicBrief` Convex query (2026-02-15)
 2. Partha historical data backfill complete — 605 records in production Convex (554 questions, 14 briefs, 7 blogs, 30 activity) (2026-02-15)
 3. Production deployment — Clerk prod instance (5 CNAMEs), Convex prod (`curious-iguana-738`), Netlify env vars, VPS skills updated, deployed to main (2026-02-15)
 2. Mobile QA — 12 files fixed for responsive layout (stacked sidebar, scrollable tabs, bottom-sheet modals, card views, capped heights) (2026-02-15)

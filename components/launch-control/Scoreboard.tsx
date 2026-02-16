@@ -13,6 +13,7 @@ interface ScoreboardProps {
 
 function StatCard({
   label,
+  subtitle,
   value,
   suffix,
   delay,
@@ -20,6 +21,7 @@ function StatCard({
   accent,
 }: {
   label: string;
+  subtitle?: string;
   value: number;
   suffix?: string;
   delay: number;
@@ -35,6 +37,9 @@ function StatCard({
         {suffix && <span className="text-lg text-text-secondary">{suffix}</span>}
       </div>
       <p className={`meta-label mt-1 ${accent ? accent : "text-text-secondary"}`}>{label}</p>
+      {subtitle && (
+        <p className="text-[10px] text-text-secondary/70 mt-0.5 leading-tight">{subtitle}</p>
+      )}
     </div>
   );
 }
@@ -95,11 +100,12 @@ export default function Scoreboard({ weeklyStats, allTimeStats }: ScoreboardProp
 
       {/* Primary stats */}
       <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3">
-        <StatCard label="Questions" value={q} delay={0} enabled={visible && loaded} />
-        <StatCard label="Briefs" value={b} delay={150} enabled={visible && loaded} />
-        <StatCard label="Blogs" value={bl} delay={300} enabled={visible && loaded} />
+        <StatCard label="Questions" subtitle="Customer questions found on Reddit" value={q} delay={0} enabled={visible && loaded} />
+        <StatCard label="Briefs" subtitle="Research docs → blog topics" value={b} delay={150} enabled={visible && loaded} />
+        <StatCard label="Blogs" subtitle="Published SEO posts" value={bl} delay={300} enabled={visible && loaded} />
         <StatCard
           label="Hours Saved"
+          subtitle="vs doing this manually"
           value={humanHours}
           suffix="h"
           delay={450}
@@ -108,6 +114,7 @@ export default function Scoreboard({ weeklyStats, allTimeStats }: ScoreboardProp
         />
         <StatCard
           label="Cost Saved"
+          subtitle="based on freelancer rates"
           value={costSaved}
           suffix=""
           delay={600}

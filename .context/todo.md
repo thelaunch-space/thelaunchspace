@@ -1,10 +1,13 @@
 # Todo — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-15
+Last updated: 2026-02-16
 
 ## Priority: High
+- [ ] **`/build-your-ai-team` pitch page** — BRAINSTORMING IN PROGRESS. Replaces current agent showcase with ICP-focused landing page that explains the organic content use case, introduces agents by job (not name), shows contextualized proof numbers, CTAs into Launch Control. See `.context/build-your-ai-team-landing.md` for full brainstorm state.
+- [ ] **Launch Control FTUE** — Add contextual first-visit labels to dashboard sections (scoreboard, timeline, feed, agents) so cold visitors understand what they're looking at. Part of the pitch → proof flow. Details in `.context/build-your-ai-team-landing.md`.
 - [ ] **Verify Daily Timeline times** — hardcoded in `lib/launch-control-types.ts`. Ask Partha to confirm they match actual VPS cron jobs.
 - [ ] **Fix Scoreboard baseline** — remove hardcoded `5*3` hours / `5*180` cost, zero out or make data-dependent
+- [ ] **Create `.context/thelaunch-space-icp.md`** — referenced by `build-your-ai-team-landing.md` and `launch-control-frontend-spec.md` but doesn't exist. Document the ICP profile (domain-expert founders, 35-50, $100K-$2M services businesses).
 - [ ] Build out free tools pages (`/tools/[tool-slug]`)
 
 ## Priority: Medium

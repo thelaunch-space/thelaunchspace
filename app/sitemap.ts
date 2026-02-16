@@ -18,16 +18,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/build-your-ai-team`,
+      url: `${baseUrl}/hire-your-24x7-team`,
       lastModified: new Date(),
       changeFrequency: "weekly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/build-your-ai-team/vibhishana`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.7,
+      priority: 0.9,
     },
     {
       url: `${baseUrl}/launch-control`,

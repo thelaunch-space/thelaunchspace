@@ -1,15 +1,10 @@
 # Feedback & Bugs — thelaunch.space
 
-Last updated: 2026-02-14
+Last updated: 2026-02-16
 
 ## Active Bugs
 
-### BUG-001: Logo flashes at full size during navigation (2026-02-14)
-**Status:** Fixed
-**Reported:** Krishna noticed massive logos appearing when navigating between pages
-**Root cause:** `<img src="/logo.png">` tags in NavBar.tsx and LandingPage.tsx had no `width`/`height` attributes. The logo PNG is ~940x788px. During client-side navigation or before Tailwind CSS hydrates, the image renders at intrinsic size momentarily.
-**Fix:** Added explicit `width={168} height={56}` attributes + `max-h-14` constraint to both logo `<img>` tags. This gives the browser a layout hint so it reserves the correct space before CSS loads.
-**Files:** `components/NavBar.tsx`, `components/LandingPage.tsx`
+### (BUG-001 and BUG-002 moved to Resolved Bugs section below)
 
 ## Design Feedback
 
@@ -62,5 +57,17 @@ Last updated: 2026-02-14
 **Context:** Some logos (especially dark ones) had visible sharp corners inside the rounded dock item containers.
 **Action:** Removed `p-1.5` padding from icon anchor (image now fills edge-to-edge). Added `overflow-hidden` so container clips image to rounded corners. Removed `rounded-[inherit]` from img since parent handles clipping.
 
+### BUG-003: AnnouncementRibbon said "Coming Soon" for live product (2026-02-16)
+**Status:** Fixed
+**Reported:** Context docs audit found that `AnnouncementRibbon.tsx` still said "Coming Soon — Launch Control" with a LinkedIn DM CTA, even though Launch Control is live in production with a NavBar link.
+**Root cause:** Ribbon content was never updated when Launch Control shipped.
+**Fix:** Changed "Coming Soon" to "Live Now", replaced LinkedIn DM link with internal `/launch-control` link. CTA now reads "Enter Launch Control" (desktop) / "View live" (mobile).
+**Files:** `components/AnnouncementRibbon.tsx`
+
 ## Resolved Bugs
-(none yet — move bugs here when fully verified in production)
+
+### BUG-001: Logo flashes at full size during navigation (2026-02-14)
+**Resolved:** Fixed by adding explicit `width`/`height` attributes to `<img>` tags in NavBar.tsx and LandingPage.tsx.
+
+### BUG-002: AI Employees page shows blank/empty (2026-02-14)
+**Resolved:** Stale `.next` dev server cache issue. Not a code bug — cleared cache and restarted dev server. Recurred multiple times during heavy edit sessions. Standard fix: `Cmd+Shift+R` or restart `npm run dev`.

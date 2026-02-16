@@ -42,7 +42,7 @@ export default function BriefsPreview() {
         <div className="space-y-3 p-4">
           {briefs.map((b, i) => {
             const statusConf = BRIEF_STATUS_CONFIG[b.status] ?? { label: b.status, color: "text-text-secondary", bg: "bg-surface-alt border-border-color/30" };
-            const isClickable = i < 3;
+            const isClickable = i < 5;
             return (
               <button
                 key={b._id}

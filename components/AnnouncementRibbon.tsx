@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 
-const VISIBLE_PATHS = ["/", "/build-your-ai-team"];
+const VISIBLE_PATHS = ["/", "/hire-your-24x7-team"];
 
 export default function AnnouncementRibbon() {
   const pathname = usePathname();
@@ -43,7 +43,7 @@ export default function AnnouncementRibbon() {
 
         {/* Label */}
         <span className="font-mono text-[10px] sm:text-[11px] font-medium tracking-[0.12em] uppercase text-white/50">
-          Coming Soon
+          Live Now
         </span>
 
         {/* Divider dot — desktop only */}
@@ -55,19 +55,17 @@ export default function AnnouncementRibbon() {
         <span className="text-[11px] sm:text-xs text-white/70 font-sans">
           <span className="font-semibold text-white/90">Launch Control</span>
           <span className="hidden sm:inline">
-            {" "}— watch your AI agents work in real time
+            {" "}— watch our AI agents work in real time
           </span>
         </span>
 
         {/* CTA link */}
         <a
-          href="https://www.linkedin.com/in/krishna-goutham/"
-          target="_blank"
-          rel="noopener noreferrer"
+          href="/launch-control"
           className="group ml-1 inline-flex items-center gap-1 text-[11px] sm:text-xs font-medium text-accent-emerald/90 hover:text-accent-emerald transition-colors whitespace-nowrap"
         >
-          <span className="hidden sm:inline">DM for early access</span>
-          <span className="sm:hidden">Early access</span>
+          <span className="hidden sm:inline">Enter Launch Control</span>
+          <span className="sm:hidden">View live</span>
           <span className="inline-block transition-transform group-hover:translate-x-0.5">
             &rarr;
           </span>

@@ -1,8 +1,8 @@
 # Launch Control — Live Agent Dashboard
 
-Status: BUILDING — Backend done, skills done, frontend next
+Status: LIVE IN PRODUCTION — Backend, skills, and frontend all deployed
 Created: 2026-02-14
-Updated: 2026-02-15
+Updated: 2026-02-16
 Reviewed by: Partha (confirmed technically sound, no blockers + schema audit on Feb 15)
 Source: Krishna + Partha Slack brainstorm + Claude Code research
 
@@ -46,7 +46,7 @@ Build a **live, public-facing dashboard** at `thelaunch.space/launch-control` sh
 - **Compounds over time.** 400 questions today → 1,000+ in a month. The longer agents run, the more impressive it gets.
 - **Validated category.** Bhanu Teja built Mission Control (3.5M views on X), now turning it into SaaS at MissionControlHQ.ai. ClawControl HQ charges $250/month for similar. The concept works — but nobody has done it as a public-facing marketing asset the way Krishna plans to.
 - **Content multiplier.** Launch Control itself becomes the highest-value content piece of the 30-day challenge. "Here's a live link where you can watch my AI team working right now" is worth more than 10 regular posts.
-- **Connects to /my-ai-employees page.** Each agent's page could eventually show live data instead of static marketing copy. "See How I Work" → actual work.
+- **Connects to /build-your-ai-team page.** Each agent's page could eventually show live data instead of static marketing copy. "See How I Work" → actual work.
 
 ---
 
@@ -515,7 +515,7 @@ Features explicitly deferred from MVP to keep scope tight:
 - **Two-way agent communication** — send instructions back to OpenClaw agents from Launch Control
 - **Internal notes/feedback** — leave comments on briefs within the dashboard
 - **Brief diff view** — compare brief versions if agents update them
-- **Agent-level pages** on `/my-ai-employees` showing live data instead of static marketing copy
+- **Agent-level pages** on `/build-your-ai-team` showing live data instead of static marketing copy
 - **Public metrics** — total questions scanned, briefs created, blogs published (counter widgets)
 
 These are all valuable but none are needed for the core value prop: "watch my AI team work live."
@@ -579,12 +579,12 @@ These are all valuable but none are needed for the core value prop: "watch my AI
 | `.env.local` | Convex auto-added `CONVEX_DEPLOYMENT` + `NEXT_PUBLIC_CONVEX_SITE_URL` |
 | `package.json` | Added `convex` + `@clerk/nextjs` dependencies |
 
-**HTTP Endpoints (live on dev deployment):**
+**HTTP Endpoints (live on production deployment):**
 ```
-POST https://impartial-pelican-672.convex.site/ingestQuestions   (batch: array or single object)
-POST https://impartial-pelican-672.convex.site/ingestBrief
-POST https://impartial-pelican-672.convex.site/ingestBlog
-POST https://impartial-pelican-672.convex.site/ingestActivity
+POST https://curious-iguana-738.convex.site/ingestQuestions   (batch: array or single object)
+POST https://curious-iguana-738.convex.site/ingestBrief
+POST https://curious-iguana-738.convex.site/ingestBlog
+POST https://curious-iguana-738.convex.site/ingestActivity
 ```
 All require header: `Authorization: Bearer <AGENT_API_KEY>`
 
