@@ -149,13 +149,6 @@ export default function HookSection({ allTimeStats }: HookSectionProps) {
               </div>
             )}
 
-            {/* Hybrid framing line */}
-            {ready && (
-              <p className="mt-3 text-xs text-text-secondary/80">
-                This AI team does the work of a {config.totalDisplay} content operation &mdash; that&apos;s{" "}
-                <span className="font-semibold text-accent-blue">{getMultiplier(config)}</span> your {getPriceDisplay(config)} investment
-              </p>
-            )}
           </motion.div>
 
           {/* CTAs */}
