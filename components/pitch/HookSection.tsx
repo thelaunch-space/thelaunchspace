@@ -10,8 +10,6 @@ import {
   calculateHoursSaved,
   formatCurrency,
   getGeoConfig,
-  getMultiplier,
-  getPriceDisplay,
 } from "@/lib/geo-savings";
 import SavingsTooltip from "@/components/ui/SavingsTooltip";
 

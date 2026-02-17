@@ -40,8 +40,8 @@ export function getPriceDisplay(config: GeoSavingsConfig): string {
 
 const INTL_CONFIG: GeoSavingsConfig = {
   currencySymbol: "$",
-  totalMonthly: 11000,
-  totalDisplay: "$11K/mo",
+  totalMonthly: 4000,
+  totalDisplay: "$4K/mo",
   pricing: {
     pocPrice: 99,
     pocDisplay: "$99",
@@ -54,16 +54,16 @@ const INTL_CONFIG: GeoSavingsConfig = {
   },
   agents: {
     parthasarathi: {
-      monthlySavings: "$1K",
-      costEquivalent: "Replaces a $1K/month project manager",
+      monthlySavings: "$200",
+      costEquivalent: "Project coordination worth ~$200/mo",
     },
     vibhishana: {
-      monthlySavings: "$3K",
-      costEquivalent: "Replaces a $3K/month research analyst",
+      monthlySavings: "$1.5K",
+      costEquivalent: "SEO strategy & research worth ~$1.5K/mo",
     },
     vyasa: {
-      monthlySavings: "$7K",
-      costEquivalent: "Replaces a $7K/month content marketer",
+      monthlySavings: "$2.5K",
+      costEquivalent: "Content writing & SEO worth ~$2.5K/mo",
     },
     valmiki: {
       monthlySavings: "$3.5K",
@@ -75,15 +75,15 @@ const INTL_CONFIG: GeoSavingsConfig = {
     },
   },
   comparisonLine:
-    "vs $5K/month for a content marketer. vs $10K/month for an agency.",
+    "A mid-tier US agency charges $3K–$5K/mo for 8 managed SEO blogs.",
   rationale:
-    "Based on US median salaries for equivalent roles (project manager, research analyst, content marketer) from Glassdoor and Bureau of Labor Statistics data.",
+    "Based on mid-tier US content agency rates. A fully managed SEO blog (strategy + keyword research + writing + on-page SEO) costs $300–$700/post. We use $500 as the mid-point. Sources: WebFX, Verblio, Siege Media pricing data.",
 };
 
 const IN_CONFIG: GeoSavingsConfig = {
   currencySymbol: "₹",
-  totalMonthly: 230000,
-  totalDisplay: "₹2.3L/mo",
+  totalMonthly: 64000,
+  totalDisplay: "₹64K/mo",
   pricing: {
     pocPrice: 9999,
     pocDisplay: "₹9,999",
@@ -96,16 +96,16 @@ const IN_CONFIG: GeoSavingsConfig = {
   },
   agents: {
     parthasarathi: {
-      monthlySavings: "₹10K",
-      costEquivalent: "Replaces a ₹10K/month project manager",
+      monthlySavings: "₹5K",
+      costEquivalent: "Project coordination worth ~₹5K/mo",
     },
     vibhishana: {
-      monthlySavings: "₹40K",
-      costEquivalent: "Replaces a ₹40K/month research analyst",
+      monthlySavings: "₹25K",
+      costEquivalent: "SEO strategy & research worth ~₹25K/mo",
     },
     vyasa: {
-      monthlySavings: "₹1.6L",
-      costEquivalent: "Replaces a ₹1.6L/month content marketer",
+      monthlySavings: "₹35K",
+      costEquivalent: "Content writing & SEO worth ~₹35K/mo",
     },
     valmiki: {
       monthlySavings: "₹50K",
@@ -117,40 +117,30 @@ const IN_CONFIG: GeoSavingsConfig = {
     },
   },
   comparisonLine:
-    "vs ₹40K/month for a content writer. vs ₹1.5L/month for an agency.",
+    "A mid-tier Indian agency charges ₹50K–₹1L/mo for 8 managed SEO blogs.",
   rationale:
-    "Based on Indian median salaries for equivalent roles from Glassdoor India and Naukri data for Tier-1 cities.",
+    "Based on mid-tier Indian content agency rates. A fully managed SEO blog (strategy + keyword research + writing + on-page SEO) costs ₹5,000–₹10,000/post. We use ₹8,000 as the mid-point. Sources: Justwords, Content Whale, WittyPen, iTrobes pricing data.",
 };
 
 export function getGeoConfig(region: GeoRegion): GeoSavingsConfig {
   return region === "IN" ? IN_CONFIG : INTL_CONFIG;
 }
 
-// Region-specific freelancer rates for cost-saved calculation
-const COST_RATES = {
-  INTL: {
-    questionBatch: 112.5, // per 50 questions scanned — $45/hr × 2.5h
-    brief: 180, // per brief — $45/hr × 4h
-    blog: 300, // per blog — $75/hr × 4h
-    mgmt: 180, // per week of management — $60/hr × 3h
-  },
-  IN: {
-    questionBatch: 1250, // per 50 questions — ₹500/hr × 2.5h
-    brief: 2400, // per brief — ₹600/hr × 4h
-    blog: 5000, // per blog — freelancer rate per post
-    mgmt: 1200, // per week of management — ₹400/hr × 3h
-  },
+// Per-blog package rate — what a mid-tier agency effectively charges
+// per fully managed SEO blog (strategy + keyword research + writing + on-page SEO bundled in)
+const PER_BLOG_RATE = {
+  INTL: 500, // $500/blog — mid-tier US agency effective rate
+  IN: 8000, // ₹8,000/blog — mid-tier Indian agency effective rate
 };
+
+// Hours per blog — covers research, strategy, writing, SEO optimization, coordination
+const HOURS_PER_BLOG = 25;
 
 export function calculateCostSaved(
   stats: { questions: number; briefs: number; blogs: number },
   region: GeoRegion
 ): number {
-  const { questions: q, briefs: b, blogs: bl } = stats;
-  const r = COST_RATES[region];
-  return Math.round(
-    (q / 50) * r.questionBatch + b * r.brief + bl * r.blog + 5 * r.mgmt
-  );
+  return stats.blogs * PER_BLOG_RATE[region];
 }
 
 export function calculateHoursSaved(stats: {
@@ -158,8 +148,7 @@ export function calculateHoursSaved(stats: {
   briefs: number;
   blogs: number;
 }): number {
-  const { questions: q, briefs: b, blogs: bl } = stats;
-  return Math.round((q / 50) * 2.5 + b * 4 + bl * 4 + 5 * 3);
+  return stats.blogs * HOURS_PER_BLOG;
 }
 
 export function formatCurrency(amount: number, region: GeoRegion): string {
