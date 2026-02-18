@@ -42,7 +42,7 @@ function StatCard({
 
   return (
     <div className="rounded-xl border border-border-color/40 bg-surface p-2.5 sm:p-4 text-center">
-      <div className="font-display text-2xl sm:text-3xl lg:text-4xl font-semibold text-text-primary tracking-tight">
+      <div className="font-display text-2xl sm:text-3xl font-semibold text-text-primary tracking-tight">
         {enabled
           ? formatFn
             ? formatFn(display)
@@ -55,6 +55,32 @@ function StatCard({
         {subtitle && (
           <p className="text-[10px] text-text-secondary/70 mt-0.5 leading-tight">{subtitle}</p>
         )}
+      </div>
+    </div>
+  );
+}
+
+function HeroStatCard({
+  label,
+  subtitle,
+  accent,
+  gradient,
+  children,
+}: {
+  label: string;
+  subtitle: string;
+  accent: string;
+  gradient: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className={`rounded-xl border border-border-color/40 bg-surface p-3 sm:p-6 text-center bg-gradient-to-br ${gradient}`}>
+      <div className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold text-text-primary tracking-tight">
+        {children}
+      </div>
+      <div className="min-h-[2.5rem] mt-1">
+        <p className={`meta-label mt-2 ${accent}`}>{label}</p>
+        <p className="text-[10px] text-text-secondary/70 mt-0.5 leading-tight">{subtitle}</p>
       </div>
     </div>
   );
@@ -124,8 +150,38 @@ export default function Scoreboard({ weeklyStats, allTimeStats }: ScoreboardProp
         </button>
       </div>
 
-      {/* Primary stats */}
-      <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-2 sm:gap-3">
+      {/* Hero stats — the ROI story */}
+      <div className="grid grid-cols-2 gap-2 sm:gap-3">
+        <HeroStatCard
+          label="Hours Saved"
+          subtitle="vs doing this manually"
+          accent="text-accent-emerald"
+          gradient="from-accent-emerald/[0.04] to-transparent"
+        >
+          {visible && loaded ? (
+            <>
+              <HoursDisplay value={humanHours} enabled={visible && loaded} />
+              <span className="text-lg sm:text-xl text-text-secondary">h</span>
+            </>
+          ) : "—"}
+        </HeroStatCard>
+
+        <HeroStatCard
+          label="Cost Saved"
+          subtitle={costSubtitle}
+          accent="text-accent-blue"
+          gradient="from-accent-blue/[0.04] to-transparent"
+        >
+          <SavingsTooltip rationale={config.rationale}>
+            <span>
+              <CostDisplay value={costSaved} enabled={visible && loaded} region={region} />
+            </span>
+          </SavingsTooltip>
+        </HeroStatCard>
+      </div>
+
+      {/* Supporting stats — the pipeline */}
+      <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3 mt-3">
         <StatCard label="Questions" subtitle="Customer questions found on Reddit" value={q} delay={0} enabled={visible && loaded} />
         <StatCard label="Briefs" subtitle="Research docs → blog topics" value={b} delay={150} enabled={visible && loaded} />
         <StatCard label="Blogs" subtitle="Published SEO posts" value={bl} delay={300} enabled={visible && loaded} />
@@ -145,29 +201,20 @@ export default function Scoreboard({ weeklyStats, allTimeStats }: ScoreboardProp
           enabled={visible && loaded}
           accent="text-cyan-500"
         />
-        <StatCard
-          label="Hours Saved"
-          subtitle="vs doing this manually"
-          value={humanHours}
-          suffix="h"
-          delay={450}
-          enabled={visible && loaded}
-          accent="text-accent-emerald"
-        />
-        <div className="rounded-xl border border-border-color/40 bg-surface p-2.5 sm:p-4 text-center">
-          <SavingsTooltip rationale={config.rationale}>
-            <div className="font-display text-2xl sm:text-3xl lg:text-4xl font-semibold text-text-primary tracking-tight">
-              <CostDisplay value={costSaved} enabled={visible && loaded} region={region} />
-            </div>
-          </SavingsTooltip>
-          <div className="min-h-[2.5rem]">
-            <p className="meta-label mt-2 text-accent-blue">Cost Saved</p>
-            <p className="text-[10px] text-text-secondary/70 mt-0.5 leading-tight">{costSubtitle}</p>
-          </div>
-        </div>
       </div>
     </div>
   );
+}
+
+function HoursDisplay({
+  value,
+  enabled,
+}: {
+  value: number;
+  enabled: boolean;
+}) {
+  const display = useCountUp(value, 2000, 450, enabled);
+  return <>{enabled ? display.toLocaleString() : "—"}</>;
 }
 
 function CostDisplay({
