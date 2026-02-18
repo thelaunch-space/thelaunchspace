@@ -47,7 +47,7 @@ export default function SavingsTooltip({
       </button>
       {open && (
         <span
-          className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 rounded-lg border border-border-color bg-surface-alt p-3 text-xs text-text-secondary shadow-card z-[100] text-left leading-relaxed"
+          className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 rounded-lg border border-border-color bg-surface-alt p-3 text-sm font-sans font-normal text-text-primary shadow-card z-[100] text-left leading-relaxed"
           role="tooltip"
         >
           {rationale}
