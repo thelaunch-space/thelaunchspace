@@ -26,8 +26,8 @@ export default function TeamSection({ agentStatuses, weeklySummaries }: TeamSect
         Meet Your Team
       </motion.h2>
 
-      {/* All agents in a single 6-col grid for uniform heights */}
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-6 gap-6">
+      {/* Active agents — 2x2 grid on desktop */}
+      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
         {activeAgents.map((pa, i) => {
           const agent = getAgent(pa.agentId);
           if (!agent) return null;
@@ -40,7 +40,7 @@ export default function TeamSection({ agentStatuses, weeklySummaries }: TeamSect
           return (
             <motion.div
               key={pa.agentId}
-              className="md:col-span-2 h-full"
+              className="h-full"
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
@@ -55,8 +55,10 @@ export default function TeamSection({ agentStatuses, weeklySummaries }: TeamSect
             </motion.div>
           );
         })}
+      </div>
 
-        {/* Coming soon agents — centered in second row via col offsets */}
+      {/* Coming soon agents — centered row */}
+      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
         {comingSoonAgents.map((pa, i) => {
           const agent = getAgent(pa.agentId);
           if (!agent) return null;
@@ -64,7 +66,7 @@ export default function TeamSection({ agentStatuses, weeklySummaries }: TeamSect
           return (
             <motion.div
               key={pa.agentId}
-              className={`md:col-span-2 h-full ${i === 0 ? "md:col-start-2" : ""}`}
+              className="h-full"
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}

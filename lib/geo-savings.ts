@@ -65,6 +65,10 @@ const INTL_CONFIG: GeoSavingsConfig = {
       monthlySavings: "$2.5K",
       costEquivalent: "Content writing & SEO worth ~$2.5K/mo",
     },
+    vidura: {
+      monthlySavings: "$1K",
+      costEquivalent: "SEO strategy & intelligence worth ~$1K/mo",
+    },
     valmiki: {
       monthlySavings: "$3.5K",
       costEquivalent: "Replaces a $3.5K/month social media manager",
@@ -106,6 +110,10 @@ const IN_CONFIG: GeoSavingsConfig = {
     vyasa: {
       monthlySavings: "₹35K",
       costEquivalent: "Content writing & SEO worth ~₹35K/mo",
+    },
+    vidura: {
+      monthlySavings: "₹15K",
+      costEquivalent: "SEO strategy & intelligence worth ~₹15K/mo",
     },
     valmiki: {
       monthlySavings: "₹50K",

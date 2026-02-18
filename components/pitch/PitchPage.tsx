@@ -31,6 +31,9 @@ export default function PitchPage() {
   const vyasaSummary = useQuery(api.agentActivity.agentWeeklySummary, {
     agentName: "Vyasa",
   });
+  const viduraSummary = useQuery(api.agentActivity.agentWeeklySummary, {
+    agentName: "Vidura",
+  });
 
   const questions = useQuery(api.questions.listRecent, { limit: 10 });
   const briefs = useQuery(api.briefs.listMetadata, { limit: 10 });
@@ -44,6 +47,7 @@ export default function PitchPage() {
     Parthasarathi: parthaSummary,
     Vibhishana: vibhishanaSummary,
     Vyasa: vyasaSummary,
+    Vidura: viduraSummary,
   };
 
   // ── Floating CTA visibility ──────────────────────────────────────────

@@ -34,6 +34,14 @@ export const PITCH_AGENTS: PitchAgent[] = [
     skillTags: ["SEO Writing", "Content Strategy", "Publishing"],
   },
   {
+    agentId: "vidura",
+    plainTitle: "The Strategist",
+    tagline: "Makes sure every blog serves a bigger strategic purpose — not just volume.",
+    paceScore: 7,
+    intelScore: 10,
+    skillTags: ["Topic Clustering", "Tool Discovery", "LLM Citations"],
+  },
+  {
     agentId: "valmiki",
     plainTitle: "The Voice",
     tagline: "Writes your LinkedIn and X posts in your voice. Not AI slop.",
