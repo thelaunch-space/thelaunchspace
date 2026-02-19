@@ -99,3 +99,84 @@ export const listFull = query({
       .take(limit);
   },
 });
+
+export const updateStatus = internalMutation({
+  args: {
+    slug: v.string(),
+    status: v.string(),
+    updatedAt: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    // Find brief by slug
+    const brief = await ctx.db
+      .query("briefs")
+      .filter((q) => q.eq(q.field("slug"), args.slug))
+      .first();
+    
+    if (!brief) {
+      return { success: false, error: "Brief not found", slug: args.slug };
+    }
+    
+    // Update the status
+    await ctx.db.patch(brief._id, {
+      status: args.status,
+      updatedAt: args.updatedAt || new Date().toISOString(),
+    });
+    
+    return { success: true, id: brief._id, slug: args.slug, newStatus: args.status };
+  },
+});
+
+export const upsert = internalMutation({
+  args: {
+    // Core identification
+    title: v.string(),
+    slug: v.string(),
+    primaryKeyword: v.string(),
+    // SEO data
+    longTailKeywords: v.optional(v.array(v.string())),
+    finalKeywords: v.optional(v.array(v.string())),
+    // Strategic analysis
+    icpProblem: v.optional(v.string()),
+    competitiveGap: v.optional(v.string()),
+    launchSpaceAngle: v.optional(v.string()),
+    suggestedStructure: v.optional(v.string()),
+    researchNotes: v.optional(v.string()),
+    // Ranking
+    rankingNotes: v.optional(v.string()),
+    // Full content
+    contentMarkdown: v.optional(v.string()),
+    // Relationships
+    sourceQuestionId: v.optional(v.string()),
+    sourceUrls: v.optional(v.array(v.string())),
+    blogUrl: v.optional(v.string()),
+    // Categorization
+    category: v.optional(v.string()),
+    status: v.string(),
+    // Timestamps
+    createdAt: v.string(),
+    updatedAt: v.optional(v.string()),
+    // Agent metadata
+    agentName: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // Check if brief with this slug already exists
+    const existing = await ctx.db
+      .query("briefs")
+      .filter((q) => q.eq(q.field("slug"), args.slug))
+      .first();
+    
+    if (existing) {
+      // Update existing brief
+      await ctx.db.patch(existing._id, {
+        ...args,
+        updatedAt: args.updatedAt || new Date().toISOString(),
+      });
+      return { id: existing._id, action: "updated" };
+    } else {
+      // Insert new brief
+      const id = await ctx.db.insert("briefs", args);
+      return { id, action: "inserted" };
+    }
+  },
+});
