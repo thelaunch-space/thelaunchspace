@@ -101,7 +101,7 @@ Ambitious founders and product leaders who prioritize execution and clarity over
 - **BlogsPanel (DONE):** Admin tab showing published blog posts with category badges.
 - **Navigation:** Removed from navbar. Discoverable via pitch page secondary CTA ("Watch them work live →") or direct URL only.
 - **Dual purpose:** Internal review tool (Krishna reads briefs without SSH) + marketing asset (audience watches agents work live)
-- Full spec: `.context/launch-control-frontend-spec.md` and `.context/live-dashboard-convex.md`
+- Full spec: `.context/launch-control/prd.md` (architecture, schema, endpoints) and `.context/launch-control/frontend-spec.md` (layout, components, responsive design)
 
 ### Analytics
 - Google Analytics (GA4) via `next/script` in root layout

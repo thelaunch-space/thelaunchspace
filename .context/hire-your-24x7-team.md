@@ -375,7 +375,7 @@ Separate from the pitch page — these are changes to what public (non-admin) vi
 
 | Doc | What it covers |
 |-----|---------------|
-| `.context/launch-control-frontend-spec.md` | Full spec for the current LC dashboard |
-| `.context/live-dashboard-convex.md` | Backend architecture, Convex schema |
+| `.context/launch-control/prd.md` | LC architecture, schema, endpoints, decisions, build progress |
+| `.context/launch-control/frontend-spec.md` | LC frontend layout, components, responsive design |
 | `.context/design-system-v2.md` | Brand colors, typography, agent character designs, NBP avatar prompts |
 | `lib/agents.ts` | Agent data (names, roles, colors, avatars) |

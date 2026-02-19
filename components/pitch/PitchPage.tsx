@@ -35,9 +35,9 @@ export default function PitchPage() {
     agentName: "Vidura",
   });
 
-  const questions = useQuery(api.questions.listRecent, { limit: 10 });
-  const briefs = useQuery(api.briefs.listMetadata, { limit: 10 });
-  const blogs = useQuery(api.blogs.listRecent, { limit: 10 });
+  const questions = useQuery(api.questions.listRecent, { limit: 20 });
+  const briefs = useQuery(api.briefs.listMetadata, { limit: 20 });
+  const blogs = useQuery(api.blogs.listRecent, { limit: 20 });
 
   // Bundle weekly summaries for TeamSection
   const weeklySummaries: Record<

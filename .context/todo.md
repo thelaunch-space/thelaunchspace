@@ -4,8 +4,10 @@ Last updated: 2026-02-18 (Vidura agent + strategy pipeline, geo savings, pricing
 
 ## Priority: High
 - [ ] **Verify Daily Timeline times** — hardcoded in `lib/launch-control-types.ts`. Ask Partha to confirm they match actual VPS cron jobs.
-- [ ] **Update Vidura skill URL to production** — `skills/convex-push-strategy.SKILL.md` currently points to dev (`impartial-pelican-672`). Must change to prod (`curious-iguana-738`) before Partha deploys on VPS.
-- [ ] **Deploy Vidura Convex changes to production** — `topicClusters` + `toolOpportunities` tables, HTTP endpoints, and queries need `npx convex deploy` to prod (`curious-iguana-738`). Currently only on dev.
+- [x] **Update Vidura skill URL to production** — DONE. VPS skill confirmed pointing to prod (`curious-iguana-738`). Stale dev-pointing copies in `skills/` folder deleted (Feb 19).
+- [x] **Deploy Vidura Convex changes to production** — DONE. Netlify auto-deploys Convex via `npx convex deploy --cmd 'npm run build'` on every merge to `main`. Vidura commit is on `main`.
+- [ ] **Diagnose Convex 500 error on /ingestBrief** — Vibhishana getting HTTP 500 (not auth issue). Request ID: `a07937d936186671`. Check Convex dashboard logs. Likely schema mismatch or extra field in agent payload.
+- [ ] **Fix "cron delivery target is missing"** — 5+ agent crons failing post-recovery. Delivery config has `mode: "announce"` but no channel/to target. Needs Partha to patch cron configs on VPS.
 - [ ] **Set up 301 redirects** — `/build-your-ai-team` → `/hire-your-24x7-team`, `/build-your-ai-team/[agent]` → `/hire-your-24x7-team#team`. Old agent detail pages still exist as routes but navbar no longer links to them.
 - [ ] **Launch Control public view updates** — Per `hire-your-24x7-team.md` spec: show all questions openly (not just top 3), show 5 briefs in full (blur rest), show all blogs freely.
 - [ ] Build out free tools pages (`/tools/[tool-slug]`) — Vidura's tool opportunities data now feeds tool ideas via Convex

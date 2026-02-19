@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { useQuery } from "convex/react";
+import { usePaginatedQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { ICP_RELEVANCE_CONFIG } from "@/lib/launch-control-types";
 import type { Doc } from "@/convex/_generated/dataModel";
@@ -19,7 +19,11 @@ function sortQuestions(questions: Doc<"questions">[], key: SortKey, dir: SortDir
 }
 
 export default function QuestionsTable() {
-  const questions = useQuery(api.questions.listFullDetails, { limit: 50 });
+  const { results: questions, status, loadMore } = usePaginatedQuery(
+    api.questions.listFullDetailsPaginated,
+    {},
+    { initialNumItems: 50 }
+  );
   const [sortKey, setSortKey] = useState<SortKey>("scannedAt");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -42,7 +46,7 @@ export default function QuestionsTable() {
     }
   };
 
-  if (questions === undefined) {
+  if (status === "LoadingFirstPage") {
     return (
       <div className="space-y-2 animate-pulse">
         {[1, 2, 3, 4, 5].map((i) => (
@@ -76,6 +80,27 @@ export default function QuestionsTable() {
     return <span className="ml-0.5">{sortDir === "asc" ? "↑" : "↓"}</span>;
   };
 
+  const LoadMoreButton = () => {
+    if (status === "CanLoadMore") {
+      return (
+        <button
+          onClick={() => loadMore(50)}
+          className="mt-3 w-full py-2 text-xs font-medium text-text-secondary hover:text-text-primary border border-border-color/30 hover:border-border-color/60 rounded-lg transition-colors"
+        >
+          Load more questions
+        </button>
+      );
+    }
+    if (status === "LoadingMore") {
+      return (
+        <div className="mt-3 text-center">
+          <span className="text-xs text-text-secondary animate-pulse">Loading more…</span>
+        </div>
+      );
+    }
+    return null;
+  };
+
   // Mobile: card view
   const MobileCards = () => (
     <div className="md:hidden space-y-3">
@@ -100,6 +125,7 @@ export default function QuestionsTable() {
           </div>
         );
       })}
+      <LoadMoreButton />
     </div>
   );
 
@@ -128,7 +154,7 @@ export default function QuestionsTable() {
           ))}
         </select>
         <span className="text-[10px] font-mono text-text-secondary self-center ml-auto">
-          {sorted.length} of {questions.length}
+          {sorted.length} of {questions.length}{status === "CanLoadMore" ? "+" : ""}
         </span>
       </div>
 
@@ -212,6 +238,9 @@ export default function QuestionsTable() {
             })}
           </tbody>
         </table>
+      </div>
+      <div className="hidden md:block">
+        <LoadMoreButton />
       </div>
     </div>
   );

@@ -18,7 +18,7 @@ interface RecentWorkSectionProps {
       }>
     | undefined;
   blogs:
-    | Array<{ title: string; url?: string; slug: string; publishedAt?: string }>
+    | Array<{ title: string; url?: string; slug: string; publishedAt?: string; createdAt: string }>
     | undefined;
 }
 
@@ -190,11 +190,9 @@ export default function RecentWorkSection({
                         >
                           {bl.title}
                         </a>
-                        {bl.publishedAt && (
-                          <span className="text-xs text-text-secondary flex-shrink-0">
-                            {formatDate(bl.publishedAt)}
-                          </span>
-                        )}
+                        <span className="text-xs text-text-secondary flex-shrink-0">
+                          {formatDate(bl.publishedAt || bl.createdAt)}
+                        </span>
                       </div>
                     );
                   })}

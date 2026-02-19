@@ -1,4 +1,5 @@
 import { internalMutation, query } from "./_generated/server";
+import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 
 const questionValidator = v.object({
@@ -80,5 +81,17 @@ export const listFullDetails = query({
       .query("questions")
       .order("desc")
       .take(limit);
+  },
+});
+
+export const listFullDetailsPaginated = query({
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Not authenticated");
+    return await ctx.db
+      .query("questions")
+      .order("desc")
+      .paginate(args.paginationOpts);
   },
 });

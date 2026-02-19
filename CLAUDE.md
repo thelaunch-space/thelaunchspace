@@ -53,8 +53,9 @@ Reference `.context/` files when needed:
 | feedback-and-bugs.md | Logging bugs, design feedback, and issues from Krishna |
 | design-system-v2.md | Brand colors, typography, shadows, AI employee character designs, NBP avatar prompts |
 | hire-your-24x7-team.md | **START HERE** — Full brainstorm for `/hire-your-24x7-team` service pitch page. Pricing ($200 POC), 4-week timeline, Pokemon stat cards for agents, Launch Control hidden behind secondary CTA. |
-| launch-control-frontend-spec.md | Full frontend spec for the LC dashboard (what's built and live) |
-| live-dashboard-convex.md | LC backend architecture, Convex schema, build progress, agent skill files |
+| launch-control/prd.md | LC architecture, schema, endpoints, decisions, build progress |
+| launch-control/frontend-spec.md | LC frontend layout, components, responsive design |
+| ideation/work-mode-kanban-spec.md | Planned Work Mode Kanban board feature spec |
 
 ## Key Patterns
 - **No scrolling:** All primary content must be above the fold on all devices. This is non-negotiable.

@@ -1,17 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "convex/react";
+import { usePaginatedQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import BriefCard from "./BriefCard";
 import BriefReaderModal from "./BriefReaderModal";
 
 export default function BriefsPanel() {
-  const briefs = useQuery(api.briefs.listFull, { limit: 20 });
+  const { results: briefs, status, loadMore } = usePaginatedQuery(
+    api.briefs.listFullPaginated,
+    {},
+    { initialNumItems: 25 }
+  );
   const [selectedBriefId, setSelectedBriefId] = useState<Id<"briefs"> | null>(null);
 
-  if (briefs === undefined) {
+  if (status === "LoadingFirstPage") {
     return (
       <div className="space-y-3 animate-pulse">
         {[1, 2, 3].map((i) => (
@@ -43,6 +47,21 @@ export default function BriefsPanel() {
           />
         ))}
       </div>
+
+      {status === "CanLoadMore" && (
+        <button
+          onClick={() => loadMore(25)}
+          className="mt-4 w-full py-2 text-xs font-medium text-text-secondary hover:text-text-primary border border-border-color/30 hover:border-border-color/60 rounded-lg transition-colors"
+        >
+          Load more briefs
+        </button>
+      )}
+
+      {status === "LoadingMore" && (
+        <div className="mt-4 text-center">
+          <span className="text-xs text-text-secondary animate-pulse">Loading more…</span>
+        </div>
+      )}
 
       {selectedBriefId && (
         <BriefReaderModal
