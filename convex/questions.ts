@@ -30,10 +30,28 @@ export const ingestBatch = internalMutation({
     questions: v.array(questionValidator),
   },
   handler: async (ctx, args) => {
+    let inserted = 0;
+    let updated = 0;
     for (const q of args.questions) {
-      await ctx.db.insert("questions", q);
+      const existing = await ctx.db
+        .query("questions")
+        .withIndex("by_url", (idx) => idx.eq("url", q.url))
+        .first();
+      if (existing) {
+        await ctx.db.patch(existing._id, {
+          scannedAt: q.scannedAt,
+          engagement: q.engagement,
+          icpRelevance: q.icpRelevance,
+          contentPotential: q.contentPotential,
+          notes: q.notes,
+        });
+        updated++;
+      } else {
+        await ctx.db.insert("questions", q);
+        inserted++;
+      }
     }
-    return { inserted: args.questions.length };
+    return { inserted, updated };
   },
 });
 

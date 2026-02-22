@@ -31,7 +31,8 @@ export default defineSchema({
   })
     .index("by_scannedAt", ["scannedAt"])
     .index("by_agentName", ["agentName"])
-    .index("by_status", ["status"]),
+    .index("by_status", ["status"])
+    .index("by_url", ["url"]),
 
   // Vibhishana's research briefs — all 14 blog-queue sheet columns + full markdown content
   briefs: defineTable({
