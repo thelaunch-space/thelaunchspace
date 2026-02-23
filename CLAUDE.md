@@ -2,6 +2,82 @@
 
 Single-page landing page for thelaunch.space agency. "21 days, idea to revenue" — all content fits in the first fold, no scrolling.
 
+---
+
+## Development & Deployment Workflow — READ THIS FIRST
+
+**This is the #1 priority section. Follow this workflow for EVERY change. No exceptions.**
+
+### The Rule: Dev First, Test, Then Ship
+
+All work happens on the `staging` branch locally. Never work directly on `main`. Never deploy to the deploy instance without testing on dev first.
+
+### Step-by-Step Workflow
+
+**1. Develop on `staging` branch**
+```bash
+git checkout staging
+# Make your changes
+```
+
+**2. Deploy Convex changes to DEV instance**
+After ANY change to `convex/` files (schema, mutations, queries, http routes):
+```bash
+npx convex dev --once
+```
+This deploys to the dev instance (`impartial-pelican-672.convex.cloud`).
+
+**3. Test locally**
+```bash
+npm run dev
+# Test on localhost:3000 — verify everything works
+npm run typecheck
+npm run lint
+```
+
+**4. Krishna confirms it works → Push to main**
+Only after Krishna approves the local testing:
+```bash
+git checkout main && git merge staging && git push
+```
+This triggers **Netlify auto-deploy** for the frontend (Next.js) only.
+
+**5. Deploy Convex to DEPLOY instance**
+Netlify does NOT deploy Convex functions. This is a separate manual step. Ask Krishna for the deploy key, then:
+```bash
+CONVEX_DEPLOY_KEY=<deploy-key> npx convex deploy
+```
+This deploys to the deploy instance (`curious-iguana-738.convex.cloud`). The deploy key is NOT stored locally — Krishna provides it each time.
+
+### What Deploys Where
+
+| What | How | Triggered By |
+|------|-----|-------------|
+| Next.js frontend | Netlify auto-deploy | `git push` to `main` |
+| Convex functions (dev) | `npx convex dev --once` | Manual, during development |
+| Convex functions (deploy) | `CONVEX_DEPLOY_KEY=... npx convex deploy` | Manual, after frontend push |
+
+### Critical Rules
+
+- **`npx convex deploy` (without deploy key) goes to DEV, not deploy.** The local `.env.local` only has the dev deploy key. To reach deploy instance, you MUST set `CONVEX_DEPLOY_KEY` to the deploy key.
+- **Never skip the dev test step.** Don't deploy to the deploy instance without confirming it works locally first.
+- **Dev and deploy instance schemas must stay in sync.** Always deploy code to both. If you deploy to dev, plan to deploy to deploy instance too (after testing). If they drift apart, bugs become invisible.
+- **Data is NOT shared.** Dev instance has test data. Deploy instance has live agent data (much more). Agents push to deploy instance only. Never assume data is the same.
+- **`--url` flag alone does NOT authenticate to the deploy instance.** It silently falls back to dev. To query/run functions on the deploy instance, you MUST use the deploy key:
+  ```bash
+  CONVEX_DEPLOY_KEY=<deploy-key> npx convex run <function> '<args>' --prod
+  ```
+  The `--prod` flag is ignored when `CONVEX_DEPLOY_KEY` is set — the deploy key determines the target. Ask Krishna for the key when needed.
+
+### Convex Instance Reference
+
+| Instance | URL | Purpose | Auth |
+|----------|-----|---------|------|
+| **Dev** | `impartial-pelican-672.convex.cloud` | Local development & testing | Configured in `.env.local` (automatic) |
+| **Deploy** | `curious-iguana-738.convex.cloud` | Live site (thelaunch.space). Agents push here. | Requires `CONVEX_DEPLOY_KEY` (ask Krishna) |
+
+---
+
 ## Global Context — Where This Fits
 
 This is Krishna's storefront — where blogs land, leads convert, and eventually free tools will live. AI agents (Vibhishana + Vyasa) produce daily blog posts that get merged here via PRs. Social media posts drive traffic here. Organic search traffic is the long-term goal.
@@ -35,9 +111,6 @@ rm -rf .next
 npm run dev
 ```
 **Do this proactively** after creating, deleting, or renaming component files — don't wait for Krishna to report broken styling.
-
-## Convex — CRITICAL
-After ANY change to files in `convex/` (schema, mutations, queries, http routes), you MUST run `npx convex dev --once` to deploy the changes to the dev instance. Without this step, the app will crash at runtime with "Could not find public function" errors. `npx convex codegen` only generates TypeScript types — it does NOT deploy functions. Always use `npx convex dev --once` instead.
 
 ## Context Docs
 Reference `.context/` files when needed:
@@ -75,22 +148,9 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 `WEBHOOK_URL` is server-only (no `NEXT_PUBLIC_` prefix). Never commit real webhook URLs.
 `NEXT_PUBLIC_GA_MEASUREMENT_ID` is client-side (GA4 gtag loaded via `next/script` in layout).
 
-## Convex — Dev vs Prod Deployments (CRITICAL)
-There are TWO separate Convex deployments with DIFFERENT data:
-- **Dev instance:** `https://impartial-pelican-672.convex.cloud` — configured in local `.env.local`. Used by `npm run dev` and `npx convex dev --once`.
-- **Prod instance:** `https://curious-iguana-738.convex.cloud` — configured in **Netlify environment variables** (NOT in any local file). This is what the live site (thelaunch.space) uses. Deployed to via `npx convex deploy`.
-
-**When querying/running functions on prod:**
-```bash
-npx convex run <function> '<args>' --url https://curious-iguana-738.convex.cloud
-```
-The local `--prod` flag does NOT work because `.env.local` only has the dev deploy key. Always use `--url` with the prod URL above.
-
-**NEVER assume dev and prod have the same data.** Agents push data to prod via HTTP endpoints. Always query the RIGHT instance when debugging data issues on the live site.
-
 ## Git
-- `main` — production
-- `staging` — development (current)
+- `main` — production (triggers Netlify deploy). **Never commit directly here during development.**
+- `staging` — development branch. **All work happens here first.**
 - `blog/*` — AI agent (OpenClaw) creates these branches for blog post PRs
 - Run `lint` and `typecheck` before committing
 - **Branch protection on `main`:** Requires PR + 1 approval. This exists to gate the AI blog agent's PRs (see `docs/BLOG-AGENT-INSTRUCTIONS.md`), NOT to block the owner. Use `gh pr merge --admin` to bypass when merging your own PRs.
