@@ -155,6 +155,24 @@ export default defineSchema({
     .index("by_createdAt", ["createdAt"])
     .index("by_status", ["status"]),
 
+  // Agent documents — research reports, strategy docs, briefs, process docs
+  documents: defineTable({
+    title: v.string(),
+    slug: v.string(),                    // Unique identifier for dedup
+    content: v.string(),                 // Full markdown content
+    summary: v.optional(v.string()),     // Short description
+    category: v.string(),               // "research" | "strategy" | "brief" | "process" | "analysis"
+    tags: v.optional(v.array(v.string())), // Flexible tagging
+    agentName: v.string(),              // Who created it
+    filePath: v.optional(v.string()),   // VPS path for reference
+    createdAt: v.string(),
+    updatedAt: v.optional(v.string()),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_agentName", ["agentName"])
+    .index("by_category", ["category"])
+    .index("by_createdAt", ["createdAt"]),
+
   // All agents — milestone activity log
   agentActivity: defineTable({
     agentName: v.string(),          // "Parthasarathi" | "Vibhishana" | "Vyasa"

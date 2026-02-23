@@ -231,8 +231,25 @@ http.route({
   }),
 });
 
+http.route({
+  path: "/upsertDocument",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    if (!validateAuth(request)) {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
+    try {
+      const body = await request.json();
+      const result = await ctx.runMutation(internal.documents.upsert, body);
+      return jsonResponse({ success: true, ...result });
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
+  }),
+});
+
 // Handle CORS preflight for all ingestion routes
-for (const path of ["/ingestQuestions", "/ingestBrief", "/ingestBlog", "/ingestActivity", "/ingestTopicCluster", "/ingestToolOpportunity", "/updateBlogEnrichment", "/updateBriefStatus", "/upsertQuestions", "/upsertBlog", "/upsertBrief"]) {
+for (const path of ["/ingestQuestions", "/ingestBrief", "/ingestBlog", "/ingestActivity", "/ingestTopicCluster", "/ingestToolOpportunity", "/updateBlogEnrichment", "/updateBriefStatus", "/upsertQuestions", "/upsertBlog", "/upsertBrief", "/upsertDocument"]) {
   http.route({
     path,
     method: "OPTIONS",
