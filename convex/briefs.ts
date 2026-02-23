@@ -1,6 +1,7 @@
 import { internalMutation, query } from "./_generated/server";
 import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
+import { logActivityIfNew } from "./lib/activityHelper";
 
 export const ingest = internalMutation({
   args: {
@@ -36,6 +37,14 @@ export const ingest = internalMutation({
   },
   handler: async (ctx, args) => {
     const id = await ctx.db.insert("briefs", args);
+
+    await logActivityIfNew(ctx, {
+      agentName: args.agentName,
+      action: "brief_created",
+      message: `Created research brief: '${args.title}'`,
+      dedupKey: `brief_created:${args.slug}`,
+    });
+
     return { id };
   },
 });
@@ -175,6 +184,14 @@ export const upsert = internalMutation({
       return { id: existing._id, action: "updated" };
     } else {
       const id = await ctx.db.insert("briefs", args);
+
+      await logActivityIfNew(ctx, {
+        agentName: args.agentName,
+        action: "brief_created",
+        message: `Created research brief: '${args.title}'`,
+        dedupKey: `brief_created:${args.slug}`,
+      });
+
       return { id, action: "inserted" };
     }
   },

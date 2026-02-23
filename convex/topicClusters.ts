@@ -1,5 +1,6 @@
 import { internalMutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { logActivityIfNew } from "./lib/activityHelper";
 
 export const ingest = internalMutation({
   args: {
@@ -15,6 +16,14 @@ export const ingest = internalMutation({
   },
   handler: async (ctx, args) => {
     const id = await ctx.db.insert("topicClusters", args);
+
+    await logActivityIfNew(ctx, {
+      agentName: args.agentName,
+      action: "cluster_mapping",
+      message: `Mapped topic cluster '${args.clusterTopic}' under '${args.pillarName}' pillar`,
+      dedupKey: `cluster_mapping:${args.pillarName}:${args.clusterTopic}`,
+    });
+
     return { id };
   },
 });

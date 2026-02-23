@@ -12,6 +12,7 @@ import type * as agentActivity from "../agentActivity.js";
 import type * as blogs from "../blogs.js";
 import type * as briefs from "../briefs.js";
 import type * as http from "../http.js";
+import type * as lib_activityHelper from "../lib/activityHelper.js";
 import type * as pitchBookings from "../pitchBookings.js";
 import type * as questions from "../questions.js";
 import type * as toolOpportunities from "../toolOpportunities.js";
@@ -28,6 +29,7 @@ declare const fullApi: ApiFromModules<{
   blogs: typeof blogs;
   briefs: typeof briefs;
   http: typeof http;
+  "lib/activityHelper": typeof lib_activityHelper;
   pitchBookings: typeof pitchBookings;
   questions: typeof questions;
   toolOpportunities: typeof toolOpportunities;

@@ -1,5 +1,6 @@
 import { internalMutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { logActivityIfNew } from "./lib/activityHelper";
 
 export const ingest = internalMutation({
   args: {
@@ -16,6 +17,14 @@ export const ingest = internalMutation({
   },
   handler: async (ctx, args) => {
     const id = await ctx.db.insert("blogs", args);
+
+    await logActivityIfNew(ctx, {
+      agentName: args.agentName,
+      action: "blog_published",
+      message: `Published '${args.title}' to thelaunch.space/blog`,
+      dedupKey: `blog_published:${args.slug}`,
+    });
+
     return { id };
   },
 });
@@ -38,6 +47,14 @@ export const updateEnrichment = internalMutation({
       lastEnrichmentDate: args.lastEnrichmentDate,
       enrichmentLog: args.enrichmentLog,
     });
+
+    await logActivityIfNew(ctx, {
+      agentName: blog.agentName,
+      action: "blog_enriched",
+      message: `Enriched '${args.slug}' (enrichment #${args.enrichmentCount})`,
+      dedupKey: `blog_enriched:${args.slug}:${args.enrichmentCount}`,
+    });
+
     return { success: true };
   },
 });

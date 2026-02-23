@@ -19,23 +19,38 @@ function corsHeaders() {
   };
 }
 
+function jsonResponse(data: unknown, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { "Content-Type": "application/json", ...corsHeaders() },
+  });
+}
+
+function errorResponse(error: unknown) {
+  const message = error instanceof Error ? error.message : "Unknown error";
+  return jsonResponse({ success: false, error: message }, 400);
+}
+
 http.route({
   path: "/ingestQuestions",
   method: "POST",
   handler: httpAction(async (ctx, request) => {
     if (!validateAuth(request)) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { "Content-Type": "application/json", ...corsHeaders() },
-      });
+      return jsonResponse({ error: "Unauthorized" }, 401);
     }
-    const body = await request.json();
-    const questions = Array.isArray(body) ? body : [body];
-    const result = await ctx.runMutation(internal.questions.ingestBatch, { questions });
-    return new Response(JSON.stringify({ success: true, ...result }), {
-      status: 200,
-      headers: { "Content-Type": "application/json", ...corsHeaders() },
-    });
+    try {
+      const body = await request.json();
+      // Accept: bare array [{...}], wrapped {"questions": [{...}]}, or single object {...}
+      const questions = Array.isArray(body)
+        ? body
+        : Array.isArray(body.questions)
+          ? body.questions
+          : [body];
+      const result = await ctx.runMutation(internal.questions.ingestBatch, { questions });
+      return jsonResponse({ success: true, ...result });
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
   }),
 });
 
@@ -44,17 +59,15 @@ http.route({
   method: "POST",
   handler: httpAction(async (ctx, request) => {
     if (!validateAuth(request)) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { "Content-Type": "application/json", ...corsHeaders() },
-      });
+      return jsonResponse({ error: "Unauthorized" }, 401);
     }
-    const body = await request.json();
-    const result = await ctx.runMutation(internal.briefs.ingest, body);
-    return new Response(JSON.stringify({ success: true, ...result }), {
-      status: 200,
-      headers: { "Content-Type": "application/json", ...corsHeaders() },
-    });
+    try {
+      const body = await request.json();
+      const result = await ctx.runMutation(internal.briefs.ingest, body);
+      return jsonResponse({ success: true, ...result });
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
   }),
 });
 
@@ -63,17 +76,15 @@ http.route({
   method: "POST",
   handler: httpAction(async (ctx, request) => {
     if (!validateAuth(request)) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { "Content-Type": "application/json", ...corsHeaders() },
-      });
+      return jsonResponse({ error: "Unauthorized" }, 401);
     }
-    const body = await request.json();
-    const result = await ctx.runMutation(internal.blogs.ingest, body);
-    return new Response(JSON.stringify({ success: true, ...result }), {
-      status: 200,
-      headers: { "Content-Type": "application/json", ...corsHeaders() },
-    });
+    try {
+      const body = await request.json();
+      const result = await ctx.runMutation(internal.blogs.ingest, body);
+      return jsonResponse({ success: true, ...result });
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
   }),
 });
 
@@ -82,17 +93,15 @@ http.route({
   method: "POST",
   handler: httpAction(async (ctx, request) => {
     if (!validateAuth(request)) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { "Content-Type": "application/json", ...corsHeaders() },
-      });
+      return jsonResponse({ error: "Unauthorized" }, 401);
     }
-    const body = await request.json();
-    const result = await ctx.runMutation(internal.agentActivity.ingest, body);
-    return new Response(JSON.stringify({ success: true, ...result }), {
-      status: 200,
-      headers: { "Content-Type": "application/json", ...corsHeaders() },
-    });
+    try {
+      const body = await request.json();
+      const result = await ctx.runMutation(internal.agentActivity.ingest, body);
+      return jsonResponse({ success: true, ...result });
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
   }),
 });
 
@@ -101,17 +110,15 @@ http.route({
   method: "POST",
   handler: httpAction(async (ctx, request) => {
     if (!validateAuth(request)) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { "Content-Type": "application/json", ...corsHeaders() },
-      });
+      return jsonResponse({ error: "Unauthorized" }, 401);
     }
-    const body = await request.json();
-    const result = await ctx.runMutation(internal.topicClusters.ingest, body);
-    return new Response(JSON.stringify({ success: true, ...result }), {
-      status: 200,
-      headers: { "Content-Type": "application/json", ...corsHeaders() },
-    });
+    try {
+      const body = await request.json();
+      const result = await ctx.runMutation(internal.topicClusters.ingest, body);
+      return jsonResponse({ success: true, ...result });
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
   }),
 });
 
@@ -120,17 +127,15 @@ http.route({
   method: "POST",
   handler: httpAction(async (ctx, request) => {
     if (!validateAuth(request)) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { "Content-Type": "application/json", ...corsHeaders() },
-      });
+      return jsonResponse({ error: "Unauthorized" }, 401);
     }
-    const body = await request.json();
-    const result = await ctx.runMutation(internal.toolOpportunities.ingest, body);
-    return new Response(JSON.stringify({ success: true, ...result }), {
-      status: 200,
-      headers: { "Content-Type": "application/json", ...corsHeaders() },
-    });
+    try {
+      const body = await request.json();
+      const result = await ctx.runMutation(internal.toolOpportunities.ingest, body);
+      return jsonResponse({ success: true, ...result });
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
   }),
 });
 
@@ -139,17 +144,15 @@ http.route({
   method: "POST",
   handler: httpAction(async (ctx, request) => {
     if (!validateAuth(request)) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { "Content-Type": "application/json", ...corsHeaders() },
-      });
+      return jsonResponse({ error: "Unauthorized" }, 401);
     }
-    const body = await request.json();
-    await ctx.runMutation(internal.blogs.updateEnrichment, body);
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json", ...corsHeaders() },
-    });
+    try {
+      const body = await request.json();
+      await ctx.runMutation(internal.blogs.updateEnrichment, body);
+      return jsonResponse({ success: true });
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
   }),
 });
 
@@ -158,17 +161,15 @@ http.route({
   method: "POST",
   handler: httpAction(async (ctx, request) => {
     if (!validateAuth(request)) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { "Content-Type": "application/json", ...corsHeaders() },
-      });
+      return jsonResponse({ error: "Unauthorized" }, 401);
     }
-    const body = await request.json();
-    const result = await ctx.runMutation(internal.briefs.updateStatus, body);
-    return new Response(JSON.stringify(result), {
-      status: 200,
-      headers: { "Content-Type": "application/json", ...corsHeaders() },
-    });
+    try {
+      const body = await request.json();
+      const result = await ctx.runMutation(internal.briefs.updateStatus, body);
+      return jsonResponse(result);
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
   }),
 });
 
@@ -177,17 +178,15 @@ http.route({
   method: "POST",
   handler: httpAction(async (ctx, request) => {
     if (!validateAuth(request)) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { "Content-Type": "application/json", ...corsHeaders() },
-      });
+      return jsonResponse({ error: "Unauthorized" }, 401);
     }
-    const body = await request.json();
-    const result = await ctx.runMutation(internal.briefs.upsert, body);
-    return new Response(JSON.stringify({ success: true, ...result }), {
-      status: 200,
-      headers: { "Content-Type": "application/json", ...corsHeaders() },
-    });
+    try {
+      const body = await request.json();
+      const result = await ctx.runMutation(internal.briefs.upsert, body);
+      return jsonResponse({ success: true, ...result });
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
   }),
 });
 

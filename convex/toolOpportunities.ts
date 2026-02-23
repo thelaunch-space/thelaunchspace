@@ -1,5 +1,6 @@
 import { internalMutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { logActivityIfNew } from "./lib/activityHelper";
 
 export const ingest = internalMutation({
   args: {
@@ -16,6 +17,14 @@ export const ingest = internalMutation({
   },
   handler: async (ctx, args) => {
     const id = await ctx.db.insert("toolOpportunities", args);
+
+    await logActivityIfNew(ctx, {
+      agentName: args.agentName,
+      action: "tool_scan",
+      message: `Identified tool opportunity: '${args.toolName}'`,
+      dedupKey: `tool_scan:${args.toolName}`,
+    });
+
     return { id };
   },
 });

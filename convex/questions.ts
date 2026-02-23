@@ -1,6 +1,7 @@
 import { internalMutation, query } from "./_generated/server";
 import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
+import { logActivityIfNew } from "./lib/activityHelper";
 
 const questionValidator = v.object({
   // Core identification
@@ -51,6 +52,21 @@ export const ingestBatch = internalMutation({
         inserted++;
       }
     }
+
+    // Log scan activity
+    if (inserted > 0 || updated > 0) {
+      const subreddits = [...new Set(args.questions.map((q) => q.subreddit))];
+      const subredditList = subreddits.join(", ");
+      const dateKey = new Date().toISOString().slice(0, 10);
+      await logActivityIfNew(ctx, {
+        agentName: args.questions[0].agentName,
+        action: "scan_complete",
+        message: `Scanned ${subredditList} and found ${inserted} new questions`,
+        dedupKey: `scan_complete:${dateKey}:${subreddits.sort().join(",")}`,
+        metadata: { subreddits, inserted, updated },
+      });
+    }
+
     return { inserted, updated };
   },
 });

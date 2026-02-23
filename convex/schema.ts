@@ -160,8 +160,10 @@ export default defineSchema({
     message: v.string(),            // One-line description
     timestamp: v.string(),
     metadata: v.optional(v.any()),  // Extra context (flexible)
+    dedupKey: v.optional(v.string()), // Idempotent insert key — prevents duplicate activity entries
   })
     .index("by_agentName", ["agentName"])
     .index("by_timestamp", ["timestamp"])
-    .index("by_agentName_timestamp", ["agentName", "timestamp"]),
+    .index("by_agentName_timestamp", ["agentName", "timestamp"])
+    .index("by_dedupKey", ["dedupKey"]),
 });
