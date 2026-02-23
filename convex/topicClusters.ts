@@ -15,6 +15,25 @@ export const ingest = internalMutation({
     updatedAt: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    // Dedup by pillarName + clusterTopic composite key
+    const existing = await ctx.db
+      .query("topicClusters")
+      .withIndex("by_pillar_cluster", (q) =>
+        q.eq("pillarName", args.pillarName).eq("clusterTopic", args.clusterTopic)
+      )
+      .first();
+
+    if (existing) {
+      await ctx.db.patch(existing._id, {
+        status: args.status,
+        blogUrl: args.blogUrl,
+        targetKeyword: args.targetKeyword,
+        intentType: args.intentType,
+        updatedAt: args.updatedAt ?? new Date().toISOString(),
+      });
+      return { id: existing._id, action: "updated" as const };
+    }
+
     const id = await ctx.db.insert("topicClusters", args);
 
     await logActivityIfNew(ctx, {
@@ -24,7 +43,7 @@ export const ingest = internalMutation({
       dedupKey: `cluster_mapping:${args.pillarName}:${args.clusterTopic}`,
     });
 
-    return { id };
+    return { id, action: "inserted" as const };
   },
 });
 

@@ -97,7 +97,8 @@ export default defineSchema({
   })
     .index("by_status", ["status"])
     .index("by_agentName", ["agentName"])
-    .index("by_createdAt", ["createdAt"]),
+    .index("by_createdAt", ["createdAt"])
+    .index("by_slug", ["slug"]),
 
   // Vidura's topic clusters — SEO content planning
   topicClusters: defineTable({
@@ -112,6 +113,7 @@ export default defineSchema({
     updatedAt: v.optional(v.string()),
   })
     .index("by_pillarName", ["pillarName"])
+    .index("by_pillar_cluster", ["pillarName", "clusterTopic"])
     .index("by_status", ["status"])
     .index("by_agentName", ["agentName"])
     .index("by_createdAt", ["createdAt"]),
@@ -131,7 +133,8 @@ export default defineSchema({
   })
     .index("by_status", ["status"])
     .index("by_agentName", ["agentName"])
-    .index("by_createdAt", ["createdAt"]),
+    .index("by_createdAt", ["createdAt"])
+    .index("by_toolName", ["toolName"]),
 
   // Pitch page meeting bookings
   pitchBookings: defineTable({

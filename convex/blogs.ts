@@ -16,6 +16,25 @@ export const ingest = internalMutation({
     briefId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    // Dedup by slug — if blog with same slug exists, update it instead
+    const existing = await ctx.db
+      .query("blogs")
+      .withIndex("by_slug", (q) => q.eq("slug", args.slug))
+      .first();
+
+    if (existing) {
+      await ctx.db.patch(existing._id, {
+        title: args.title,
+        url: args.url,
+        keyword: args.keyword,
+        status: args.status,
+        wordCount: args.wordCount,
+        publishedAt: args.publishedAt,
+        briefId: args.briefId,
+      });
+      return { id: existing._id, action: "updated" as const };
+    }
+
     const id = await ctx.db.insert("blogs", args);
 
     await logActivityIfNew(ctx, {
@@ -25,7 +44,7 @@ export const ingest = internalMutation({
       dedupKey: `blog_published:${args.slug}`,
     });
 
-    return { id };
+    return { id, action: "inserted" as const };
   },
 });
 
@@ -39,7 +58,7 @@ export const updateEnrichment = internalMutation({
   handler: async (ctx, args) => {
     const blog = await ctx.db
       .query("blogs")
-      .filter((q) => q.eq(q.field("slug"), args.slug))
+      .withIndex("by_slug", (q) => q.eq("slug", args.slug))
       .first();
     if (!blog) throw new Error(`Blog not found with slug: ${args.slug}`);
     await ctx.db.patch(blog._id, {

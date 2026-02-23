@@ -173,6 +173,47 @@ http.route({
   }),
 });
 
+// Upsert aliases — same mutations (which now have dedup logic), new endpoint names
+// Partha updated agent skill files to use these paths
+http.route({
+  path: "/upsertQuestions",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    if (!validateAuth(request)) {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
+    try {
+      const body = await request.json();
+      const questions = Array.isArray(body)
+        ? body
+        : Array.isArray(body.questions)
+          ? body.questions
+          : [body];
+      const result = await ctx.runMutation(internal.questions.ingestBatch, { questions });
+      return jsonResponse({ success: true, ...result });
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
+  }),
+});
+
+http.route({
+  path: "/upsertBlog",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    if (!validateAuth(request)) {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
+    try {
+      const body = await request.json();
+      const result = await ctx.runMutation(internal.blogs.ingest, body);
+      return jsonResponse({ success: true, ...result });
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
+  }),
+});
+
 http.route({
   path: "/upsertBrief",
   method: "POST",
@@ -191,7 +232,7 @@ http.route({
 });
 
 // Handle CORS preflight for all ingestion routes
-for (const path of ["/ingestQuestions", "/ingestBrief", "/ingestBlog", "/ingestActivity", "/ingestTopicCluster", "/ingestToolOpportunity", "/updateBlogEnrichment", "/updateBriefStatus", "/upsertBrief"]) {
+for (const path of ["/ingestQuestions", "/ingestBrief", "/ingestBlog", "/ingestActivity", "/ingestTopicCluster", "/ingestToolOpportunity", "/updateBlogEnrichment", "/updateBriefStatus", "/upsertQuestions", "/upsertBlog", "/upsertBrief"]) {
   http.route({
     path,
     method: "OPTIONS",

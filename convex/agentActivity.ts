@@ -9,10 +9,22 @@ export const ingest = internalMutation({
     message: v.string(),
     timestamp: v.string(),
     metadata: v.optional(v.any()),
+    dedupKey: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    // If agent provides a dedupKey, check for duplicates before inserting
+    if (args.dedupKey) {
+      const existing = await ctx.db
+        .query("agentActivity")
+        .withIndex("by_dedupKey", (q) => q.eq("dedupKey", args.dedupKey))
+        .first();
+      if (existing) {
+        return { id: existing._id, deduplicated: true };
+      }
+    }
+
     const id = await ctx.db.insert("agentActivity", args);
-    return { id };
+    return { id, deduplicated: false };
   },
 });
 

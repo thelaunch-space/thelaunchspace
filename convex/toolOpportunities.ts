@@ -16,6 +16,25 @@ export const ingest = internalMutation({
     createdAt: v.string(),
   },
   handler: async (ctx, args) => {
+    // Dedup by toolName
+    const existing = await ctx.db
+      .query("toolOpportunities")
+      .withIndex("by_toolName", (q) => q.eq("toolName", args.toolName))
+      .first();
+
+    if (existing) {
+      await ctx.db.patch(existing._id, {
+        sourceQuestion: args.sourceQuestion,
+        whyTool: args.whyTool,
+        toolSolution: args.toolSolution,
+        targetKeyword: args.targetKeyword,
+        complexity: args.complexity,
+        status: args.status,
+        krishnaNotes: args.krishnaNotes,
+      });
+      return { id: existing._id, action: "updated" as const };
+    }
+
     const id = await ctx.db.insert("toolOpportunities", args);
 
     await logActivityIfNew(ctx, {
@@ -25,7 +44,7 @@ export const ingest = internalMutation({
       dedupKey: `tool_scan:${args.toolName}`,
     });
 
-    return { id };
+    return { id, action: "inserted" as const };
   },
 });
 
