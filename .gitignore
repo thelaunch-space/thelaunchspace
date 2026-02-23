@@ -22,6 +22,9 @@ dist-ssr
 *.sw?
 .env
 
+# Claude Code local settings (contains deploy keys)
+.claude/
+
 # Next.js
 .next/
 out/
