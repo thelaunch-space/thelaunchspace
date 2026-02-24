@@ -1,8 +1,11 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { GEO_COOKIE_NAME, GEO_COOKIE_MAX_AGE } from "@/lib/geo-savings";
 
-function setGeoCookie(request: NextRequest, response: NextResponse) {
+// Clerk auth is handled entirely client-side via ClerkProvider + useAuth().
+// This middleware only sets the geo cookie for regional pricing (INR vs USD).
+export default function middleware(request: NextRequest) {
+  const response = NextResponse.next();
+
   const existing = request.cookies.get(GEO_COOKIE_NAME);
   if (!existing) {
     const country = request.headers.get("x-country") ?? "";
@@ -14,22 +17,9 @@ function setGeoCookie(request: NextRequest, response: NextResponse) {
       path: "/",
     });
   }
+
   return response;
 }
-
-// Use Clerk middleware when secret key is available, otherwise plain middleware.
-// Clerk auth still works client-side via ClerkProvider regardless.
-const hasClerkKey = !!process.env.CLERK_SECRET_KEY;
-
-const handler = hasClerkKey
-  ? clerkMiddleware((_auth, request) => {
-      return setGeoCookie(request, NextResponse.next());
-    })
-  : (request: NextRequest) => {
-      return setGeoCookie(request, NextResponse.next());
-    };
-
-export default handler;
 
 export const config = {
   matcher: [
