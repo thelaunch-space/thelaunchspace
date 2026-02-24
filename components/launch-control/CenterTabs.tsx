@@ -10,7 +10,6 @@ import type { BlogPost } from "@/lib/blog";
 
 // Lazy-load tab panels to avoid heavy initial bundle
 const CommunitiesPanel = dynamic(() => import("./CommunitiesPanel"));
-const CommunitiesPreview = dynamic(() => import("./CommunitiesPreview"));
 const QuestionsTable = dynamic(() => import("./QuestionsTable"));
 const QuestionsPreview = dynamic(() => import("./QuestionsPreview"));
 const BriefsPanel = dynamic(() => import("./BriefsPanel"));
@@ -108,7 +107,7 @@ export default function CenterTabs({ weeklyStats, allTimeStats, blogPosts }: Cen
       )}
       {activeTab === "communities" && (
         <div className="rounded-2xl border border-border-color/40 bg-surface overflow-hidden lg:flex lg:flex-col lg:flex-1 lg:min-h-0">
-          {isSignedIn ? <CommunitiesPanel /> : <CommunitiesPreview />}
+          <CommunitiesPanel />
         </div>
       )}
       {activeTab === "strategy" && (

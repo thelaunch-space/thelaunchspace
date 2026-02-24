@@ -2,8 +2,6 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import PreviewGate from "./PreviewGate";
-
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
   planned: { label: "Planned", color: "text-amber-700", bg: "bg-amber-500/10 border-amber-500/20" },
   "brief-ready": { label: "Brief Ready", color: "text-blue-700", bg: "bg-blue-500/10 border-blue-500/20" },
@@ -16,8 +14,8 @@ const COMPLEXITY_CONFIG: Record<string, { label: string; color: string; bg: stri
 };
 
 export default function StrategyPreview() {
-  const clusters = useQuery(api.topicClusters.listRecent, { limit: 3 });
-  const tools = useQuery(api.toolOpportunities.listRecent, { limit: 3 });
+  const clusters = useQuery(api.topicClusters.listRecent, { limit: 20 });
+  const tools = useQuery(api.toolOpportunities.listRecent, { limit: 10 });
 
   if (clusters === undefined || tools === undefined) {
     return (
@@ -38,8 +36,7 @@ export default function StrategyPreview() {
   }
 
   return (
-    <PreviewGate>
-      <div className="space-y-4 p-4">
+    <div className="space-y-4 p-4">
         {/* Topic Clusters */}
         {clusters.length > 0 && (
           <div>
@@ -96,6 +93,5 @@ export default function StrategyPreview() {
           </div>
         )}
       </div>
-    </PreviewGate>
   );
 }

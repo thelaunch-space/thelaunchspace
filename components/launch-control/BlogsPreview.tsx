@@ -4,8 +4,6 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { CATEGORY_LABELS } from "@/lib/blog-labels";
 import type { BlogPost } from "@/lib/blog";
-import PreviewGate from "./PreviewGate";
-
 interface BlogsPreviewProps {
   blogPosts: BlogPost[];
 }
@@ -31,8 +29,7 @@ export default function BlogsPreview({ blogPosts }: BlogsPreviewProps) {
   });
 
   return (
-    <PreviewGate>
-      <div className="lg:flex lg:flex-col lg:flex-1 lg:min-h-0">
+    <div className="lg:flex lg:flex-col lg:flex-1 lg:min-h-0">
         {/* Mobile: card view */}
         <div className="md:hidden space-y-3 p-3">
           {posts.map((p) => (
@@ -101,6 +98,5 @@ export default function BlogsPreview({ blogPosts }: BlogsPreviewProps) {
           </table>
         </div>
       </div>
-    </PreviewGate>
   );
 }

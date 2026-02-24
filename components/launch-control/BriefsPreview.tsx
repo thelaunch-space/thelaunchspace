@@ -8,14 +8,12 @@ import remarkGfm from "remark-gfm";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { BRIEF_STATUS_CONFIG } from "@/lib/launch-control-types";
-import PreviewGate from "./PreviewGate";
-
 /**
- * Public read-only preview of research briefs.
- * First 3 are clickable to view full brief content.
+ * Public read-only view of research briefs.
+ * Shows brief metadata openly. Full brief content viewable via modal.
  */
 export default function BriefsPreview() {
-  const briefs = useQuery(api.briefs.listMetadata, { limit: 6 });
+  const briefs = useQuery(api.briefs.listMetadata, { limit: 20 });
   const [selectedId, setSelectedId] = useState<Id<"briefs"> | null>(null);
 
   if (briefs === undefined) {
@@ -38,22 +36,17 @@ export default function BriefsPreview() {
 
   return (
     <>
-      <PreviewGate>
-        <div className="space-y-3 p-4">
-          {briefs.map((b, i) => {
+      <div className="space-y-3 p-4">
+          {briefs.map((b) => {
             const statusConf = BRIEF_STATUS_CONFIG[b.status] ?? { label: b.status, color: "text-text-secondary", bg: "bg-surface-alt border-border-color/30" };
-            const isClickable = i < 5;
             return (
               <button
                 key={b._id}
-                onClick={isClickable ? () => setSelectedId(b._id) : undefined}
-                disabled={!isClickable}
-                className={`w-full text-left rounded-xl border border-border-color/30 bg-surface-alt/30 p-3 transition-colors ${
-                  isClickable ? "hover:border-accent-blue/40 hover:bg-surface-alt/50 cursor-pointer" : ""
-                }`}
+                onClick={() => setSelectedId(b._id)}
+                className="w-full text-left rounded-xl border border-border-color/30 bg-surface-alt/30 p-3 transition-colors hover:border-accent-blue/40 hover:bg-surface-alt/50 cursor-pointer"
               >
                 <div className="flex items-start justify-between gap-2">
-                  <p className={`text-xs font-medium line-clamp-2 ${isClickable ? "text-text-primary" : "text-text-secondary"}`}>{b.title}</p>
+                  <p className="text-xs font-medium line-clamp-2 text-text-primary">{b.title}</p>
                   <span className={`shrink-0 text-[10px] font-mono px-1.5 py-0.5 rounded border ${statusConf.bg} ${statusConf.color}`}>
                     {statusConf.label}
                   </span>
@@ -71,7 +64,6 @@ export default function BriefsPreview() {
             );
           })}
         </div>
-      </PreviewGate>
 
       {selectedId && (
         <PublicBriefModal briefId={selectedId} onClose={() => setSelectedId(null)} />
