@@ -1,6 +1,14 @@
 [build]
-  command = "npx convex deploy --cmd 'npm run build'"
   publish = ".next"
+
+[context.production]
+  command = "npx convex deploy --cmd 'npm run build'"
+
+[context.deploy-preview]
+  command = "npm run build"
+
+[context.branch-deploy]
+  command = "npm run build"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
