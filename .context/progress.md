@@ -1,6 +1,6 @@
 # Progress — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-22 (question dedup fix, Convex 1.32.0 update)
+Last updated: 2026-02-24 (3 blog PRs merged, context docs updated)
 
 ## Completed
 - [x] Project scaffolding (originally Vite + React 18, later migrated to Next.js 14)
@@ -179,6 +179,17 @@ Last updated: 2026-02-22 (question dedup fix, Convex 1.32.0 update)
 - [x] **Question dedup fix** — `ingestBatch` now upserts by URL (query `by_url` index, patch if exists, insert if new). Prevents duplicate rows from Vibhishana's daily Reddit scans. `by_url` index added to `questions` table in schema. 249 duplicates cleaned from prod (1020 → 771). (2026-02-22)
 - [x] **Convex updated to 1.32.0** — Minor version bump from 1.31.7. (2026-02-22)
 
+- [x] **Documents table + endpoint** — 8th Convex table (`documents`) for agent research reports, strategy docs, process docs. Upsert by slug. `convex/documents.ts` with `listMetadata` (admin), `getDocument` (admin), `upsert` (internal). HTTP endpoint `/upsertDocument`. Auto-logs activity on new document creation via shared `convex/lib/activityHelper.ts`.
+- [x] **Upsert endpoints** — New HTTP routes `/upsertQuestions`, `/upsertBlog`, `/upsertBrief`, `/upsertDocument` — same mutations with dedup logic, cleaner names. Partha updated agent skill files to use these paths.
+- [x] **Blog enrichment endpoints** — `/updateBlogEnrichment` (update enrichment count/date/log by slug) + `/updateBriefStatus` (update brief status by slug). Both via HTTP Actions.
+- [x] **Activity dedup** — `dedupKey` field + `by_dedupKey` index on `agentActivity` table. Prevents duplicate milestone entries.
+- [x] **Blog dedup** — `by_slug` index on `blogs` table. Upsert by slug in `blogs.ingest`.
+- [x] **Shared activity helper** — `convex/lib/activityHelper.ts` (`logActivityIfNew`) — dedup-aware activity logging used by documents and other mutations.
+- [x] **New blog: "Invoice Automation for Small Businesses: When to Automate"** — `app/blogs/ai-tools/invoice-automation-small-business-ocr-custom/`. 3rd post in ai-tools category. (2026-02-24)
+- [x] **Enriched blog: "When to Skip Landing Page Tests"** — Added stats, comparison table, FAQ section. (2026-02-24)
+- [x] **Enriched blog: "When to Stop Using Spreadsheets for Leads"** — Added statistics, FAQ section, comparison table. (2026-02-24)
+- [x] **New blog posts from agents (Feb 22-24 batch):** "CRM for Small Service Businesses" (enriched), "AI Generated Code Deployment Reality" (enriched), "Why Most Founders Fail at Distribution" (enriched), "Why Your MVP Costs Too Much" (enriched). All merged via batch PR review.
+
 ## In Progress
 - Nothing currently in progress
 
@@ -190,8 +201,10 @@ Last updated: 2026-02-22 (question dedup fix, Convex 1.32.0 update)
 - **Question count mismatch** — Prod Convex has 771 unique questions, Google Sheet has 891. ~120 questions may not have been pushed to Convex, or have slightly different URLs. Needs investigation.
 
 ## Recent Changes (latest first)
-1. Question dedup fix — `ingestBatch` upserts by URL, `by_url` index, 249 prod duplicates cleaned (2026-02-22)
-2. Convex updated 1.31.7 → 1.32.0 (2026-02-22)
+1. 3 blog PRs merged (#44 #45 #46) — 1 new blog (invoice automation) + 2 enriched blogs (landing page tests, spreadsheets for leads) (2026-02-24)
+2. Documents table + upsert endpoints + blog enrichment endpoints + activity dedup + shared activity helper (2026-02-22–24)
+3. Question dedup fix — `ingestBatch` upserts by URL, `by_url` index, 249 prod duplicates cleaned (2026-02-22)
+4. Convex updated 1.31.7 → 1.32.0 (2026-02-22)
 3. Scoreboard hero pair layout + Cost Saved tooltip legibility (2026-02-18)
 2. Vidura agent + strategy pipeline + Blogs table upgrade + Meetings tab — 6th agent, 2 new Convex tables, 3 new LC components, BlogsPanel→BlogsTable (2026-02-17)
 3. Geo-detected cost savings — INR/USD pricing, middleware geo cookie, SavingsTooltip (2026-02-17)

@@ -1,6 +1,6 @@
 # Architecture — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-18 (Vidura agent, strategy pipeline, Blogs table, geo savings, 7 LC tabs, pricing update)
+Last updated: 2026-02-24 (documents table, upsert endpoints, blog counts updated, 8 Convex tables)
 
 ## Overview
 Next.js 14 App Router application. Server-side rendered for SEO/crawlability. Landing page content rendered as a client component for interactivity. Blog posts are static Server Components created by an AI agent via GitHub PRs. "Build Your AI Team" section showcases 6 AI agents with index + detail pages. Webhook proxy via API route (server-side, no secrets exposed to browser). Hosted on Netlify. Google Analytics (GA4) tracking via `next/script`. **Convex** real-time database for Launch Control dashboard (agent activity, questions, briefs, blogs, topic clusters, tool opportunities, pitch bookings). **Clerk** authentication for admin access. Entire app wrapped in ConvexProviderWithClerk + ClerkProvider. **Geo-detected pricing** — middleware sets `geo_region` cookie (IN/INTL) for localized cost savings display.
@@ -28,11 +28,17 @@ app/
 │   ├── hire-developer-vs-build-with-ai/
 │   ├── agency-vs-in-house-development/
 │   └── why-mvp-costs-too-much-validation-first/
-├── blogs/founder-advice/   # Blog topic folder (2 posts)
+├── blogs/founder-advice/   # Blog topic folder (6 posts)
 │   ├── validate-startup-idea-domain-expert/
-│   └── post-mvp-doubt-should-you-keep-going/
-├── blogs/ai-tools/         # Blog topic folder (1 post)
-│   └── ai-tools-non-technical-founders-mvp/
+│   ├── post-mvp-doubt-should-you-keep-going/
+│   ├── crm-for-small-service-business/
+│   ├── why-founders-fail-distribution-getting-customers/
+│   ├── when-to-skip-landing-page-tests/
+│   └── when-to-stop-using-spreadsheets-for-leads/
+├── blogs/ai-tools/         # Blog topic folder (3 posts)
+│   ├── ai-tools-non-technical-founders-mvp/
+│   ├── ai-generated-code-deployment-reality/
+│   └── invoice-automation-small-business-ocr-custom/
 ├── build-your-ai-team/     # AI team showcase section (legacy, redirects planned to /hire-your-24x7-team)
 │   ├── layout.tsx          # Section layout
 │   ├── page.tsx            # Agent index page (card grid)
@@ -127,15 +133,18 @@ public/
 └── ...                     # Static assets (logos, OG image, favicon)
 convex/
 ├── _generated/             # Auto-generated types + API references (do not edit)
-├── schema.ts               # 7 tables: questions, briefs, blogs, agentActivity, topicClusters, toolOpportunities, pitchBookings (with indexes)
+├── schema.ts               # 8 tables: questions, briefs, blogs, agentActivity, topicClusters, toolOpportunities, pitchBookings, documents (with indexes)
 ├── auth.config.ts          # Clerk identity provider config for Convex
-├── http.ts                 # HTTP Action router — 6+ ingestion endpoints with Bearer token auth
-├── questions.ts            # ingestBatch (internal) + listRecent (public) + listFullDetails (admin)
-├── briefs.ts               # ingest (internal) + listMetadata (public) + getFullBrief/listFull (admin)
-├── blogs.ts                # ingest (internal) + listRecent (public) + enrichment fields (enrichmentCount, lastEnrichmentDate, enrichmentLog)
-├── agentActivity.ts        # ingest (internal) + agentStatuses/recentFeed (public) + fullLog (admin)
+├── http.ts                 # HTTP Action router — 12 POST endpoints (6 ingest + 4 upsert aliases + 2 update) with Bearer token auth + CORS
+├── questions.ts            # ingestBatch (internal, upsert by URL) + listRecent (public) + listFullDetails (admin)
+├── briefs.ts               # ingest (internal) + upsert (internal, dedup by slug) + updateStatus (internal) + listMetadata (public) + getFullBrief/getPublicBrief/listFull (admin)
+├── blogs.ts                # ingest (internal, upsert by slug) + updateEnrichment (internal) + listRecent (public) + enrichment fields
+├── agentActivity.ts        # ingest (internal, dedup by dedupKey) + agentStatuses/recentFeed (public) + fullLog (admin)
 ├── topicClusters.ts        # ingest (internal) + listRecent (public) — Vidura's SEO topic clusters
-└── toolOpportunities.ts    # ingest (internal) + listRecent (public) — Vidura's interactive tool proposals
+├── toolOpportunities.ts    # ingest (internal) + listRecent (public) — Vidura's interactive tool proposals
+├── documents.ts            # upsert (internal, dedup by slug) + listMetadata (admin) + getDocument (admin) — agent research/strategy docs
+└── lib/
+    └── activityHelper.ts   # logActivityIfNew — shared dedup-aware activity logging helper
 skills/
 ├── convex-push-scanner.SKILL.md   # Vibhishana: push questions (batch) + briefs (with markdown) to Convex
 ├── convex-push-blog.SKILL.md      # Vyasa: push blog metadata to Convex after PR creation
@@ -266,27 +275,43 @@ RootLayout (Server)
 
 ## Convex Backend (Launch Control)
 
-### Database Tables (Convex)
+### Database Tables (Convex) — 8 tables
 | Table | Purpose | Ingestion |
 |-------|---------|-----------|
-| `questions` | Vibhishana's Reddit scans | Batch via `/ingestQuestions` |
-| `briefs` | Vibhishana's research briefs | Single via `/ingestBrief` |
-| `blogs` | Vyasa's published blog metadata (+enrichment tracking) | Single via `/ingestBlog` |
-| `agentActivity` | All agent milestones | Single via `/ingestActivity` |
+| `questions` | Vibhishana's Reddit scans | Batch via `/ingestQuestions` or `/upsertQuestions` (upsert by URL) |
+| `briefs` | Vibhishana's research briefs | Single via `/ingestBrief` or `/upsertBrief` (upsert by slug) |
+| `blogs` | Vyasa's published blog metadata (+enrichment tracking) | Single via `/ingestBlog` or `/upsertBlog` (upsert by slug) |
+| `agentActivity` | All agent milestones (dedup by dedupKey) | Single via `/ingestActivity` |
 | `topicClusters` | Vidura's SEO topic clusters (pillar→cluster mapping) | Single via `/ingestTopicCluster` |
 | `toolOpportunities` | Vidura's interactive tool proposals | Single via `/ingestToolOpportunity` |
 | `pitchBookings` | Lead capture from pitch page meeting form | Direct mutation |
+| `documents` | Agent research reports, strategy docs, process docs | Single via `/upsertDocument` (upsert by slug) |
 
-### HTTP Ingestion Endpoints
+### HTTP Endpoints (12 POST routes)
 Base URL: `https://curious-iguana-738.convex.site` (production deployment)
-- All 4 POST endpoints require `Authorization: Bearer <AGENT_API_KEY>`
+- All POST endpoints require `Authorization: Bearer <AGENT_API_KEY>`
 - AGENT_API_KEY stored in Convex env vars (server-side only)
-- CORS preflight (OPTIONS) handled for all endpoints
-- `/ingestQuestions` accepts array OR single object (normalizes to array)
+- CORS preflight (OPTIONS) handled for all 12 endpoints
+- `/ingestQuestions` and `/upsertQuestions` accept array OR single object (normalizes to array)
+
+| Endpoint | Purpose |
+|----------|---------|
+| `/ingestQuestions` | Batch ingest questions (upsert by URL) |
+| `/ingestBrief` | Ingest single brief |
+| `/ingestBlog` | Ingest blog metadata (upsert by slug) |
+| `/ingestActivity` | Ingest milestone activity (dedup by dedupKey) |
+| `/ingestTopicCluster` | Ingest topic cluster |
+| `/ingestToolOpportunity` | Ingest tool opportunity |
+| `/updateBlogEnrichment` | Update blog enrichment count/date/log by slug |
+| `/updateBriefStatus` | Update brief status by slug |
+| `/upsertQuestions` | Alias for /ingestQuestions (same dedup logic) |
+| `/upsertBlog` | Alias for /ingestBlog (same dedup logic) |
+| `/upsertBrief` | Upsert brief by slug |
+| `/upsertDocument` | Upsert document by slug (auto-logs activity) |
 
 ### Query Functions
-- **Public (no auth):** `questions.listRecent`, `briefs.listMetadata`, `blogs.listRecent`, `agentActivity.agentStatuses`, `agentActivity.recentFeed`, `agentActivity.weeklyStats`, `agentActivity.allTimeStats`, `agentActivity.agentTodayActivity`, `agentActivity.agentWeeklySummary`
-- **Admin (auth required):** `questions.listFullDetails`, `questions.communityBreakdown`, `briefs.getFullBrief`, `briefs.listFull`, `agentActivity.fullLog`
+- **Public (no auth):** `questions.listRecent`, `briefs.listMetadata`, `briefs.getPublicBrief`, `blogs.listRecent`, `agentActivity.agentStatuses`, `agentActivity.recentFeed`, `agentActivity.weeklyStats`, `agentActivity.allTimeStats`, `agentActivity.agentTodayActivity`, `agentActivity.agentWeeklySummary`
+- **Admin (auth required):** `questions.listFullDetails`, `questions.communityBreakdown`, `briefs.getFullBrief`, `briefs.listFull`, `agentActivity.fullLog`, `documents.listMetadata`, `documents.getDocument`
 - Admin queries check `ctx.auth.getUserIdentity()` — throw if not authenticated
 
 ### Auth

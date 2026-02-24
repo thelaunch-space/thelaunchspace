@@ -2,7 +2,7 @@
 
 Status: LIVE IN PRODUCTION
 Created: 2026-02-14
-Last updated: 2026-02-19 (merged from live-dashboard-convex.md + launch-control-frontend-spec.md)
+Last updated: 2026-02-24 (8th table documents, upsert endpoints, dedup indexes, blog counts updated)
 URL: `thelaunch.space/launch-control`
 
 ---
@@ -57,7 +57,7 @@ AGENT SIDE (VPS — Partha configures)
 
 CONVEX BACKEND
     HTTP Actions (convex/http.ts) → validate shared secret → internalMutation → writes to DB
-    Database tables: questions, briefs, blogs, agentActivity, topicClusters, toolOpportunities, pitchBookings
+    Database tables: questions, briefs, blogs, agentActivity, topicClusters, toolOpportunities, pitchBookings, documents
     Public queries (no auth): list questions, briefs metadata, blogs, agent status
     Admin queries (auth required): full brief content, activity log, scanner analysis
 
@@ -74,7 +74,7 @@ Agent does work on VPS → curl POST to Convex HTTP Action → validates secret 
 
 ---
 
-## 4. Convex Schema (as deployed — 7 tables)
+## 4. Convex Schema (as deployed — 8 tables)
 
 **Production deployment:** `curious-iguana-738`
 **HTTP base URL:** `https://curious-iguana-738.convex.site`
@@ -100,7 +100,7 @@ Agent does work on VPS → curl POST to Convex HTTP Action → validates secret 
 | `agentName` | string | yes | Always "Vibhishana" |
 | `batchId` | string | optional | Groups questions from same scan |
 
-Indexes: `by_scannedAt`, `by_agentName`, `by_status`
+Indexes: `by_scannedAt`, `by_agentName`, `by_status`, `by_url`
 
 ### Table 2: `briefs` (Vibhishana's research briefs — 20 fields)
 
@@ -145,22 +145,23 @@ Indexes: `by_status`, `by_agentName`, `by_createdAt`, `by_category`
 | `briefId` | string | optional |
 | `enrichmentCount` | number | optional |
 | `lastEnrichmentDate` | string | optional |
-| `enrichmentLog` | any | optional |
+| `enrichmentLog` | string | optional |
 
-Indexes: `by_status`, `by_agentName`, `by_createdAt`
+Indexes: `by_status`, `by_agentName`, `by_createdAt`, `by_slug`
 
 ### Table 4: `agentActivity` (All agents — milestones only)
 
 | Field | Type | Required |
 |-------|------|----------|
 | `agentName` | string | yes | "Parthasarathi" / "Vibhishana" / "Vyasa" / "Vidura" |
-| `action` | string | yes | "health_check" / "scan_complete" / "brief_created" / "blog_published" |
+| `action` | string | yes | "health_check" / "scan_complete" / "brief_created" / "blog_published" / "document_created" |
 | `status` | string | yes | "active" / "completed" / "error" |
 | `message` | string | yes | One-line description |
 | `timestamp` | string | yes | ISO timestamp |
 | `metadata` | any | optional |
+| `dedupKey` | string | optional | Idempotent insert key — prevents duplicate activity entries |
 
-Indexes: `by_agentName`, `by_timestamp`, `by_agentName_timestamp`
+Indexes: `by_agentName`, `by_timestamp`, `by_agentName_timestamp`, `by_dedupKey`
 
 ### Table 5: `topicClusters` (Vidura's SEO content planning)
 
@@ -209,26 +210,49 @@ Indexes: `by_agentName`, `by_timestamp`, `by_agentName_timestamp`
 | `createdAt` | string | yes |
 | `status` | string | yes | "new" / "contacted" / "scheduled" / "completed" |
 
+### Table 8: `documents` (Agent research/strategy docs)
+
+| Field | Type | Required |
+|-------|------|----------|
+| `title` | string | yes |
+| `slug` | string | yes | Unique identifier for dedup |
+| `content` | string | yes | Full markdown content |
+| `summary` | string | optional | Short description |
+| `category` | string | yes | "research" / "strategy" / "brief" / "process" / "analysis" |
+| `tags` | string[] | optional | Flexible tagging |
+| `agentName` | string | yes | Who created it |
+| `filePath` | string | optional | VPS path for reference |
+| `createdAt` | string | yes |
+| `updatedAt` | string | optional |
+
+Indexes: `by_slug`, `by_agentName`, `by_category`, `by_createdAt`
+
 ---
 
-## 5. HTTP Endpoints
+## 5. HTTP Endpoints (12 POST routes)
 
 | Endpoint | Method | Agent | Payload |
 |----------|--------|-------|---------|
-| `/ingestQuestions` | POST | Vibhishana | Array OR single object (normalizes to array) |
+| `/ingestQuestions` | POST | Vibhishana | Array OR single object (upsert by URL) |
 | `/ingestBrief` | POST | Vibhishana | Single brief with all 20 fields |
-| `/ingestBlog` | POST | Vyasa | Blog metadata |
-| `/ingestActivity` | POST | All agents | Milestone activity |
+| `/ingestBlog` | POST | Vyasa | Blog metadata (upsert by slug) |
+| `/ingestActivity` | POST | All agents | Milestone activity (dedup by dedupKey) |
 | `/ingestTopicCluster` | POST | Vidura | Topic cluster data |
 | `/ingestToolOpportunity` | POST | Vidura | Tool opportunity data |
+| `/updateBlogEnrichment` | POST | Vidura | Update enrichment count/date/log by slug |
+| `/updateBriefStatus` | POST | Vidura | Update brief status by slug |
+| `/upsertQuestions` | POST | Vibhishana | Alias for /ingestQuestions (same dedup logic) |
+| `/upsertBlog` | POST | Vyasa | Alias for /ingestBlog (same dedup logic) |
+| `/upsertBrief` | POST | Vibhishana | Upsert brief by slug |
+| `/upsertDocument` | POST | Any agent | Upsert document by slug (auto-logs activity) |
 
-All require `Authorization: Bearer <AGENT_API_KEY>`. CORS preflight (OPTIONS) handled.
+All require `Authorization: Bearer <AGENT_API_KEY>`. CORS preflight (OPTIONS) handled for all 12.
 
 ### Query Functions
 
 **Public (no auth):** `questions.listRecent`, `briefs.listMetadata`, `briefs.getPublicBrief`, `blogs.listRecent`, `agentActivity.agentStatuses`, `agentActivity.recentFeed`, `agentActivity.weeklyStats`, `agentActivity.allTimeStats`, `agentActivity.agentTodayActivity`, `agentActivity.agentWeeklySummary`
 
-**Admin (auth required):** `questions.listFullDetails`, `questions.communityBreakdown`, `briefs.getFullBrief`, `briefs.listFull`, `agentActivity.fullLog`
+**Admin (auth required):** `questions.listFullDetails`, `questions.communityBreakdown`, `briefs.getFullBrief`, `briefs.listFull`, `agentActivity.fullLog`, `documents.listMetadata`, `documents.getDocument`
 
 ---
 
@@ -302,7 +326,7 @@ Key details:
 | Brief content in Convex | Store full markdown content. Frontend renders as HTML. |
 | Layout | 3-column: agents sidebar (left), main content (center), live feed (right) |
 | Center content (public) | Scoreboard + daily timeline + preview tabs with blur |
-| Center content (admin) | 7 tabs: Overview / Blogs / Communities / Questions / Briefs / Strategy / Meetings |
+| Center content (admin) | 7 tabs: Overview / Blogs / Communities / Questions / Briefs / Strategy / Meetings. Documents tab planned. |
 | Agent sidebar click | Expanded panel with avatar, status, today's work, weekly stats |
 | Brief reader | Near-fullscreen modal with rendered markdown + SEO metadata sidebar |
 | Table scrolling | Frozen header row + frozen left column + horizontal/vertical scroll |
@@ -322,7 +346,7 @@ Key details:
 
 **All steps DONE (shipped Feb 15-18, 2026):**
 
-- [x] Convex backend — 7 tables, 6+ HTTP endpoints, Clerk auth, 12+ indexes
+- [x] Convex backend — 8 tables, 12 HTTP POST endpoints, Clerk auth, 20+ indexes
 - [x] Agent skills — 4 SKILL.md files deployed on VPS, test pushes confirmed
 - [x] Frontend dashboard — 28 components, 3-column layout, 7 tabs
 - [x] Public preview tabs — blur + waitlist CTA for non-auth visitors

@@ -1,6 +1,6 @@
 # Todo — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-22 (question dedup fix, Convex update)
+Last updated: 2026-02-24 (3 blog PRs merged, context docs updated)
 
 ## Priority: High
 - [ ] **Verify Daily Timeline times** — hardcoded in `lib/launch-control-types.ts`. Ask Partha to confirm they match actual VPS cron jobs.
