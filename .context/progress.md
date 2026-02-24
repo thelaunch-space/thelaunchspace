@@ -190,6 +190,12 @@ Last updated: 2026-02-24 (3 blog PRs merged, context docs updated)
 - [x] **Enriched blog: "When to Stop Using Spreadsheets for Leads"** — Added statistics, FAQ section, comparison table. (2026-02-24)
 - [x] **New blog posts from agents (Feb 22-24 batch):** "CRM for Small Service Businesses" (enriched), "AI Generated Code Deployment Reality" (enriched), "Why Most Founders Fail at Distribution" (enriched), "Why Your MVP Costs Too Much" (enriched). All merged via batch PR review.
 
+- [x] **Fixed Netlify build failure** — `netlify.toml` split by context: production runs `npx convex deploy --cmd 'npm run build'`, deploy previews run `npm run build` only. Root cause: `CONVEX_DEPLOY_KEY` in Netlify env vars caused Convex to reject deploy preview builds ("non-production build environment" error). This was introduced when Clerk+Convex deploy was added on Feb 15. (2026-02-25)
+- [x] **Removed Clerk from middleware** — `clerkMiddleware()` was wrapping every request but doing zero auth checks. It crashed the entire site on Netlify because edge functions can't access `CLERK_SECRET_KEY` at runtime. Middleware now does geo cookie only. Clerk auth works client-side via ClerkProvider. (2026-02-25)
+- [x] **Added `/admin` login page** — Clean Clerk `<SignIn>` page at `/admin` (no sign-up). Redirects to `/launch-control` after sign-in. Replaces the old email field hack in WaitlistCTA. (2026-02-25)
+- [x] **WaitlistCTA → redirect to pitch page** — Replaced email forms in WaitlistCTA and PreviewGate with "Get Your AI Team" buttons linking to `/hire-your-24x7-team#lead-capture`. All leads now funnel through pitchBookings in Convex. (2026-02-25)
+- [x] **Opened up Launch Control tabs** — Removed blur/PreviewGate from Blogs, Communities, Strategy, Briefs tabs. All public content now fully visible to visitors. Communities uses real data (`communityBreakdown` query made public). Strategy shows 20 clusters + 10 tools. Briefs shows 20 briefs, all clickable. Only Documents and Meetings remain admin-only. (2026-02-25)
+
 ## In Progress
 - Nothing currently in progress
 
@@ -201,7 +207,8 @@ Last updated: 2026-02-24 (3 blog PRs merged, context docs updated)
 - **Question count mismatch** — Prod Convex has 771 unique questions, Google Sheet has 891. ~120 questions may not have been pushed to Convex, or have slightly different URLs. Needs investigation.
 
 ## Recent Changes (latest first)
-1. 3 blog PRs merged (#44 #45 #46) — 1 new blog (invoice automation) + 2 enriched blogs (landing page tests, spreadsheets for leads) (2026-02-24)
+1. Opened up LC tabs (no blur), /admin login page, WaitlistCTA→redirect, removed Clerk from middleware, fixed Netlify build (2026-02-25)
+2. 3 blog PRs merged (#44 #45 #46) — 1 new blog (invoice automation) + 2 enriched blogs (landing page tests, spreadsheets for leads) (2026-02-24)
 2. Documents table + upsert endpoints + blog enrichment endpoints + activity dedup + shared activity helper (2026-02-22–24)
 3. Question dedup fix — `ingestBatch` upserts by URL, `by_url` index, 249 prod duplicates cleaned (2026-02-22)
 4. Convex updated 1.31.7 → 1.32.0 (2026-02-22)

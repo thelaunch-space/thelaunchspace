@@ -42,20 +42,16 @@ git checkout main && git merge staging && git push
 ```
 This triggers **Netlify auto-deploy** for the frontend (Next.js) only.
 
-**5. Deploy Convex to DEPLOY instance**
-Netlify does NOT deploy Convex functions. This is a separate manual step. Ask Krishna for the deploy key, then:
-```bash
-CONVEX_DEPLOY_KEY=<deploy-key> npx convex deploy
-```
-This deploys to the deploy instance (`curious-iguana-738.convex.cloud`). The deploy key is NOT stored locally — Krishna provides it each time.
+**5. Convex deploy instance is handled automatically**
+Netlify's production build runs `npx convex deploy --cmd 'npm run build'` which deploys Convex functions to the deploy instance using `CONVEX_DEPLOY_KEY` from Netlify env vars. No manual step needed for production Convex deploys.
 
 ### What Deploys Where
 
 | What | How | Triggered By |
 |------|-----|-------------|
-| Next.js frontend | Netlify auto-deploy | `git push` to `main` |
+| Next.js frontend + Convex (deploy) | Netlify auto-deploy (`npx convex deploy --cmd 'npm run build'`) | `git push` to `main` (production context only) |
 | Convex functions (dev) | `npx convex dev --once` | Manual, during development |
-| Convex functions (deploy) | `CONVEX_DEPLOY_KEY=... npx convex deploy` | Manual, after frontend push |
+| Next.js only (deploy previews) | Netlify deploy preview (`npm run build` only, no Convex deploy) | PR creation/update |
 
 ### Critical Rules
 
@@ -128,6 +124,18 @@ Reference `.context/` files when needed:
 | launch-control/prd.md | LC architecture, schema, endpoints, decisions, build progress |
 | launch-control/frontend-spec.md | LC frontend layout, components, responsive design |
 | ideation/work-mode-kanban-spec.md | Planned Work Mode Kanban board feature spec |
+
+## Clerk Auth — DO NOT Add to Middleware
+
+**NEVER add `clerkMiddleware()` to `middleware.ts`.** This was done once (Feb 15, 2026) and it broke the entire site on Netlify because edge functions can't reliably access `CLERK_SECRET_KEY` at runtime. The middleware only sets a geo cookie — it has zero auth logic.
+
+Clerk auth works entirely **client-side** in this app:
+- `ClerkProvider` in `ConvexClientProvider.tsx` provides auth context
+- `useAuth()` in components checks login state
+- Convex admin queries check `ctx.auth.getUserIdentity()` server-side
+- The `/admin` page uses Clerk's `<SignIn>` component directly
+
+**None of this requires Clerk in the middleware.** If you're tempted to add it (e.g., for "route protection"), don't. Use client-side `useAuth()` checks or Convex query-level auth instead. The middleware must stay as plain Next.js middleware (geo cookie only).
 
 ## Key Patterns
 - **No scrolling:** All primary content must be above the fold on all devices. This is non-negotiable.

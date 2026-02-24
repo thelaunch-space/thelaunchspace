@@ -3,6 +3,7 @@
 Last updated: 2026-02-24 (3 blog PRs merged, context docs updated)
 
 ## Priority: High
+- [ ] **Fix `/admin` sign-up flow** — Currently, Clerk's `<SignIn>` component at `/admin` still shows a "Sign up" link/option. This is wrong: (1) `/admin` should be sign-in ONLY for `krishna@thelaunch.space` — no sign-up. (2) If someone does sign up (e.g., finds `/admin`), they should NOT see the full admin dashboard. Admin view (Documents, Meetings tabs, full data) must be gated to Krishna's account only, not any authenticated user. Need to either: disable Clerk sign-up entirely, or add an admin email check in the dashboard that shows a "request access" message for non-Krishna accounts.
 - [ ] **Verify Daily Timeline times** — hardcoded in `lib/launch-control-types.ts`. Ask Partha to confirm they match actual VPS cron jobs.
 - [x] **Update Vidura skill URL to production** — DONE. VPS skill confirmed pointing to prod (`curious-iguana-738`). Stale dev-pointing copies in `skills/` folder deleted (Feb 19).
 - [x] **Deploy Vidura Convex changes to production** — DONE. Netlify auto-deploys Convex via `npx convex deploy --cmd 'npm run build'` on every merge to `main`. Vidura commit is on `main`.
@@ -10,7 +11,7 @@ Last updated: 2026-02-24 (3 blog PRs merged, context docs updated)
 - [ ] **Diagnose Convex 500 error on /ingestBrief** — Vibhishana getting HTTP 500 (not auth issue). Request ID: `a07937d936186671`. Check Convex dashboard logs. Likely schema mismatch or extra field in agent payload.
 - [ ] **Fix "cron delivery target is missing"** — 5+ agent crons failing post-recovery. Delivery config has `mode: "announce"` but no channel/to target. Needs Partha to patch cron configs on VPS.
 - [ ] **Set up 301 redirects** — `/build-your-ai-team` → `/hire-your-24x7-team`, `/build-your-ai-team/[agent]` → `/hire-your-24x7-team#team`. Old agent detail pages still exist as routes but navbar no longer links to them.
-- [ ] **Launch Control public view updates** — Per `hire-your-24x7-team.md` spec: show all questions openly (not just top 3), show 5 briefs in full (blur rest), show all blogs freely.
+- [x] **Launch Control public view updates** — DONE. All public tabs open (no blur). Blogs, Questions, Communities, Strategy, Briefs fully visible. Documents + Meetings admin-only. (2026-02-25)
 - [ ] Build out free tools pages (`/tools/[tool-slug]`) — Vidura's tool opportunities data now feeds tool ideas via Convex
 
 ## Priority: Medium

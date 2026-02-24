@@ -55,7 +55,7 @@ app/
 ├── launch-control/
 │   └── page.tsx            # Server component — metadata + renders LaunchControlDashboard
 └── tools/[tool-slug]/      # Future tool routes (placeholder)
-middleware.ts               # Clerk middleware (permissive — no route blocking, makes auth available) + geo cookie (sets geo_region=IN/INTL from x-country header)
+middleware.ts               # Geo cookie only (sets geo_region=IN/INTL from x-country header). NO Clerk — auth is client-side only.
 components/
 ├── NavBar.tsx              # "use client" — site-wide nav (hidden on /launch-control). Logo, Blog, "Hire Your 24/7 Team", socials, hamburger mobile, scroll CTA on blog pages. NO Launch Control link.
 ├── LandingPage.tsx         # "use client" — main landing page (hero + services)
@@ -97,18 +97,18 @@ components/
     ├── TimelineItem.tsx            # Timeline entry (completed/active/upcoming states)
     ├── LiveFeed.tsx                # Right column: real-time activity log with filter tabs (All/Tasks/Milestones) + inline feed items
     ├── CommunitiesPanel.tsx        # Subreddit card grid (admin)
-    ├── CommunitiesPreview.tsx      # Placeholder community cards with blur overlay (public)
+    ├── CommunitiesPreview.tsx      # (UNUSED — CommunitiesPanel now serves all visitors since communityBreakdown is public)
     ├── QuestionsTable.tsx          # Sortable table with frozen header/column, mobile card view (admin)
-    ├── QuestionsPreview.tsx        # Top 3 rows of questions with Reddit links + blur overlay (public)
+    ├── QuestionsPreview.tsx        # Full questions table (public, 20 recent, no blur)
     ├── BriefsPanel.tsx             # Brief card list (admin)
-    ├── BriefsPreview.tsx           # Top 3 clickable briefs + blur overlay + public reader modal (public)
-    ├── PreviewGate.tsx             # Blur overlay wrapper with waitlist CTA form (shared by all preview components)
+    ├── BriefsPreview.tsx           # Full briefs list (public, 20 briefs, all clickable with reader modal)
+    ├── PreviewGate.tsx             # Blur overlay wrapper with CTA button (only used if re-gating content in future)
     ├── BriefCard.tsx               # Single brief card with color-coded status badge
     ├── BriefReaderModal.tsx        # Near-fullscreen modal: react-markdown content + SEO metadata sidebar
     ├── BlogsTable.tsx              # Sortable blog table (admin) — merges local BlogPost data + Convex enrichment data. Columns: Title, Category, Keyword, Words, Enrichment, Status, Published.
-    ├── BlogsPreview.tsx            # Blog posts preview (public) — top rows with blur overlay
+    ├── BlogsPreview.tsx            # Full blog list (public, 100 posts, no blur)
     ├── StrategyPanel.tsx           # Vidura's strategy data (admin) — topic clusters table + tool opportunities table with status/intent badges
-    ├── StrategyPreview.tsx         # Strategy preview (public) — top rows with blur overlay
+    ├── StrategyPreview.tsx         # Strategy data (public) — 20 clusters + 10 tools, no blur
     ├── MeetingsPanel.tsx           # Pitch page bookings table (admin) — from pitchBookings Convex table
     ├── GuidedTour.tsx              # FTUE spotlight tour for first-time visitors (5 desktop / 4 mobile steps, localStorage tracking)
     └── WaitlistCTA.tsx             # Email input: krishna@thelaunch.space reveals Clerk auth, others → lead capture
@@ -150,7 +150,7 @@ skills/
 ├── convex-push-blog.SKILL.md      # Vyasa: push blog metadata to Convex after PR creation
 ├── convex-push-activity.SKILL.md  # All agents: push milestone activity to Convex
 └── convex-push-strategy.SKILL.md  # Vidura: push topic clusters (Mon/Wed) + tool opportunities (Fri) to Convex
-netlify.toml                # Netlify build config (npx convex deploy --cmd 'npm run build')
+netlify.toml                # Netlify build config — production: `npx convex deploy --cmd 'npm run build'`, deploy previews: `npm run build` only (no Convex deploy)
 ```
 
 ## Component Tree
@@ -310,15 +310,16 @@ Base URL: `https://curious-iguana-738.convex.site` (production deployment)
 | `/upsertDocument` | Upsert document by slug (auto-logs activity) |
 
 ### Query Functions
-- **Public (no auth):** `questions.listRecent`, `briefs.listMetadata`, `briefs.getPublicBrief`, `blogs.listRecent`, `agentActivity.agentStatuses`, `agentActivity.recentFeed`, `agentActivity.weeklyStats`, `agentActivity.allTimeStats`, `agentActivity.agentTodayActivity`, `agentActivity.agentWeeklySummary`
-- **Admin (auth required):** `questions.listFullDetails`, `questions.communityBreakdown`, `briefs.getFullBrief`, `briefs.listFull`, `agentActivity.fullLog`, `documents.listMetadata`, `documents.getDocument`
+- **Public (no auth):** `questions.listRecent`, `questions.communityBreakdown`, `briefs.listMetadata`, `briefs.getPublicBrief`, `blogs.listRecent`, `agentActivity.agentStatuses`, `agentActivity.recentFeed`, `agentActivity.weeklyStats`, `agentActivity.allTimeStats`, `agentActivity.agentTodayActivity`, `agentActivity.agentWeeklySummary`, `topicClusters.listRecent`, `toolOpportunities.listRecent`
+- **Admin (auth required):** `questions.listFullDetails`, `briefs.getFullBrief`, `briefs.listFull`, `agentActivity.fullLog`, `documents.listMetadata`, `documents.getDocument`, `topicClusters.listFull`, `toolOpportunities.listFull`
 - Admin queries check `ctx.auth.getUserIdentity()` — throw if not authenticated
 
 ### Auth
-- **Provider:** Clerk (ClerkProvider wraps ConvexProviderWithClerk)
-- **Middleware:** `middleware.ts` at project root — permissive `clerkMiddleware()`, does not block any route
+- **Provider:** Clerk (ClerkProvider wraps ConvexProviderWithClerk) — entirely client-side
+- **Middleware:** `middleware.ts` at project root — plain Next.js middleware, geo cookie only. **NO Clerk middleware** (it breaks Netlify edge functions — see CLAUDE.md)
+- **Login:** `/admin` page with Clerk `<SignIn>` component (no sign-up). Redirects to `/launch-control` after sign-in. Secret URL — no link on the site.
 - **Convex auth config:** `convex/auth.config.ts` — Clerk issuer domain from env var
-- **No route protection:** All existing pages work without login. Admin queries enforce auth at the function level.
+- **No route protection:** All pages work without login. Admin queries enforce auth at the Convex function level. Client-side `useAuth()` toggles UI (e.g., admin panels vs public views).
 
 ### Data Flow (Agent → Dashboard)
 ```
@@ -339,21 +340,26 @@ Terminal 2: npm run dev       (Next.js dev server at localhost:3000)
 - **Mobile (<768px):** Single column, sidebar becomes horizontal avatar strip
 - NavBar hidden on `/launch-control` — self-contained HeaderBar instead
 
-### Auth Flow (Waitlist Hack)
-- No public "Sign In" button anywhere. WaitlistCTA replaces it.
-- WaitlistCTA shows an email input labeled "Join the waitlist"
-- If email === `krishna@thelaunch.space` → reveals Clerk SignInButton + SignUpButton
-- Any other email → POSTs to `/api/lead` (same Make.com webhook as main lead capture) → "You're on the list!"
-- When signed in, WaitlistCTA returns `null` (disappears). Clerk UserButton shows in HeaderBar.
-- Admin tabs (Communities/Questions/Briefs) in CenterTabs only appear when `isSignedIn` is true.
+### Auth Flow
+- No public "Sign In" button anywhere on the site.
+- Login: go to `/admin` (secret URL) → Clerk `<SignIn>` component → redirects to `/launch-control`.
+- When signed in, Clerk `UserButton` shows in HeaderBar. WaitlistCTA hides.
+- WaitlistCTA shows a "Get Your AI Team" button linking to `/hire-your-24x7-team#lead-capture` for non-authenticated visitors.
+- Documents and Meetings tabs only appear when `isSignedIn` is true.
+- All other tabs (Blogs, Communities, Questions, Briefs, Strategy) are fully visible to all visitors — public data, no blur.
 
 ### Center Column Tabs
 - `CenterTabs.tsx` manages a tabbed interface in the center column
-- All 4 tabs visible to ALL visitors — preview components (with blur + waitlist CTA) shown to non-authenticated users, full components shown to admin
-- **Overview tab**: Scoreboard (with "This Week"/"All Time" toggle) + DailyTimeline
-- **Communities tab**: CommunitiesPreview (public, placeholder data) / CommunitiesPanel (admin)
-- **Questions tab**: QuestionsPreview (public, top 3 rows + blur) / QuestionsTable (admin)
-- **Briefs tab**: BriefsPreview (public, top 3 clickable + blur) / BriefsPanel → click card → BriefReaderModal (admin)
+- 8 tabs total. 6 visible to everyone, 2 (Documents + Meetings) admin-only.
+- Public tabs show full data — no blur, no gating. Admin gets extra features (sorting, filtering, richer data).
+- **Overview tab**: Scoreboard ("This Week"/"All Time" toggle) + DailyTimeline
+- **Blogs tab**: BlogsPreview (public, full list) / BlogsTable (admin — sortable, enrichment data)
+- **Communities tab**: CommunitiesPanel (public — real subreddit data, `communityBreakdown` query is public)
+- **Questions tab**: QuestionsPreview (public, 20 recent) / QuestionsTable (admin — sortable, paginated)
+- **Briefs tab**: BriefsPreview (public, 20 briefs, all clickable with reader modal) / BriefsPanel (admin)
+- **Strategy tab**: StrategyPreview (public, 20 clusters + 10 tools) / StrategyPanel (admin — full data)
+- **Documents tab**: DocumentsPanel (admin only — hidden from visitors)
+- **Meetings tab**: MeetingsPanel (admin only — hidden from visitors)
 
 ### Brief Reader Modal
 - Near-fullscreen (~90vh × 1200px max-width)
@@ -385,11 +391,12 @@ Terminal 2: npm run dev       (Next.js dev server at localhost:3000)
 - Fonts via `next/font/google` (self-hosted, CSS variables)
 
 ## Build & Deploy
-- Build command: `npx convex deploy --cmd 'npm run build'` (pushes Convex functions then builds Next.js)
+- **Production build:** `npx convex deploy --cmd 'npm run build'` (deploys Convex functions to production + builds Next.js). Only runs in Netlify production context.
+- **Deploy preview build:** `npm run build` only (no Convex deploy — prevents production deploy key conflict in non-production context).
 - `next build` produces optimized output in `.next/`
 - Landing page is statically prerendered (SSG)
 - Blog pages are statically generated at build time
-- API route + Clerk middleware run server-side
+- API route runs server-side. Middleware runs as Netlify edge function (geo cookie only, no Clerk).
 - Hosted on Netlify with `@netlify/plugin-nextjs`
 - Auto-deploys on merge to `main`
 - Convex deployments: dev `impartial-pelican-672`, production `curious-iguana-738`

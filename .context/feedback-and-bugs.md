@@ -4,6 +4,24 @@ Last updated: 2026-02-18
 
 ## Active Bugs
 
+### BUG-003: `/admin` shows sign-up option — should be sign-in only (2026-02-25)
+**Status:** Open (logged for next session)
+**Reported:** Krishna noticed Clerk's `<SignIn>` component at `/admin` still shows a "Sign up" link. Two problems: (1) sign-up should be disabled — only Krishna should be able to log in. (2) If someone does sign up, they'd see the full admin dashboard (Documents, Meetings tabs). Admin view must be gated to `krishna@thelaunch.space` only.
+**Fix needed:** Either disable Clerk sign-up entirely (Clerk dashboard setting), or add an admin email check in the dashboard code. Non-Krishna accounts should see a "request access" message, not the admin tabs.
+**Affected files:** `app/admin/page.tsx`, `components/launch-control/CenterTabs.tsx`
+
+### BUG-004: Clerk middleware crashed entire site on Netlify (2026-02-25)
+**Status:** Fixed
+**Reported:** `thelaunch.space` showed "@clerk/nextjs: Missing secretKey" error on every page (including homepage, blogs).
+**Root cause:** `clerkMiddleware()` was added to `middleware.ts` on Feb 15 as part of Launch Control backend setup. It wrapped every request but did zero auth checks — the middleware only sets a geo cookie. Netlify edge functions can't reliably access `CLERK_SECRET_KEY` at runtime, so Clerk panicked and blocked the entire site. The error surfaced now because previous builds had been failing due to a separate Convex deploy key issue (BUG-005), so the old pre-Clerk code was still running. Once the build was fixed, the Clerk middleware deployed for the first time and broke everything.
+**Fix:** Removed `clerkMiddleware()` from `middleware.ts` entirely. Middleware now uses plain Next.js middleware for the geo cookie. Clerk auth works client-side via ClerkProvider — doesn't need middleware.
+**Lesson:** NEVER add Clerk to middleware.ts in this project. See CLAUDE.md for the permanent warning.
+
+### BUG-005: Netlify deploy preview builds failing since Feb 15 (2026-02-25)
+**Status:** Fixed
+**Root cause:** `netlify.toml` had a single build command (`npx convex deploy --cmd 'npm run build'`) that ran for ALL builds. Deploy previews (PR builds) had the production `CONVEX_DEPLOY_KEY` in env vars, and Convex refused to deploy to production from a non-production context. The entire build failed, including the Next.js part.
+**Fix:** Split `netlify.toml` by context — production runs `npx convex deploy --cmd 'npm run build'`, deploy previews and branch deploys run `npm run build` only (no Convex deploy).
+
 ### (BUG-001 and BUG-002 moved to Resolved Bugs section below)
 
 ## Design Feedback
