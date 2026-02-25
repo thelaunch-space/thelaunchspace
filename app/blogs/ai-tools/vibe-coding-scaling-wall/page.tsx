@@ -77,6 +77,10 @@ export default function BlogPost() {
             That statistic comes from a <a href="https://medium.com/lets-code-future/after-6-months-of-vibe-coding-my-codebase-is-a-mess-here-s-what-went-wrong-7e4ad610bc93" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">developer who tracked every metric</a> over six months of using AI tools like Cursor. Month one felt like magic. By month six, he was rewriting 40% of his codebase. The pattern is consistent across hundreds of similar reports: AI coding tools accelerate the early phase, then create compounding problems that eventually cost more time than they saved.
           </p>
 
+          <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
+            The adoption numbers tell the story. As of February 2026, <a href="https://www.getpanto.ai/blog/ai-coding-productivity-statistics" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">84% of developers report using or planning to use AI coding tools</a>, with 51% using them daily. Controlled experiments consistently show <a href="https://www.getpanto.ai/blog/ai-coding-productivity-statistics" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">55% faster task completion</a> for scoped programming work. But here is the tension: while AI accelerates individual tasks, it also creates what researchers call "the great toil shift"—moving work from code generation to code verification and debt management.
+          </p>
+
           <hr className="border-border-color my-12" />
 
           <h2 className="text-2xl md:text-3xl font-bold mt-16 mb-4">What is the 3-Flow Wall?</h2>
@@ -108,21 +112,29 @@ export default function BlogPost() {
           <div className="space-y-4 my-8">
             <div className="bg-border-color/20 rounded-xl p-5">
               <p className="text-text-primary font-semibold mb-1">1. No Architectural Memory</p>
-              <p className="text-text-secondary text-base leading-relaxed">AI tools optimize for "does this work right now?" They do not maintain a mental model of your entire system. When you ask for user authentication, the AI does not know you already have a legacy session system, a weird database format, or compliance requirements. Result: three incompatible auth systems in one codebase.</p>
+              <p className="text-text-secondary text-base leading-relaxed">AI tools optimize for "does this work right now?" They do not maintain a mental model of your entire system. When you ask for user authentication, the AI does not know you already have a legacy session system, a weird database format, or compliance requirements. Result: three incompatible auth systems in one codebase. Research from 2026 shows that <a href="https://noqta.tn/en/blog/ai-generated-code-tech-debt-2026" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">41% of new commercial code is now AI-generated</a>, but without architectural oversight, this code compounds faster than traditional technical debt.</p>
             </div>
             <div className="bg-border-color/20 rounded-xl p-5">
               <p className="text-text-primary font-semibold mb-1">2. The Copy-Paste Pattern</p>
-              <p className="text-text-secondary text-base leading-relaxed">AI generates new code rather than refactoring existing code. Need similar functionality? It writes new code instead of reusing what exists. After six months, one developer found payment processing logic duplicated 8 times, database connections implemented 23 different ways, and error handling copy-pasted with slight variations throughout the codebase.</p>
+              <p className="text-text-secondary text-base leading-relaxed">AI generates new code rather than refactoring existing code. Need similar functionality? It writes new code instead of reusing what exists. After six months, one developer found payment processing logic duplicated 8 times, database connections implemented 23 different ways, and error handling copy-pasted with slight variations throughout the codebase. <a href="https://www.sonarsource.com/blog/how-ai-is-redefining-technical-debt/" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">40% of developers report AI generating unnecessary or duplicative code</a>, increasing debt rather than reducing it.</p>
             </div>
             <div className="bg-border-color/20 rounded-xl p-5">
               <p className="text-text-primary font-semibold mb-1">3. Security Blind Spots</p>
-              <p className="text-text-secondary text-base leading-relaxed">Research from <a href="https://arxiv.org/abs/2512.03262" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">arXiv and academic institutions</a> shows 40-62% of AI-generated code contains security vulnerabilities. AI fails to secure against cross-site scripting attacks 86% of the time. It produces hardcoded credentials, weak authentication logic, and improper input validation because it prioritizes function over safety.</p>
+              <p className="text-text-secondary text-base leading-relaxed">Research from <a href="https://arxiv.org/abs/2512.03262" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">arXiv and academic institutions</a> shows 40-62% of AI-generated code contains security vulnerabilities. AI fails to secure against cross-site scripting attacks 86% of the time. More recent data from 2026 reveals that <a href="https://cycode.com/blog/application-security-vulnerabilities/" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">SQL injection appears in 31% of AI-code projects, XSS in 27%, and broken authentication in 24%</a>. Perhaps most concerning: <a href="https://www.veracode.com/resources/analyst-reports/state-of-software-security-2026/" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">68% of AI-code projects have at least one high-severity security issue</a>, and breach costs average $4-9 million per incident.</p>
             </div>
             <div className="bg-border-color/20 rounded-xl p-5">
               <p className="text-text-primary font-semibold mb-1">4. The Comprehension Gap</p>
-              <p className="text-text-secondary text-base leading-relaxed">By definition, vibe coding means accepting code without fully understanding it. Month one, you think through problems. Month six, you copy-paste solutions. When bugs appear at 3 AM with money on the line, you cannot debug code you never understood. One developer reported spending 6 hours fixing a payment issue that should have taken 30 minutes because he had no idea how his own codebase worked.</p>
+              <p className="text-text-secondary text-base leading-relaxed">By definition, vibe coding means accepting code without fully understanding it. Month one, you think through problems. Month six, you copy-paste solutions. When bugs appear at 3 AM with money on the line, you cannot debug code you never understood. One developer reported spending 6 hours fixing a payment issue that should have taken 30 minutes because he had no idea how his own codebase worked. <a href="https://www.anthropic.com/research/AI-assistance-coding-skills" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">Anthropic research found that developers using AI assistance scored 17% lower</a> on knowledge assessments covering concepts they had just used—equivalent to nearly two letter grades. The productivity gain comes with a learning cost.</p>
             </div>
           </div>
+
+          <div className="border-l-4 border-accent-blue pl-6 my-8">
+            <p className="text-base md:text-lg text-text-primary font-medium leading-relaxed">"While AI helps clear away old software development hurdles, it simultaneously creates new ones downstream. We're seeing a 'great toil shift'—less time on legacy documentation, more time correcting AI-generated code." — SonarSource State of Code Developer Survey, 2026</p>
+          </div>
+
+          <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
+            The numbers paint a sobering picture. According to <a href="https://www.codebridge.tech/articles/the-hidden-costs-of-ai-generated-software-why-it-works-isnt-enough" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">Codebridge Tech's 2026 analysis</a>, AI-generated codebases that go unmanaged hit an "18-month wall" where maintenance costs reach 4x traditional levels. Gartner predicts that <a href="https://www.codebridge.tech/articles/the-hidden-costs-of-ai-generated-software-why-it-works-isnt-enough" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">40% of AI coding projects will be canceled by 2027</a> due to escalating costs and unmanageable technical debt.
+          </p>
 
           <hr className="border-border-color my-12" />
 
@@ -236,6 +248,52 @@ export default function BlogPost() {
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
             For complex builds, we pair AI tools with human architectural oversight. Sometimes that is internal review. Sometimes it is bringing in a developer for a focused code audit. The point is that AI accelerates the building, but humans still need to steer the ship.
           </p>
+
+          <hr className="border-border-color my-12" />
+
+          <h2 className="text-2xl md:text-3xl font-bold mt-16 mb-4">Frequently Asked Questions</h2>
+
+          <div className="space-y-6 my-8">
+            <div className="bg-border-color/20 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-text-primary mb-3">How long does it take to hit the 3-Flow Wall?</h3>
+              <p className="text-text-secondary text-base leading-relaxed">It depends on project complexity and tool choice, but most non-technical founders hit the wall within 3-6 weeks of active development. Browser-based tools like Bolt.new hit the ceiling faster (around 2-3 workflows). More sophisticated tools like Cursor or Claude Code can handle 4-5 workflows before conflicts emerge. The timeline accelerates if you are adding features daily without consolidation breaks. As one rule of thumb: if you have built 3+ interconnected features and have not yet manually reviewed your codebase for duplicate logic or architectural conflicts, you are likely approaching the wall.</p>
+            </div>
+
+            <div className="bg-border-color/20 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-text-primary mb-3">Can I recover from bad AI code, or do I need to start over?</h3>
+              <p className="text-text-secondary text-base leading-relaxed">It depends on how deep the technical debt goes. If you have 3-4 flows and the code is messy but functional, a professional code audit ($1,500-$2,500) can usually identify what to consolidate, refactor, or rebuild. The auditor will give you a roadmap: which parts are salvageable, which need to be rewritten, and how to prioritize the fixes. If you have 5+ flows with cascading bugs, security vulnerabilities, or code you genuinely cannot explain to another person, a rebuild with architectural oversight from the start is often faster and cheaper than attempting to fix the existing mess. The key question: can you trace how data flows through your system? If not, you are likely past the point of incremental fixes.</p>
+            </div>
+
+            <div className="bg-border-color/20 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-text-primary mb-3">Should I learn to code before using AI tools?</h3>
+              <p className="text-text-secondary text-base leading-relaxed">No, but you should learn to read code and understand architectural concepts. You do not need to write algorithms or remember syntax—AI handles that. But you do need to understand how authentication works, how databases are structured, and how different parts of an application talk to each other. Think of it like renovating a house: you do not need to know how to swing a hammer, but you should understand load-bearing walls, plumbing, and electrical systems. Invest 10-20 hours learning the basics of how web apps work (frontend, backend, database, authentication). That knowledge will help you catch AI mistakes early and make better architectural decisions. The Anthropic research showing 17% lower knowledge scores is a warning: use AI to accelerate work, not to avoid understanding.</p>
+            </div>
+
+            <div className="bg-border-color/20 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-text-primary mb-3">What is the difference between Bolt.new, Cursor, and Claude Code for beginners?</h3>
+              <p className="text-text-secondary text-base leading-relaxed">Bolt.new is a browser-based prototyping tool best for complete beginners who want to create a working prototype in hours without ever seeing code. It has the lowest learning curve (1-2 hours to become productive) but the lowest ceiling (2-3 workflows max). Cursor is a VS Code-like editor where you see and lightly edit the code AI generates. It has a moderate learning curve (5-10 hours) and can handle 4-5 workflows. Claude Code operates in the terminal and functions like a junior developer—it reads your entire codebase, edits multiple files, runs commands, and maintains context across complex refactoring. It has the steepest learning curve (requires CLI familiarity) but the highest ceiling for production-grade applications. Start with the simplest tool that solves your immediate problem, then graduate when you hit limitations. Many founders use Bolt.new for the prototype, export the code to Cursor for iteration, then bring in Claude Code (or a developer) for production hardening.</p>
+            </div>
+
+            <div className="bg-border-color/20 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-text-primary mb-3">Is it worth hiring a developer to review my AI-generated code?</h3>
+              <p className="text-text-secondary text-base leading-relaxed">Yes, especially once you cross 3 workflows or plan to handle real user data and payments. A focused code audit typically costs $1,500-$2,500 and takes 1-2 weeks. The developer will review your codebase, identify security vulnerabilities, flag duplicate or conflicting logic, and provide a prioritized list of fixes. This is not a full rebuild—think of it as a health checkup that catches problems before they become catastrophic. The ROI is high: catching a security vulnerability before launch is far cheaper than dealing with a breach. Consolidating duplicate code now saves months of debugging later. And having an architectural roadmap prevents you from building new features on a shaky foundation. If you cannot afford a full audit, consider hiring a developer for 5-10 hours of "pair programming" where they walk through your code with you, explain what is happening, and flag the highest-risk areas.</p>
+            </div>
+
+            <div className="bg-border-color/20 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-text-primary mb-3">How do I know if my project is beyond saving?</h3>
+              <p className="text-text-secondary text-base leading-relaxed">Run this test: open your codebase and try to trace how a single user action flows through your system. For example, when a user clicks "Buy Now," can you follow the chain from the button click to payment processing to database update to confirmation email? If you cannot trace it without getting lost, or if you find 3+ different implementations of the same logic, or if critical flows lack error handling entirely, your project is likely in the "rebuild recommended" category. Other red flags: hardcoded credentials, no separation between development and production environments, copy-pasted authentication logic across multiple files, database queries scattered randomly throughout the code. If a professional audit comes back with "this would take longer to fix than to rebuild," listen to them. Sometimes starting fresh with a clear architecture and AI assistance is faster than untangling a mess.</p>
+            </div>
+
+            <div className="bg-border-color/20 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-text-primary mb-3">Will AI tools get better at handling complex projects?</h3>
+              <p className="text-text-secondary text-base leading-relaxed">Yes, but the fundamental tension will remain. AI models are improving context window sizes, better code awareness, and more sophisticated architectural understanding. Tools like Claude Code already represent a significant leap over browser-based prototyping. However, the core challenge is not just technical—it is conceptual. Complex software requires making architectural trade-offs that depend on business priorities, user behavior, and long-term maintenance strategy. AI can accelerate execution, but it cannot replace strategic product thinking. The most likely future: AI tools become better at maintaining architectural consistency and flagging conflicts, but human oversight remains essential for anything beyond simple applications. Think of it like self-driving cars: the technology will get dramatically better, but you still need to know where you are going and when to take the wheel.</p>
+            </div>
+
+            <div className="bg-border-color/20 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-text-primary mb-3">What if I cannot afford a code audit right now?</h3>
+              <p className="text-text-secondary text-base leading-relaxed">Start with free or low-cost options. First, use automated tools: run a security scanner like Snyk (free tier available) to catch hardcoded credentials and known vulnerabilities. Use a code quality tool like SonarQube (free for open-source projects) to identify duplicate code and complexity hotspots. Second, find a technical co-founder or advisor who will review your code in exchange for equity or a future revenue share. Many experienced developers are open to advising early-stage founders if the project is interesting. Third, post your code architecture (not the actual code) in technical communities like Reddit's r/webdev or relevant Discord servers and ask for feedback. Be specific: "I have a 4-workflow app with authentication, payments, and notifications—what are the biggest risks I should check for?" Fourth, prioritize the highest-risk areas yourself: review anything that handles payments, user authentication, or sensitive data first. Even without deep technical knowledge, you can spot obvious red flags like hardcoded API keys or duplicate login logic. Finally, if the project is revenue-generating or has paying users, reallocate budget from feature development to a one-time audit. It is better to pause new features for a month and fix the foundation than to keep building on quicksand.</p>
+            </div>
+          </div>
 
           <hr className="border-border-color my-12" />
 
