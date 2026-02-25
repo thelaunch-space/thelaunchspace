@@ -29,7 +29,7 @@ const jsonLd = {
   description: "Build production software without writing code. Learn when AI tools beat no-code platforms and the exact approach that shipped 65+ projects in 14 months.",
   url: "https://thelaunch.space/blogs/startup-mvps/build-mvp-without-coding-ai-tools",
   datePublished: "2026-02-09T00:00:00.000Z",
-  dateModified: "2026-02-19T00:00:00.000Z",
+  dateModified: "2026-02-25T00:00:00.000Z",
   author: { "@type": "Organization", name: "thelaunch.space", url: "https://thelaunch.space" },
   publisher: {
     "@type": "Organization",
@@ -72,8 +72,15 @@ export default function BlogPost() {
           </p>
 
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
-            The better path is what Andrej Karpathy coined <span className="text-text-primary font-semibold">"vibe coding"</span> in February 2025: describing what you want in plain English and letting AI write the actual code. As of February 2026, <a href="https://en.wikipedia.org/wiki/Vibe_coding" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">92% of US developers</a> now use AI coding tools daily. Non-technical founders can use the same tools.
+            The better path is what AI pioneer Andrej Karpathy coined <span className="text-text-primary font-semibold">"vibe coding"</span> in February 2025: describing what you want in plain English and letting AI write the actual code. As of February 2026, <a href="https://en.wikipedia.org/wiki/Vibe_coding" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">92% of US developers</a> now use AI coding tools at least monthly, with <a href="https://keyholesoftware.com/software-development-statistics-2026-market-size-developer-trends-technology-adoption/" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">51% using them daily</a>. Non-technical founders can use the same tools.
           </p>
+
+          <div className="border-l-4 border-accent-blue pl-6 my-8">
+            <p className="text-base md:text-lg text-text-primary font-medium leading-relaxed mb-2">
+              "There's a new kind of coding I call 'vibe coding', where you fully give in to the vibes, embrace exponentials, and forget that the code even exists. It's possible because the LLMs (e.g. Cursor Composer w Sonnet) are getting too good."
+            </p>
+            <p className="text-sm text-text-secondary">— Andrej Karpathy, AI Pioneer and Former Tesla AI Director</p>
+          </div>
 
           <div className="bg-surface-alt border border-border-color/40 shadow-sm rounded-2xl p-8 my-10">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
@@ -82,12 +89,12 @@ export default function BlogPost() {
                 <p className="text-sm text-text-secondary">of developers use or plan to use AI coding tools in 2025</p>
               </div>
               <div>
-                <p className="text-2xl md:text-3xl font-bold text-text-primary mb-1">41%</p>
-                <p className="text-sm text-text-secondary">of all code is now AI-generated globally</p>
+                <p className="text-2xl md:text-3xl font-bold text-text-primary mb-1">26.9%</p>
+                <p className="text-sm text-text-secondary">of production code is now AI-authored (Q1 2026)</p>
               </div>
               <div>
-                <p className="text-2xl md:text-3xl font-bold text-text-primary mb-1">55%</p>
-                <p className="text-sm text-text-secondary">faster task completion with AI-powered tools</p>
+                <p className="text-2xl md:text-3xl font-bold text-text-primary mb-1">4 hours</p>
+                <p className="text-sm text-text-secondary">saved weekly by developers using AI tools</p>
               </div>
             </div>
           </div>
@@ -140,7 +147,7 @@ export default function BlogPost() {
             </div>
             <div className="bg-surface border border-border-color/40 shadow-card rounded-2xl p-5">
               <p className="text-text-primary font-semibold mb-1">2. Vendor Lock-In</p>
-              <p className="text-text-secondary text-base leading-relaxed">You are building on someone else's land. No code export. No migration path. If the platform changes pricing, updates, or shuts down, your entire product is at risk. And you cannot negotiate because you have no leverage.</p>
+              <p className="text-text-secondary text-base leading-relaxed">You are building on someone else's land. According to <a href="https://www.weweb.io/blog/code-export-platform-buyers-guide" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">2026 industry data</a>, <span className="text-text-primary font-semibold">68% of no-code platforms lack code export options</span>. No migration path. If the platform changes pricing, updates, or shuts down, your entire product is at risk. Research shows <a href="https://www.weweb.io/blog/low-code-no-code-platforms-ultimate-guide" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">62% of IT leaders cite rebuild needs</a> when migrating from no-code. You cannot negotiate because you have no leverage.</p>
             </div>
             <div className="bg-surface border border-border-color/40 shadow-card rounded-2xl p-5">
               <p className="text-text-primary font-semibold mb-1">3. Customization Ceiling</p>
@@ -481,6 +488,10 @@ export default function BlogPost() {
             AI-first building is not magic. Research from December 2025 found that AI-generated code contains approximately <a href="https://stackoverflow.blog/2026/01/02/a-new-worst-coder-has-entered-the-chat-vibe-coding-without-code-knowledge/" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">1.7 times more issues</a> than human-written code, including 75% more logic errors and 2.74 times higher security vulnerabilities.
           </p>
 
+          <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
+            A <a href="https://appsecsanta.com/api-ai-security/ai-code-security" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">2026 AppSec Santa study</a> analyzing 534 AI-generated code samples found <span className="text-text-primary font-semibold">25.1% contained confirmed vulnerabilities</span>. The most common issues included Server-Side Request Forgery (SSRF), injection flaws, and hardcoded credentials. Notably, <a href="https://www.softwareseni.com/ai-generated-code-security-risks-why-vulnerabilities-increase-2-74x-and-how-to-prevent-them/" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">hardcoded secrets increased by 40%</a> in AI-generated code compared to traditional development.
+          </p>
+
           <div className="bg-surface-alt border border-border-color/40 shadow-sm rounded-2xl p-8 my-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -555,6 +566,26 @@ export default function BlogPost() {
             <div className="bg-surface border border-border-color/40 shadow-card rounded-2xl p-6">
               <h3 className="text-lg font-semibold text-text-primary mb-2">What if the AI tool does not understand what I want?</h3>
               <p className="text-text-secondary text-base leading-relaxed">AI misunderstanding is normal and part of the process. The fix is providing more context and specificity. Instead of "build me a dashboard," say "create an admin dashboard that shows all customer feedback submissions grouped by category, with filters for date range and sentiment." Treat the AI like a smart junior developer who needs clear requirements. Iteration improves results - domain experts often succeed because they understand the requirements deeply.</p>
+            </div>
+
+            <div className="bg-surface border border-border-color/40 shadow-card rounded-2xl p-6">
+              <h3 className="text-lg font-semibold text-text-primary mb-2">Is AI-generated code maintainable long-term?</h3>
+              <p className="text-text-secondary text-base leading-relaxed">Yes, with proper practices. AI-generated code is standard JavaScript, Python, or whatever language you specify - not proprietary or obfuscated. The key is maintaining good documentation and clear architecture from the start. We have projects in production for 14+ months with ongoing feature additions and zero technical debt crises. Treat AI-generated code like junior developer output: review it, refactor when needed, and establish coding standards early.</p>
+            </div>
+
+            <div className="bg-surface border border-border-color/40 shadow-card rounded-2xl p-6">
+              <h3 className="text-lg font-semibold text-text-primary mb-2">Can I protect my AI-built product's intellectual property?</h3>
+              <p className="text-text-secondary text-base leading-relaxed">Yes. You own the code generated by AI tools - it is your intellectual property just like code you write by hand or hire developers to create. The code can be copyrighted, and your business logic can be patented if novel. Most AI tool terms of service explicitly grant you full ownership of generated output. This is another advantage over no-code platforms where you license access but do not own the underlying implementation.</p>
+            </div>
+
+            <div className="bg-surface border border-border-color/40 shadow-card rounded-2xl p-6">
+              <h3 className="text-lg font-semibold text-text-primary mb-2">What is the difference between low-code and no-code platforms?</h3>
+              <p className="text-text-secondary text-base leading-relaxed">No-code platforms use visual builders with zero code (e.g., Bubble, Webflow). Low-code platforms allow custom code for specific features while using visual builders for standard functionality (e.g., Retool, OutSystems). Low-code offers more flexibility but still carries vendor lock-in risks. AI-first tools sidestep this entirely by generating real, portable code you own. For domain-expert founders, AI tools provide the ease of no-code with the flexibility of custom development.</p>
+            </div>
+
+            <div className="bg-surface border border-border-color/40 shadow-card rounded-2xl p-6">
+              <h3 className="text-lg font-semibold text-text-primary mb-2">How do I know if my MVP is ready to ship?</h3>
+              <p className="text-text-secondary text-base leading-relaxed">Your MVP is ready when it solves the core problem for your first users, even if imperfectly. Ask: Can users complete the primary workflow end-to-end? Does it solve their pain point well enough that they would pay? Is it stable enough for daily use? If yes to all three, ship it. Do not wait for polish, additional features, or perfect code. The fastest way to learn what matters is real user feedback, not more building in isolation.</p>
             </div>
           </div>
 
