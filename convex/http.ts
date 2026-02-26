@@ -14,7 +14,7 @@ function validateAuth(request: Request): boolean {
 function corsHeaders() {
   return {
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
   };
 }
@@ -415,6 +415,149 @@ http.route({
   }),
 });
 
+// ---------------------------------------------------------------------------
+// GET query endpoints — agent read access (authenticated with AGENT_API_KEY)
+// ---------------------------------------------------------------------------
+
+http.route({
+  path: "/query/briefs",
+  method: "GET",
+  handler: httpAction(async (ctx, request) => {
+    if (!validateAuth(request)) {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
+    try {
+      const url = new URL(request.url);
+      const status = url.searchParams.get("status");
+
+      if (!status) {
+        return jsonResponse({ error: "Missing ?status query param" }, 400);
+      }
+
+      if (status !== "brief_ready" && status !== "pending_review") {
+        return jsonResponse({ error: `Unknown status: ${status}` }, 400);
+      }
+
+      const briefs = await ctx.runQuery(internal.agentQueries.getBriefsByStatus, { status });
+
+      if (status === "pending_review") {
+        return jsonResponse({
+          count: briefs.length,
+          slugs: briefs.map((b) => b.slug),
+          titles: briefs.map((b) => b.title),
+        });
+      }
+
+      // brief_ready — return full brief objects
+      return jsonResponse(briefs.map((b) => ({
+        _id: b._id,
+        title: b.title,
+        slug: b.slug,
+        primaryKeyword: b.primaryKeyword,
+        longTailKeywords: b.longTailKeywords ?? [],
+        sourceUrls: b.sourceUrls ?? [],
+        icpProblem: b.icpProblem ?? null,
+        competitiveGap: b.competitiveGap ?? null,
+        launchSpaceAngle: b.launchSpaceAngle ?? null,
+        suggestedStructure: b.suggestedStructure ?? null,
+        researchNotes: b.researchNotes ?? null,
+        contentMarkdown: b.contentMarkdown ?? null,
+        category: b.category ?? null,
+        createdAt: b.createdAt,
+      })));
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
+  }),
+});
+
+http.route({
+  path: "/query/topic-clusters",
+  method: "GET",
+  handler: httpAction(async (ctx, request) => {
+    if (!validateAuth(request)) {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
+    try {
+      const clusters = await ctx.runQuery(internal.agentQueries.getAllTopicClusters, {});
+      return jsonResponse(clusters.map((c) => ({
+        _id: c._id,
+        pillarName: c.pillarName,
+        clusterTopic: c.clusterTopic,
+        status: c.status,
+        targetKeyword: c.targetKeyword,
+        intentType: c.intentType,
+      })));
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
+  }),
+});
+
+http.route({
+  path: "/query/tool-opportunities",
+  method: "GET",
+  handler: httpAction(async (ctx, request) => {
+    if (!validateAuth(request)) {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
+    try {
+      const tools = await ctx.runQuery(internal.agentQueries.getAllToolOpportunities, {});
+      return jsonResponse(tools.map((t) => ({
+        _id: t._id,
+        toolName: t.toolName,
+        toolSolution: t.toolSolution,
+        status: t.status,
+        targetKeyword: t.targetKeyword,
+        complexity: t.complexity,
+      })));
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
+  }),
+});
+
+http.route({
+  path: "/query/linkedin-posts",
+  method: "GET",
+  handler: httpAction(async (ctx, request) => {
+    if (!validateAuth(request)) {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
+    try {
+      const posts = await ctx.runQuery(internal.agentQueries.getAllLinkedinPosts, {});
+      return jsonResponse(posts.map((p) => ({
+        _id: p._id,
+        insightName: p.insightName,
+        sourceBlogSlug: p.sourceBlogSlug,
+        insightNumber: p.insightNumber,
+        status: p.status,
+        krishnaFeedback: p.krishnaFeedback ?? null,
+        createdAt: p.createdAt,
+      })));
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
+  }),
+});
+
+http.route({
+  path: "/push/linkedin-posts",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    if (!validateAuth(request)) {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
+    try {
+      const body = await request.json();
+      const result = await ctx.runMutation(internal.linkedinPosts.upsert, body);
+      return jsonResponse({ success: true, ...result });
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
+  }),
+});
+
 // Handle CORS preflight for all routes (legacy aliases + canonical)
 for (const path of [
   // Legacy aliases — kept for backward compatibility
@@ -425,7 +568,10 @@ for (const path of [
   // Canonical paths
   "/push/questions", "/push/briefs", "/push/blogs", "/push/activity",
   "/push/topic-clusters", "/push/tool-opportunities", "/push/documents",
+  "/push/linkedin-posts",
   "/update/brief-status", "/update/blog-enrichment",
+  // GET query endpoints
+  "/query/briefs", "/query/topic-clusters", "/query/tool-opportunities", "/query/linkedin-posts",
 ]) {
   http.route({
     path,

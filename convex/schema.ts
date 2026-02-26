@@ -23,7 +23,7 @@ export default defineSchema({
 
     // Status
     status: v.string(),             // "new" | "brief_created" | "skipped"
-    briefCreated: v.optional(v.boolean()), // Was a brief created from this question?
+    briefCreated: v.optional(v.boolean()), // Deprecated — kept for backward compat with existing records
 
     // Agent metadata
     agentName: v.string(),
@@ -104,7 +104,7 @@ export default defineSchema({
   topicClusters: defineTable({
     pillarName: v.string(),
     clusterTopic: v.string(),
-    status: v.string(),             // "planned" | "brief-ready" | "published"
+    status: v.string(),             // "planned" | "in_progress" | "complete"
     blogUrl: v.optional(v.string()),
     targetKeyword: v.string(),
     intentType: v.string(),         // "informational" | "comparison" | "decision"
@@ -126,7 +126,7 @@ export default defineSchema({
     toolSolution: v.string(),
     targetKeyword: v.string(),
     complexity: v.string(),         // "simple" | "medium"
-    status: v.string(),             // "proposed" | "approved" | "rejected" | "built" | "live"
+    status: v.string(),             // "proposed" | "approved" | "rejected" | "building" | "built"
     krishnaNotes: v.optional(v.string()),
     agentName: v.string(),          // always "Vidura"
     createdAt: v.string(),
@@ -171,6 +171,42 @@ export default defineSchema({
     .index("by_slug", ["slug"])
     .index("by_agentName", ["agentName"])
     .index("by_category", ["category"])
+    .index("by_createdAt", ["createdAt"]),
+
+  // Valmiki's LinkedIn post drafts
+  linkedinPosts: defineTable({
+    insightName: v.string(),           // Dedup key (sourceBlogSlug + insightNumber)
+    draftText: v.string(),
+    sourceBlogSlug: v.string(),
+    sourceBlogTitle: v.optional(v.string()),
+    insightNumber: v.number(),
+    source: v.string(),                // "blog" | "krishna-insight"
+    icpPass: v.boolean(),
+    icpFailReason: v.optional(v.string()),
+    hookStrategy: v.optional(v.string()),
+    ctaType: v.optional(v.string()),
+    krishnaFeedback: v.optional(v.string()),
+    postedDate: v.optional(v.string()),
+    linkedinUrl: v.optional(v.string()),
+    status: v.string(),                // "draft_ready" | "needs_revision" | "approved" | "posted" | "skipped"
+    agentName: v.string(),             // "Valmiki"
+    createdAt: v.string(),
+    updatedAt: v.optional(v.string()),
+  })
+    .index("by_status", ["status"])
+    .index("by_sourceBlogSlug", ["sourceBlogSlug"])
+    .index("by_createdAt", ["createdAt"]),
+
+  // Krishna-created manual tasks (no source artifact)
+  manualTasks: defineTable({
+    title: v.string(),
+    description: v.optional(v.string()),
+    status: v.string(),                // "todo" | "in_progress" | "blocked" | "done"
+    assignee: v.optional(v.string()),  // "Krishna" or agent name
+    createdAt: v.string(),
+    updatedAt: v.string(),
+  })
+    .index("by_status", ["status"])
     .index("by_createdAt", ["createdAt"]),
 
   // All agents — milestone activity log
