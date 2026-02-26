@@ -29,7 +29,7 @@ const jsonLd = {
   description: "Agencies aren't incompetent - the model is structurally misaligned for MVPs. Learn why agencies fail at startup validation and what to do instead.",
   url: "https://thelaunch.space/blogs/startup-mvps/why-agency-mvp-failed",
   datePublished: "2026-02-11T00:00:00.000Z",
-  dateModified: "2026-02-20T00:00:00.000Z",
+  dateModified: "2026-02-26T14:30:00.000Z",
   author: { "@type": "Organization", name: "thelaunch.space", url: "https://thelaunch.space" },
   publisher: {
     "@type": "Organization",
@@ -202,6 +202,15 @@ export default function BlogPost() {
             The agency model breaks at step 3. By the time they deliver, you've lost the ability to iterate quickly. You're committed to a codebase, a timeline, and a budget that assumes your first guess was right.
           </p>
 
+          <div className="bg-surface-alt border border-border-color/40 shadow-sm rounded-2xl p-8 my-10 text-center">
+            <p className="text-3xl md:text-4xl font-bold text-text-primary mb-2">92%</p>
+            <p className="text-sm md:text-base text-text-secondary">of startups pivot at least once before finding product-market fit, with the average startup pivoting 1.8 times - according to <a href="https://www.failory.com/blog/startup-failure-rate" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">Failory's 2025 startup analysis</a></p>
+          </div>
+
+          <div className="border-l-4 border-accent-blue pl-6 my-8">
+            <p className="text-base md:text-lg text-text-primary font-medium leading-relaxed">Startups that pivot 1-2 times experience 3.6x better user growth and raise 2.5x more money compared to those that don't pivot or pivot excessively. The ability to iterate quickly isn't optional - it's the difference between finding product-market fit and burning through your runway.</p>
+          </div>
+
           <hr className="border-border-color my-12" />
 
           <h2 className="text-2xl md:text-3xl font-bold mt-16 mb-4">The Middle Ground: Execution Partners vs. Order-Takers</h2>
@@ -233,6 +242,10 @@ export default function BlogPost() {
             <p className="text-3xl md:text-4xl font-bold text-text-primary mb-2">21 days vs. 6 months</p>
             <p className="text-sm md:text-base text-text-secondary">Time to first real user feedback: execution studio vs. traditional agency</p>
           </div>
+
+          <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
+            That time difference matters more than you think. In a <a href="https://getperspective.ai/published/page/682bb4a90c27c1b47da0ea85" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">2025 survey of 53 founders</a>, 50% were still pre-product-market fit after being in market for 0-2 years. Every week spent building without validation is a week you could have spent learning. Speed to feedback is the competitive advantage.
+          </p>
 
           <h3 className="text-xl md:text-2xl font-bold mt-8 mb-4">Comparison: Agency vs. Execution Studio vs. AI-Assisted Solo</h3>
 
@@ -337,6 +350,10 @@ export default function BlogPost() {
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
             Was the problem the idea, the execution, or the positioning? Sometimes a pivot, not a rebuild, is all you need. We've seen founders take failed MVPs and find success by changing the target customer or the core value proposition, not the underlying technology.
           </p>
+
+          <div className="border-l-4 border-accent-blue pl-6 my-8">
+            <p className="text-base md:text-lg text-text-primary font-medium leading-relaxed">"85% of our exit profits came from startups that pivoted to something very different from their original idea." - Mike Maples, Floodgate Ventures. Pivoting isn't failure - it's adaptation based on evidence.</p>
+          </div>
 
           <h3 className="text-xl md:text-2xl font-bold mt-8 mb-3">Step 4: Rebuild Lean</h3>
 
