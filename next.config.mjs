@@ -1,11 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  experimental: {
-    staleTimes: {
-      dynamic: 0,
-      static: 0,
-    },
+  generateBuildId: async () => {
+    return process.env.COMMIT_REF ?? `local-${Date.now()}`;
   },
   async redirects() {
     return [
