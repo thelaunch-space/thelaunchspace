@@ -434,7 +434,8 @@ http.route({
         return jsonResponse({ error: "Missing ?status query param" }, 400);
       }
 
-      if (status !== "brief_ready" && status !== "pending_review") {
+      const allowedStatuses = ["brief_ready", "pending_review", "needs_revision"];
+      if (!allowedStatuses.includes(status)) {
         return jsonResponse({ error: `Unknown status: ${status}` }, 400);
       }
 
@@ -448,7 +449,7 @@ http.route({
         });
       }
 
-      // brief_ready — return full brief objects
+      // brief_ready + needs_revision — return full brief objects including krishnaFeedback
       return jsonResponse(briefs.map((b) => ({
         _id: b._id,
         title: b.title,
@@ -463,6 +464,7 @@ http.route({
         researchNotes: b.researchNotes ?? null,
         contentMarkdown: b.contentMarkdown ?? null,
         category: b.category ?? null,
+        krishnaFeedback: b.krishnaFeedback ?? null,
         createdAt: b.createdAt,
       })));
     } catch (error: unknown) {
