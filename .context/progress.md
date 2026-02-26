@@ -1,6 +1,6 @@
 # Progress — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-24 (3 blog PRs merged, context docs updated)
+Last updated: 2026-02-26 (Kanban status dropdown + blog data cleanup)
 
 ## Completed
 - [x] Project scaffolding (originally Vite + React 18, later migrated to Next.js 14)
@@ -196,8 +196,12 @@ Last updated: 2026-02-24 (3 blog PRs merged, context docs updated)
 - [x] **WaitlistCTA → redirect to pitch page** — Replaced email forms in WaitlistCTA and PreviewGate with "Get Your AI Team" buttons linking to `/hire-your-24x7-team#lead-capture`. All leads now funnel through pitchBookings in Convex. (2026-02-25)
 - [x] **Opened up Launch Control tabs** — Removed blur/PreviewGate from Blogs, Communities, Strategy, Briefs tabs. All public content now fully visible to visitors. Communities uses real data (`communityBreakdown` query made public). Strategy shows 20 clusters + 10 tools. Briefs shows 20 briefs, all clickable. Only Documents and Meetings remain admin-only. (2026-02-25)
 
+- [x] **Work Mode Kanban — full build** — WorkBoard, WorkBoardColumn, WorkBoardCard, AddManualTaskForm, WorkBoardArchive. 5 kanban columns + Archive column (previous weeks, collapsible by week). Owner tags (Krishna = orange "K" badge; agents = colored pills). Health bar per card (green → red over 14 days). Work mode hides agent sidebar (full-width board). Header stats strip (Done this week / In Progress / To Do / Blocked — live from Convex). Hydration fix: workMode reads from localStorage via useEffect, not useState initializer. (2026-02-26)
+- [x] **Convex SSOT migration** — canonical `/push/*` and `/update/*` write endpoints deployed. GET read endpoints live: `/query/briefs`, `/query/topic-clusters`, `/query/tool-opportunities`, `/query/linkedin-posts`. `linkedinPosts` + `manualTasks` tables added. All agent helper scripts rewired (Vyasa, Vibhishana, Vidura, Valmiki). Sheets now fallback-only. (2026-02-26)
+- [x] **Kanban status dropdown + feedback loop** — Replaced action buttons on brief/blog/LinkedIn cards with nuanced status dropdown (Approve / Needs Revision / Drop / Publish / Skip etc). Confirm step with optional feedback textarea for non-approval statuses. Feedback stored in `krishnaFeedback` field (briefs + linkedinPosts). Blocked cards show stored feedback + Slack reminder to paste it to the agent. Blog cleanup migration run: 4 junk/duplicate blog entries marked "dropped" on dev (production cleanup pending). Partha brief written at `openclaw-config-global/prompts/kanban-feedback-loop-brief-for-partha.md`. (2026-02-26)
+
 ## In Progress
-- Nothing currently in progress
+- End-to-end brief→blog flow verification (Vyasa picking up brief from Convex, pushing pr_created status back)
 
 ## Blocked
 - Nothing currently blocked
@@ -207,7 +211,10 @@ Last updated: 2026-02-24 (3 blog PRs merged, context docs updated)
 - **Question count mismatch** — Prod Convex has 771 unique questions, Google Sheet has 891. ~120 questions may not have been pushed to Convex, or have slightly different URLs. Needs investigation.
 
 ## Recent Changes (latest first)
-1. Opened up LC tabs (no blur), /admin login page, WaitlistCTA→redirect, removed Clerk from middleware, fixed Netlify build (2026-02-25)
+1. Kanban status dropdown — replaced action buttons on brief/blog/LinkedIn cards with dropdown + confirm + feedback textarea. `krishnaFeedback` stored in Convex. Blocked cards show Slack reminder. Blog cleanup migration run (4 junk entries → dropped). Partha brief written. (2026-02-26)
+2. Work Mode Kanban — owner tags, health bar, archive column, header stats, sidebar hidden in work mode. Hydration fix. Deployed to production. (2026-02-26)
+3. Convex SSOT migration — GET endpoints live, all agent helper scripts rewired (Vyasa/Vibhishana/Vidura/Valmiki). Sheets = fallback only. (2026-02-26)
+3. Opened up LC tabs (no blur), /admin login page, WaitlistCTA→redirect, removed Clerk from middleware, fixed Netlify build (2026-02-25)
 2. 3 blog PRs merged (#44 #45 #46) — 1 new blog (invoice automation) + 2 enriched blogs (landing page tests, spreadsheets for leads) (2026-02-24)
 2. Documents table + upsert endpoints + blog enrichment endpoints + activity dedup + shared activity helper (2026-02-22–24)
 3. Question dedup fix — `ingestBatch` upserts by URL, `by_url` index, 249 prod duplicates cleaned (2026-02-22)

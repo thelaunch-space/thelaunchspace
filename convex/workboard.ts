@@ -32,6 +32,7 @@ function mapBlogStatus(status: string): { column: WorkBoardTask["column"]; owner
     case "writing":    return { column: "in_progress", owner: "Vyasa" };
     case "pr_created": return { column: "todo", owner: "Krishna" };
     case "published":  return { column: "done", owner: null };
+    case "dropped":    return { column: "done", owner: null };
     default:           return { column: "backlog", owner: null };
   }
 }
@@ -121,6 +122,7 @@ export const getBoard = query({
           slug: brief.slug,
           primaryKeyword: brief.primaryKeyword,
           category: brief.category ?? null,
+          krishnaFeedback: brief.krishnaFeedback ?? null,
         },
       });
     }
@@ -159,6 +161,7 @@ export const getBoard = query({
           sourceBlogTitle: post.sourceBlogTitle ?? null,
           insightNumber: post.insightNumber,
           draftText: post.draftText,
+          krishnaFeedback: post.krishnaFeedback ?? null,
         },
       });
     }
@@ -248,8 +251,9 @@ export const updateArtifactStatus = mutation({
     type: v.string(),
     id: v.string(),
     newStatus: v.string(),
+    feedback: v.optional(v.string()),
   },
-  handler: async (ctx, { type, id, newStatus }) => {
+  handler: async (ctx, { type, id, newStatus, feedback }) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Unauthorized");
 
@@ -257,13 +261,21 @@ export const updateArtifactStatus = mutation({
 
     switch (type) {
       case "brief":
-        await ctx.db.patch(id as Id<"briefs">, { status: newStatus, updatedAt: now });
+        await ctx.db.patch(id as Id<"briefs">, {
+          status: newStatus,
+          updatedAt: now,
+          ...(feedback !== undefined && { krishnaFeedback: feedback }),
+        });
         break;
       case "blog":
         await ctx.db.patch(id as Id<"blogs">, { status: newStatus });
         break;
       case "linkedin":
-        await ctx.db.patch(id as Id<"linkedinPosts">, { status: newStatus, updatedAt: now });
+        await ctx.db.patch(id as Id<"linkedinPosts">, {
+          status: newStatus,
+          updatedAt: now,
+          ...(feedback !== undefined && { krishnaFeedback: feedback }),
+        });
         break;
       case "booking":
         await ctx.db.patch(id as Id<"pitchBookings">, { status: newStatus });

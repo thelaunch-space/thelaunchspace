@@ -3,11 +3,17 @@
 import { useState, useRef, useEffect } from "react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { MoreHorizontal, ExternalLink } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import type { Id } from "@/convex/_generated/dataModel";
 import type { WorkBoardTask, KanbanColumn } from "@/lib/launch-control-types";
 import { CARD_BADGE_CONFIG, KANBAN_COLUMNS, OWNER_TAG_CONFIG } from "@/lib/launch-control-types";
 import BriefReaderModal from "./BriefReaderModal";
+
+// Slack channel for each agent — shown as reminder when feedback is sent
+const AGENT_SLACK_CHANNEL: Record<string, string> = {
+  Vibhishana: "#vibhishana-seo",
+  Valmiki: "#valmiki-content",
+};
 
 function relativeTime(timestamp: string): string {
   const diff = Date.now() - new Date(timestamp).getTime();
@@ -73,6 +79,11 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
   const [menuPos, setMenuPos] = useState<{ top: number; right: number } | null>(null);
   const [briefModalOpen, setBriefModalOpen] = useState(false);
 
+  // Status dropdown state (for brief / blog / linkedin)
+  const [selectedStatus, setSelectedStatus] = useState<string>("");
+  const [feedback, setFeedback] = useState<string>("");
+  const [confirming, setConfirming] = useState(false);
+
   const menuRef = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
 
@@ -111,8 +122,66 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
     setMenuOpen(true);
   }
 
-  async function handleStatusChange(newStatus: string) {
-    await updateStatus({ type: task.type, id: task.id, newStatus });
+  async function handleStatusChange(newStatus: string, feedbackText?: string) {
+    await updateStatus({
+      type: task.type,
+      id: task.id,
+      newStatus,
+      ...(feedbackText ? { feedback: feedbackText } : {}),
+    });
+  }
+
+  async function handleConfirm() {
+    const needsFeedback = selectedStatus === "needs_revision" || selectedStatus === "dropped" || selectedStatus === "skipped";
+    await handleStatusChange(selectedStatus, needsFeedback && feedback ? feedback : undefined);
+    // Open PR URL when publishing a blog
+    if (task.type === "blog" && selectedStatus === "published" && task.meta.url) {
+      window.open(task.meta.url as string, "_blank", "noopener,noreferrer");
+    }
+    setSelectedStatus("");
+    setFeedback("");
+    setConfirming(false);
+  }
+
+  function getStatusOptions(): { value: string; label: string }[] {
+    const { type, status } = task;
+    if (type === "brief") {
+      if (status === "pending_review") return [
+        { value: "brief_ready", label: "Approve" },
+        { value: "needs_revision", label: "Needs Revision" },
+        { value: "dropped", label: "Drop" },
+      ];
+      if (status === "brief_ready") return [
+        { value: "dropped", label: "Drop" },
+      ];
+      if (status === "needs_revision") return [
+        { value: "brief_ready", label: "Approve" },
+        { value: "dropped", label: "Drop" },
+      ];
+    }
+    if (type === "blog") {
+      if (status === "pr_created") return [
+        { value: "published", label: "Publish" },
+        { value: "dropped", label: "Drop" },
+      ];
+    }
+    if (type === "linkedin") {
+      if (status === "draft_ready") return [
+        { value: "approved", label: "Approve" },
+        { value: "needs_revision", label: "Needs Revision" },
+        { value: "skipped", label: "Skip" },
+      ];
+      if (status === "approved") return [
+        { value: "posted", label: "Mark Posted" },
+        { value: "needs_revision", label: "Needs Revision" },
+        { value: "skipped", label: "Skip" },
+      ];
+      if (status === "needs_revision") return [
+        { value: "approved", label: "Approve" },
+        { value: "skipped", label: "Skip" },
+      ];
+    }
+    return [];
   }
 
   async function handleDelete() {
@@ -165,48 +234,9 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
     return null;
   }
 
-  // Primary action buttons — max 2 visible
+  // Action buttons for non-dropdown card types (booking, tool, manual)
   function renderActions() {
     const { type, status } = task;
-
-    if (type === "brief") {
-      if (status === "pending_review") return (
-        <>
-          <ActionBtn label="Approve" onClick={() => handleStatusChange("brief_ready")} primary />
-          <ActionBtn label="Revise" onClick={() => handleStatusChange("needs_revision")} />
-        </>
-      );
-      if (status === "brief_ready" || status === "writing") return (
-        <ActionBtn label="View" onClick={handleTitleClick} />
-      );
-    }
-
-    if (type === "blog") {
-      if (status === "pr_created") return (
-        <>
-          {task.meta.url && (
-            <ActionBtn
-              label="View PR"
-              onClick={() => window.open(task.meta.url as string, "_blank", "noopener,noreferrer")}
-              icon={<ExternalLink size={11} />}
-            />
-          )}
-          <ActionBtn label="Publish" onClick={() => handleStatusChange("published")} primary />
-        </>
-      );
-    }
-
-    if (type === "linkedin") {
-      if (status === "draft_ready") return (
-        <>
-          <ActionBtn label="Approve" onClick={() => handleStatusChange("approved")} primary />
-          <ActionBtn label="Skip" onClick={() => handleStatusChange("skipped")} />
-        </>
-      );
-      if (status === "approved") return (
-        <ActionBtn label="Mark Posted" onClick={() => handleStatusChange("posted")} primary />
-      );
-    }
 
     if (type === "booking") {
       if (status === "new") return (
@@ -237,7 +267,89 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
     return null;
   }
 
+  // Status dropdown for brief / blog / linkedin
+  function renderStatusDropdown() {
+    const options = getStatusOptions();
+    if (options.length === 0) return null;
+    const showFeedback = confirming && (
+      selectedStatus === "needs_revision" || selectedStatus === "dropped" || selectedStatus === "skipped"
+    );
+    const selectedLabel = options.find((o) => o.value === selectedStatus)?.label;
+
+    return (
+      <div className="mt-2 w-full">
+        {!confirming ? (
+          <select
+            value={selectedStatus}
+            onChange={(e) => {
+              setSelectedStatus(e.target.value);
+              setConfirming(true);
+            }}
+            className="bg-surface border border-border-color/30 rounded-lg text-[11px] text-text-primary px-2 py-1 w-full cursor-pointer"
+          >
+            <option value="">Change status...</option>
+            {options.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
+        ) : (
+          <>
+            <p className="text-[11px] text-text-secondary mb-1.5">
+              → <span className="text-text-primary font-medium">{selectedLabel}</span>?
+            </p>
+            {showFeedback && (
+              <textarea
+                placeholder="Feedback (optional) — stored as audit trail..."
+                value={feedback}
+                onChange={(e) => setFeedback(e.target.value)}
+                className="bg-surface-alt border border-border-color/30 rounded-lg text-[11px] text-text-primary px-2 py-1.5 w-full resize-none mt-1"
+                rows={2}
+              />
+            )}
+            <div className="flex gap-2 mt-1.5">
+              <button
+                onClick={handleConfirm}
+                className="bg-emerald-500 text-white text-[10px] font-medium px-2.5 py-1 rounded-md hover:bg-emerald-600 transition-colors"
+              >
+                Confirm
+              </button>
+              <button
+                onClick={() => { setSelectedStatus(""); setFeedback(""); setConfirming(false); }}
+                className="bg-surface-alt text-text-secondary text-[10px] px-2 py-1 rounded-md hover:text-text-primary transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    );
+  }
+
+  // Stored feedback display — shown on blocked cards that have feedback saved
+  function renderFeedbackBadge() {
+    const storedFeedback = task.meta.krishnaFeedback as string | null;
+    if (!storedFeedback) return null;
+    if (task.column !== "blocked") return null;
+
+    const agentOwner = task.owner;
+    const slackChannel = agentOwner ? AGENT_SLACK_CHANNEL[agentOwner] : null;
+
+    return (
+      <div className="mt-2 bg-amber-500/5 border border-amber-500/20 rounded-lg px-2 py-1.5">
+        <p className="text-[10px] text-amber-700 font-medium mb-0.5">Feedback stored:</p>
+        <p className="text-[10px] text-text-secondary leading-relaxed">{storedFeedback}</p>
+        {slackChannel && (
+          <p className="text-[10px] text-amber-600/70 mt-1">
+            → Send to {agentOwner} in <span className="font-mono">{slackChannel}</span>
+          </p>
+        )}
+      </div>
+    );
+  }
+
   const meta = renderMeta();
+  const usesDropdown = task.type === "brief" || task.type === "blog" || task.type === "linkedin";
 
   return (
     <>
@@ -276,17 +388,26 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
           </div>
         )}
 
-        {/* Footer: owner + actions + timestamp */}
+        {/* Footer: owner + actions (booking/tool/manual only) */}
         <div className="flex items-center justify-between gap-2">
           {task.owner ? (
             <OwnerTag owner={task.owner} />
           ) : (
             <span className="text-[10px] text-text-secondary">—</span>
           )}
-          <div className="flex items-center gap-1 shrink-0">
-            {renderActions()}
-          </div>
+          {!usesDropdown && (
+            <div className="flex items-center gap-1 shrink-0">
+              {renderActions()}
+            </div>
+          )}
         </div>
+
+        {/* Stored feedback badge (blocked cards with saved feedback) */}
+        {usesDropdown && renderFeedbackBadge()}
+
+        {/* Status dropdown (brief / blog / linkedin) */}
+        {usesDropdown && task.column !== "done" && renderStatusDropdown()}
+
         <p className="text-[10px] text-text-secondary/40 font-mono text-right mt-1">
           {relativeTime(task.timestamp)}
         </p>

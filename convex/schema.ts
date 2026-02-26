@@ -71,6 +71,9 @@ export default defineSchema({
     createdAt: v.string(),
     updatedAt: v.optional(v.string()),
 
+    // Krishna's review feedback (audit trail — agents still read from Slack)
+    krishnaFeedback: v.optional(v.string()),
+
     // Agent metadata
     agentName: v.string(),
   })
