@@ -30,6 +30,8 @@ All GET endpoints follow the same pattern as write endpoints:
 |--------|---------------|---------------|-----|
 | Vyasa | `?status=brief_ready` | 1 (11 AM cron) | Find one approved brief to write into a full blog post |
 | Vibhishana | `?status=pending_review` | 1–3 (before each brief run) | Check queue depth + slug list before creating new briefs |
+| Vibhishana | `?status=needs_revision` | 1 (at cron start) | Check for briefs needing revision — work on these first |
+| Valmiki | `?status=needs_revision` | _(not yet, planned)_ | Pull `linkedinPosts` with `krishnaFeedback` for rework — see `GET /query/linkedin-posts` |
 
 ---
 
@@ -89,6 +91,35 @@ All GET endpoints follow the same pattern as write endpoints:
 
 ---
 
+#### Vibhishana — `GET /query/briefs?status=needs_revision`
+
+**Status:** ✅ LIVE (added 2026-02-26)
+
+**Response shape:** Full brief array (same shape as Vyasa's `brief_ready` response) including `krishnaFeedback`.
+
+```json
+[
+  {
+    "_id": "<convex_id>",
+    "title": "How to Hire Your First Employee",
+    "slug": "how-to-hire-first-employee-small-business",
+    "primaryKeyword": "...",
+    "contentMarkdown": "...",
+    "krishnaFeedback": "The angle is too generic — focus more on the AI screening angle",
+    "createdAt": "2026-02-26T11:00:00.000Z"
+  }
+]
+```
+
+**Usage:** Vibhishana checks this at the **start of every cron run** (before doing any new work). For each brief returned, she reads `krishnaFeedback` and decides the revision path:
+
+- **MINOR** (same topic/ICP, only title/angle/keyword changed): Snapshot current `title`, `primaryKeyword`, `suggestedStructure` + the feedback into a `revisionHistory` entry. Patch the same slug with updated content + `revisionHistory` appended. Set `status: "pending_review"`. Card moves Blocked → To Do automatically. Slack message: `↩ MINOR revision: <slug>`
+- **MAJOR** (completely different topic, new ICP problem, new keyword): First PATCH old brief to `status: "dropped"`. Then create new brief with new slug + `status: "pending_review"`. Slack message: `↳ MAJOR pivot: dropped <old-slug>, created <new-slug>`
+
+Feedback-first protocol — revision work always comes before new brief creation.
+
+---
+
 ### `GET /query/topic-clusters`
 
 **Called by:** Vidura
@@ -143,14 +174,32 @@ All GET endpoints follow the same pattern as write endpoints:
 
 ---
 
-## Endpoint — Future (design alongside `linkedinPosts` table build)
+## Additional Endpoints
 
 ### `GET /query/linkedin-posts`
 
 **Called by:** Valmiki
-**Status:** ⏳ NOT YET — the `linkedinPosts` Convex table doesn't exist yet. Design this endpoint when the table is built in Phase 0.
+**Status:** ✅ LIVE (deployed 2026-02-26)
 
-**What Valmiki will use it for:** Check which `sourceBlogSlug` values have already been processed (to avoid re-extracting insights from the same blog), and pull any `needs_revision` posts along with `krishnaFeedback` for rework.
+**What Valmiki uses it for:**
+1. Check which `sourceBlogSlug` values have already been processed (avoid re-extracting from same blog)
+2. Pull posts with `status=needs_revision` + `krishnaFeedback` for rework at cron start (feedback-first protocol)
+
+**Response shape:** Array of `linkedinPosts` records. Filter client-side by `status` for the `needs_revision` check (no server-side `?status=` param currently — Valmiki filters in script).
+
+```json
+[
+  {
+    "_id": "<convex_id>",
+    "insightName": "The Invisible Labor Trap",
+    "draftText": "Full post draft...",
+    "sourceBlogSlug": "how-to-hire-first-employee-small-business",
+    "status": "needs_revision",
+    "krishnaFeedback": "Hook is too weak — lead with the cost number",
+    "createdAt": "2026-02-26T19:00:00.000Z"
+  }
+]
+```
 
 ---
 
@@ -185,3 +234,5 @@ Once endpoints are deployed:
 | 2026-02-26 | Document created as stub. |
 | 2026-02-26 | Rewritten with pre-filled response shapes. Sent to Parthasarathi for verification. |
 | 2026-02-26 | Parthasarathi verified. Vyasa shape updated with 6 missing fields. Vibhishana + Vidura shapes confirmed. Status: FINALISED. |
+| 2026-02-26 | `GET /query/briefs?status=needs_revision` added and live. `GET /query/linkedin-posts` live (`linkedinPosts` table built). Feedback-first cron protocol documented. |
+| 2026-02-27 | `needs_revision` usage updated: two-path MINOR/MAJOR logic replaces old "always create new brief + drop old" instruction. |

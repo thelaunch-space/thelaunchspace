@@ -2,7 +2,7 @@
 
 Status: LIVE IN PRODUCTION
 Created: 2026-02-14
-Last updated: 2026-02-24 (8th table documents, upsert endpoints, dedup indexes, blog counts updated)
+Last updated: 2026-02-26 (linkedinPosts + manualTasks live, Kanban shipped, feedback loop closed)
 URL: `thelaunch.space/launch-control`
 
 ---
@@ -74,7 +74,7 @@ Agent does work on VPS → curl POST to Convex HTTP Action → validates secret 
 
 ---
 
-## 4. Convex Schema (as deployed — 8 tables)
+## 4. Convex Schema (as deployed — 10 tables)
 
 **Production deployment:** `curious-iguana-738`
 **HTTP base URL:** `https://curious-iguana-738.convex.site`
@@ -122,9 +122,11 @@ Indexes: `by_scannedAt`, `by_agentName`, `by_status`, `by_url`
 | `sourceUrls` | string[] | optional | Reddit thread URLs used |
 | `blogUrl` | string | optional | Published blog URL (col M) |
 | `category` | string | optional | e.g., "Founder-Phase", "Operations" |
-| `status` | string | yes | "pending_review" / "approved" / "needs_revision" / "brief_ready" / "writing" / "published" |
+| `status` | string | yes | "pending_review" / "approved" / "needs_revision" / "brief_ready" / "writing" / "published" / "dropped" |
 | `createdAt` | string | yes | When brief was created |
 | `updatedAt` | string | optional | Last modification |
+| `krishnaFeedback` | string | optional | Feedback from Kanban dropdown. Vibhishana reads at cron start. |
+| `revisionHistory` | object[] | optional | Snapshots of previous versions on minor in-place revisions. Each entry: `{version, title, primaryKeyword, suggestedStructure?, feedback, revisedAt}`. |
 | `agentName` | string | yes | Always "Vibhishana" |
 
 Indexes: `by_status`, `by_agentName`, `by_createdAt`, `by_category`
@@ -137,7 +139,7 @@ Indexes: `by_status`, `by_agentName`, `by_createdAt`, `by_category`
 | `slug` | string | yes |
 | `url` | string | optional |
 | `keyword` | string | yes |
-| `status` | string | yes | "writing" / "pr_created" / "published" |
+| `status` | string | yes | "writing" / "pr_created" / "published" / "dropped" |
 | `agentName` | string | yes | Always "Vyasa" |
 | `wordCount` | number | yes |
 | `publishedAt` | string | optional |
@@ -210,7 +212,7 @@ Indexes: `by_agentName`, `by_timestamp`, `by_agentName_timestamp`, `by_dedupKey`
 | `createdAt` | string | yes |
 | `status` | string | yes | "new" / "contacted" / "scheduled" / "completed" |
 
-### Table 8: `documents` (Agent research/strategy docs)
+### Table 8: `documents` (Agent research/strategy docs — 10 fields)
 
 | Field | Type | Required |
 |-------|------|----------|
@@ -227,26 +229,74 @@ Indexes: `by_agentName`, `by_timestamp`, `by_agentName_timestamp`, `by_dedupKey`
 
 Indexes: `by_slug`, `by_agentName`, `by_category`, `by_createdAt`
 
+### Table 9: `linkedinPosts` (Valmiki's LinkedIn drafts — LIVE as of 2026-02-26)
+
+| Field | Type | Required |
+|-------|------|----------|
+| `insightName` | string | yes | Dedup key with `sourceBlogSlug` |
+| `draftText` | string | yes | Full post draft |
+| `sourceBlogSlug` | string | yes | Source blog |
+| `sourceBlogTitle` | string | optional | |
+| `insightNumber` | number | yes | Which insight from this blog (1,2,3…) |
+| `source` | string | yes | "blog" / "krishna-insight" |
+| `icpPass` | boolean | yes | Passed ICP filter? |
+| `icpFailReason` | string | optional | |
+| `hookStrategy` | string | optional | "loss-aversion" / "curiosity" / "authority" / "story" / "social-proof" |
+| `ctaType` | string | optional | "value-exchange" / "question" / "resource" / "follow" |
+| `krishnaFeedback` | string | optional | Krishna's review feedback (stored from Kanban). Agents read this on cron start. DO NOT pass null to clear — omit the field. It clears visually from Kanban once status leaves "blocked". |
+| `postedDate` | string | optional | |
+| `linkedinUrl` | string | optional | |
+| `status` | string | yes | "draft_ready" / "needs_revision" / "approved" / "posted" / "skipped" |
+| `agentName` | string | yes | Always "Valmiki" |
+| `createdAt` | string | yes | |
+| `updatedAt` | string | optional | |
+
+Indexes: `by_status`, `by_sourceBlogSlug`, `by_createdAt`
+
+### Table 10: `manualTasks` (Krishna-created tasks — LIVE as of 2026-02-26)
+
+| Field | Type | Required |
+|-------|------|----------|
+| `title` | string | yes | |
+| `description` | string | optional | |
+| `status` | string | yes | "todo" / "in_progress" / "blocked" / "done" |
+| `assignee` | string | optional | "Krishna" or agent name |
+| `createdAt` | string | yes | |
+| `updatedAt` | string | yes | |
+
+Indexes: `by_status`, `by_createdAt`
+
 ---
 
-## 5. HTTP Endpoints (12 POST routes)
+## 5. HTTP Endpoints (canonical + legacy aliases)
 
-| Endpoint | Method | Agent | Payload |
-|----------|--------|-------|---------|
-| `/ingestQuestions` | POST | Vibhishana | Array OR single object (upsert by URL) |
-| `/ingestBrief` | POST | Vibhishana | Single brief with all 20 fields |
-| `/ingestBlog` | POST | Vyasa | Blog metadata (upsert by slug) |
-| `/ingestActivity` | POST | All agents | Milestone activity (dedup by dedupKey) |
-| `/ingestTopicCluster` | POST | Vidura | Topic cluster data |
-| `/ingestToolOpportunity` | POST | Vidura | Tool opportunity data |
-| `/updateBlogEnrichment` | POST | Vidura | Update enrichment count/date/log by slug |
-| `/updateBriefStatus` | POST | Vidura | Update brief status by slug |
-| `/upsertQuestions` | POST | Vibhishana | Alias for /ingestQuestions (same dedup logic) |
-| `/upsertBlog` | POST | Vyasa | Alias for /ingestBlog (same dedup logic) |
-| `/upsertBrief` | POST | Vibhishana | Upsert brief by slug |
-| `/upsertDocument` | POST | Any agent | Upsert document by slug (auto-logs activity) |
+**Canonical paths** (agents should use these):
 
-All require `Authorization: Bearer <AGENT_API_KEY>`. CORS preflight (OPTIONS) handled for all 12.
+| Endpoint | Method | Agent | Notes |
+|----------|--------|-------|-------|
+| `/push/questions` | POST | Vibhishana | Upsert by URL |
+| `/push/briefs` | POST | Vibhishana | Upsert by slug |
+| `/push/blogs` | POST | Vyasa | Upsert by slug |
+| `/push/activity` | POST | All agents | Dedup by dedupKey |
+| `/push/topic-clusters` | POST | Vidura | Upsert by pillarName+clusterTopic |
+| `/push/tool-opportunities` | POST | Vidura | Upsert by toolName |
+| `/push/documents` | POST | Any agent | Upsert by slug |
+| `/push/linkedin-posts` | POST | Valmiki | Upsert by insightName+sourceBlogSlug. **Do NOT pass `krishnaFeedback: null`** — omit the field entirely. |
+| `/update/brief-status` | POST | Any | Update brief status by slug |
+| `/update/blog-enrichment` | POST | Vyasa | Update enrichment metadata by slug |
+
+**GET query endpoints** (agents read from these):
+
+| Endpoint | Method | Caller | Notes |
+|----------|--------|--------|-------|
+| `/query/briefs?status=brief_ready` | GET | Vyasa | Full brief objects |
+| `/query/briefs?status=pending_review` | GET | Vibhishana | Count + slugs + titles |
+| `/query/briefs?status=needs_revision` | GET | Vibhishana | Full brief objects including `krishnaFeedback` |
+| `/query/topic-clusters` | GET | Vidura | All clusters all statuses |
+| `/query/tool-opportunities` | GET | Vidura | All tools all statuses |
+| `/query/linkedin-posts` | GET | Valmiki | All posts — filter client-side for needs_revision + krishnaFeedback |
+
+All require `Authorization: Bearer <AGENT_API_KEY>`. Legacy alias paths (`/ingestBrief`, `/upsertBrief`, etc.) remain permanently active. See `CONVEX-API-REFERENCE.md` for full alias list.
 
 ### Query Functions
 
@@ -261,7 +311,8 @@ All require `Authorization: Bearer <AGENT_API_KEY>`. CORS preflight (OPTIONS) ha
 - **Provider:** Clerk (ClerkProvider wraps ConvexProviderWithClerk)
 - **Middleware:** `middleware.ts` — permissive `clerkMiddleware()`, does not block any route
 - **Admin queries:** Check `ctx.auth.getUserIdentity()` — throw if not authenticated
-- **Waitlist gate:** No public "Sign in" button. `WaitlistCTA.tsx` shows email input; only `krishna@thelaunch.space` reveals Clerk SignIn/SignUp. Other emails captured as leads.
+- **Admin login:** `/admin` page has Clerk `<SignIn>` component. Redirects to `/launch-control` after sign-in. No email gate needed.
+- **Note:** Do NOT add `clerkMiddleware()` to `middleware.ts` — breaks Netlify edge functions. Clerk works entirely client-side.
 
 ---
 
@@ -339,6 +390,7 @@ Key details:
 | Launch Control navigation | Removed from navbar. Only via pitch page secondary CTA or direct URL. |
 | Tab component loading | All tab panels use `next/dynamic` for lazy loading |
 | Public preview security | CSS blur is visual only, but backend queries limit to 6 items max |
+| Brief revision protocol | Two-path: MINOR (same topic/ICP) = Vibhishana updates in place, same slug, appends `revisionHistory`, status → `pending_review`. MAJOR (new topic/keyword) = old brief → `dropped`, new brief created with new slug. Vibhishana decides which path. |
 
 ---
 
@@ -363,10 +415,8 @@ Key details:
 
 ## 12. Phase 2 (After MVP — deferred)
 
-- Approve/flag/revision actions on briefs from dashboard
 - Two-way agent communication (send instructions back to agents)
 - Internal notes/comments on briefs
-- Brief diff/version comparison
 - Agent-level pages showing live data instead of static marketing copy
 - Public metrics counters (total questions, briefs, blogs)
 - Work Mode Kanban board (spec at `.context/ideation/work-mode-kanban-spec.md`)

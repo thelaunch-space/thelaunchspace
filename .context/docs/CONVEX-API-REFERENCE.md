@@ -305,7 +305,7 @@ All return: `{ "success": true, ... }` on success, `{ "success": false, "error":
 #### `POST /push/linkedin-posts`
 **Purpose:** Upsert a LinkedIn post draft from Valmiki's pipeline.
 **Called by:** Valmiki
-**Status:** ⚠️ NOT YET BUILT — endpoint does not exist yet. Planned for Phase 0.
+**Status:** ✅ LIVE — deployed 2026-02-26.
 **Old aliases:** None (new endpoint).
 
 **Planned request body:**
@@ -457,6 +457,8 @@ All return: `{ "success": true, ... }` on success, `{ "success": false, "error":
 | `blogUrl` | string | optional | Published URL (filled after publish) |
 | `category` | string | optional | Topic category |
 | `status` | string | yes | See allowed values below |
+| `krishnaFeedback` | string | optional | Feedback from Krishna (stored via Kanban dropdown). Read by Vibhishana at cron start to prioritise revision work. |
+| `revisionHistory` | object[] | optional | Appended on every MINOR in-place revision. Each entry: `{version: number, title: string, primaryKeyword: string, suggestedStructure?: string, feedback: string, revisedAt: string}`. Vibhishana snapshots old values BEFORE patching, then appends. Do NOT pass `null` — omit the field entirely if no revision. |
 | `createdAt` | string | yes | ISO timestamp |
 | `updatedAt` | string | optional | ISO timestamp of last update |
 | `agentName` | string | yes | Always `"Vibhishana"` |
@@ -498,6 +500,7 @@ All return: `{ "success": true, ... }` on success, `{ "success": false, "error":
 | `writing` | Vyasa started writing | Vyasa (on start) | In Progress → Vyasa |
 | `pr_created` | PR submitted to GitHub | Vyasa (on push) | To Do → Krishna |
 | `published` | Blog merged and live | Krishna (Kanban action) | Done |
+| `dropped` | Blog entry rejected / test junk | Krishna (Kanban action) | Done (archived) |
 
 ---
 
@@ -613,9 +616,9 @@ Agents do not write to this table. It is populated by the pitch page form. Liste
 
 ---
 
-### Table: `linkedinPosts` ⚠️ NOT YET BUILT
+### Table: `linkedinPosts` ✅ LIVE (2026-02-26)
 
-Planned for Phase 0. Valmiki currently writes to the `linkedin-pipeline` Google Sheet. After this table is built, Valmiki writes to Convex first, Sheets as fallback.
+Valmiki writes to Convex first, Sheets as fallback.
 
 | Field | Type | Required | Notes |
 |-------|------|----------|-------|
@@ -648,9 +651,9 @@ Planned for Phase 0. Valmiki currently writes to the `linkedin-pipeline` Google 
 
 ---
 
-### Table: `manualTasks` ⚠️ NOT YET BUILT
+### Table: `manualTasks` ✅ LIVE (2026-02-26)
 
-Planned for Phase 0. For tasks Krishna creates himself with no source artifact.
+For tasks Krishna creates himself with no source artifact.
 
 | Field | Type | Required | Notes |
 |-------|------|----------|-------|
@@ -701,3 +704,5 @@ fi
 | 2026-02-26 | Document created. Canonical reference established. `/ingestBrief` dedup bug identified. All status values standardised. `linkedinPosts` and `manualTasks` tables planned. |
 | 2026-02-26 | Canonical `/push/*` and `/update/*` endpoints deployed to production. |
 | 2026-02-26 | Full agent audit complete. All skill files migrated. All field name/status mismatches fixed. `writing` status push added to Vyasa. Activity skill wired into all agents. |
+| 2026-02-26 | `linkedinPosts` and `manualTasks` tables built and live. `POST /push/linkedin-posts` live. `krishnaFeedback` field added to `briefs` table. `dropped` status added to `blogs`. |
+| 2026-02-27 | `revisionHistory` optional array added to `briefs` table. Two-path revision protocol: MINOR = Vibhishana updates same slug in place + appends `revisionHistory` snapshot; MAJOR = old brief → `dropped`, new brief created. |

@@ -1,10 +1,11 @@
 # Todo — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-24 (3 blog PRs merged, context docs updated)
+Last updated: 2026-02-27 (Brief revision two-path logic shipped — revisionHistory schema + WorkBoardCard v2 pill UI)
 
 ## Priority: High
+- [ ] **Production blog cleanup** — 4 junk/duplicate blog entries still in production Convex (`final-test-blog-1772095578`, `canonical-test-2026-02-26`, and pr_created duplicates of `ai-generated-code-deployment-reality` + `why-mvp-costs-too-much-validation-first`). Can drop them directly via Kanban dropdown now that "Drop" option exists. Or run `migrations:dropJunkBlogs` against prod with deploy key.
 - [ ] **Fix `/admin` sign-up flow** — Currently, Clerk's `<SignIn>` component at `/admin` still shows a "Sign up" link/option. This is wrong: (1) `/admin` should be sign-in ONLY for `krishna@thelaunch.space` — no sign-up. (2) If someone does sign up (e.g., finds `/admin`), they should NOT see the full admin dashboard. Admin view (Documents, Meetings tabs, full data) must be gated to Krishna's account only, not any authenticated user. Need to either: disable Clerk sign-up entirely, or add an admin email check in the dashboard that shows a "request access" message for non-Krishna accounts.
-- [ ] **Verify Daily Timeline times** — hardcoded in `lib/launch-control-types.ts`. Ask Partha to confirm they match actual VPS cron jobs.
+- [ ] **Verify Daily Timeline times** — hardcoded in `lib/launch-control-types.ts`. Ask Parthasarathi to confirm they match actual VPS cron jobs.
 - [x] **Update Vidura skill URL to production** — DONE. VPS skill confirmed pointing to prod (`curious-iguana-738`). Stale dev-pointing copies in `skills/` folder deleted (Feb 19).
 - [x] **Deploy Vidura Convex changes to production** — DONE. Netlify auto-deploys Convex via `npx convex deploy --cmd 'npm run build'` on every merge to `main`. Vidura commit is on `main`.
 - [ ] **Investigate question count mismatch** — Prod Convex has 771 questions, Google Sheet has 891. ~120 questions missing from Convex. Check if agent pushes are failing or URLs differ.
@@ -28,6 +29,13 @@ Last updated: 2026-02-24 (3 blog PRs merged, context docs updated)
 - [ ] Regenerate Valmiki avatar using updated sage prompt (design-system-v2.md)
 
 ## Done (moved from above)
+- [x] **Brief revision two-path logic** — Vibhishana now decides MINOR vs MAJOR when handling `needs_revision`. MINOR: updates same slug in place, appends `revisionHistory` snapshot, sets status back to `pending_review`. MAJOR: marks old brief `dropped`, creates new brief with new slug. Partha updated Vibhishana AGENTS.md. (2026-02-27)
+- [x] **`revisionHistory` schema + WorkBoardCard UI** — `revisionHistory` optional array added to `briefs` table (version, title, primaryKeyword, suggestedStructure, feedback, revisedAt). Kanban cards show `v2` pill in header and collapsible `↩ 1 revision` panel with old title (struck through), old keyword, and feedback. Deployed to prod. (2026-02-27)
+- [x] **Kanban status dropdown** — Brief/blog/LinkedIn cards now use dropdown with confirm + optional feedback textarea. `krishnaFeedback` stored in Convex. Blocked cards show feedback + Slack reminder. (2026-02-26)
+- [x] **Feedback-first protocol** — Parthasarathi updated Vibhishana + Valmiki AGENTS.md + central AGENTS.md. Agents now check Convex for `needs_revision` items with `krishnaFeedback` at cron start, work on those first, push result back as pending_review/draft_ready. (2026-02-26)
+- [x] **`/query/briefs?status=needs_revision`** — Endpoint now supported (was returning 400). Returns full brief including `krishnaFeedback`. (2026-02-26)
+- [x] **Work Mode Kanban** — Full board with 5 columns + archive, owner tags, health bars, header stats. (2026-02-26)
+- [x] **Convex SSOT migration** — All agents reading from Convex. Sheets = fallback only. (2026-02-26)
 - [x] Vidura agent (6th agent) — full agent data, pitch card, detail page, avatars, Convex tables, strategy pipeline, skill file
 - [x] LC: Strategy tab — StrategyPanel + StrategyPreview for Vidura's topic clusters + tool opportunities
 - [x] LC: Blogs tab → sortable table (BlogsTable.tsx) with enrichment data from Convex
