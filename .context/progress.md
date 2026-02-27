@@ -1,6 +1,6 @@
 # Progress — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-26 (Kanban status dropdown + blog data cleanup)
+Last updated: 2026-02-27 (Netlify Durable Cache bug fixed)
 
 ## Completed
 - [x] Project scaffolding (originally Vite + React 18, later migrated to Next.js 14)
@@ -211,7 +211,8 @@ Last updated: 2026-02-26 (Kanban status dropdown + blog data cleanup)
 - **Question count mismatch** — Prod Convex has 771 unique questions, Google Sheet has 891. ~120 questions may not have been pushed to Convex, or have slightly different URLs. Needs investigation.
 
 ## Recent Changes (latest first)
-1. Kanban status dropdown — replaced action buttons on brief/blog/LinkedIn cards with dropdown + confirm + feedback textarea. `krishnaFeedback` stored in Convex. Blocked cards show Slack reminder. Blog cleanup migration run (4 junk entries → dropped). Partha brief written. (2026-02-26)
+1. **Netlify Durable Cache bug fixed** — `netlify.toml` `Netlify-CDN-Cache-Control: no-store` on `/*` prevents HTML from being cached in Durable Cache. `/_next/static/*` override keeps static asset caching. New `app/api/deploy-hook/route.ts` purge endpoint. One-time purge run. Full incident doc at `.context/netlify-caching-incident.md`. (2026-02-27)
+2. Kanban status dropdown — replaced action buttons on brief/blog/LinkedIn cards with dropdown + confirm + feedback textarea. `krishnaFeedback` stored in Convex. Blocked cards show Slack reminder. Blog cleanup migration run (4 junk entries → dropped). Partha brief written. (2026-02-26)
 2. Work Mode Kanban — owner tags, health bar, archive column, header stats, sidebar hidden in work mode. Hydration fix. Deployed to production. (2026-02-26)
 3. Convex SSOT migration — GET endpoints live, all agent helper scripts rewired (Vyasa/Vibhishana/Vidura/Valmiki). Sheets = fallback only. (2026-02-26)
 3. Opened up LC tabs (no blur), /admin login page, WaitlistCTA→redirect, removed Clerk from middleware, fixed Netlify build (2026-02-25)

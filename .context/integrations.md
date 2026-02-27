@@ -1,6 +1,6 @@
 # Integrations — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-16
+Last updated: 2026-02-27
 
 ## Make.com Webhook (Active)
 - **Purpose:** Lead capture → CRM pipeline
@@ -78,6 +78,16 @@ Last updated: 2026-02-16
 - **No route protection:** All existing pages work without login. Auth is only checked inside admin query functions.
 - **Waitlist gate (UI hack):** No public "Sign in" button. `WaitlistCTA.tsx` shows email input; only `krishna@thelaunch.space` reveals Clerk SignIn/SignUp. Other emails captured as leads via `/api/lead`. This avoids Clerk Pro ($25/mo) allowlist requirement.
 - **Dev vs Prod:** Dev and prod are separate Clerk instances with separate user databases. Dev uses `pk_test_`/`sk_test_` keys, prod uses `pk_live_`/`sk_live_` keys. Both instances active and deployed.
+
+## Netlify Deploy Hook (Active)
+- **Purpose:** Purge all Netlify Durable Cache entries after a deploy (fixes stale HTML serving old CSS/JS chunk hashes)
+- **Endpoint:** `POST https://thelaunch.space/api/deploy-hook`
+- **File:** `app/api/deploy-hook/route.ts`
+- **Auth:** Optional `x-webhook-secret` header (set `DEPLOY_HOOK_SECRET` in Netlify env vars to enable)
+- **Env vars (auto-set by Netlify in Function context):** `NETLIFY_PURGE_API_TOKEN`, `SITE_ID`
+- **Manual use:** `curl -X POST https://thelaunch.space/api/deploy-hook` — run after any deploy if stale cache is suspected
+- **Automation (Step 3 — optional):** Wire to Netlify deploy notification webhook (Site settings → Build & deploy → Deploy notifications → Add webhook → URL above → Event: "Deploy succeeded"). Not strictly required since `Netlify-CDN-Cache-Control: no-store` on `/*` prevents new HTML from being cached in Durable Cache.
+- **Full incident context:** `.context/netlify-caching-incident.md`
 
 ## GitHub (Active)
 - **Repo:** `thelaunch-space/thelaunch-space-tweet-sized-landing-page`

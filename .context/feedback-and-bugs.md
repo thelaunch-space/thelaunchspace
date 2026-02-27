@@ -1,8 +1,18 @@
 # Feedback & Bugs — thelaunch.space
 
-Last updated: 2026-02-18
+Last updated: 2026-02-27
 
 ## Active Bugs
+
+### BUG-006: Netlify Durable Cache serving stale HTML after deploys (2026-02-26)
+**Status:** Fixed (2026-02-27)
+**Reported:** After every deploy, some pages (mainly blog pages) served old HTML referencing outdated CSS/JS chunk hashes → 404 on static assets → broken styling site-wide. Fresh browsers / incognito affected. Home page worked fine.
+**Root cause:** Netlify has two cache layers. Netlify Edge CDN auto-purges on deploy. Netlify Durable Cache does NOT — it has a ~364-day TTL. `@netlify/plugin-nextjs` stores pre-rendered HTML in Durable Cache. The plugin's `onSuccess` hook only prewarms the root URL `/` after deploy, leaving all blog pages with stale 364-day-old Durable Cache entries. Issue surfaced reliably after `generateBuildId` with `COMMIT_REF` was added — making buildId mismatches obvious (commit SHA vs. old random ID).
+**Fix:** (1) `netlify.toml`: added `Netlify-CDN-Cache-Control: no-store` on `/*` to prevent HTML responses from being stored in Durable Cache. Added `Netlify-CDN-Cache-Control: durable, max-age=31536000, immutable` on `/_next/static/*` to keep static asset caching. (2) `app/api/deploy-hook/route.ts`: new POST endpoint that calls Netlify purge API to clear all Durable Cache entries. (3) Ran one-time purge curl command to clear existing stale entries.
+**Full incident doc:** `.context/netlify-caching-incident.md` — root cause, all failed attempts, fix details, Step 3 automation setup.
+**Affected files:** `netlify.toml`, `app/api/deploy-hook/route.ts`
+
+## Active Bugs (pre-existing)
 
 ### BUG-003: `/admin` shows sign-up option — should be sign-in only (2026-02-25)
 **Status:** Open (logged for next session)
