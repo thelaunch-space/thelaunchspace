@@ -29,7 +29,7 @@ const jsonLd = {
   description: "Decision framework for solo attorneys: is case management software worth it? Practice-size thresholds, real costs, and when staying manual wins.",
   url: "https://thelaunch.space/blogs/founder-advice/solo-lawyer-case-management-decision",
   datePublished: "2026-02-26T00:00:00.000Z",
-  dateModified: "2026-02-26T00:00:00.000Z",
+  dateModified: "2026-02-26T09:30:00.000Z",
   author: { "@type": "Organization", name: "thelaunch.space", url: "https://thelaunch.space" },
   publisher: {
     "@type": "Organization",
@@ -96,6 +96,11 @@ export default function BlogPost() {
           </div>
 
           <div className="bg-border-color/30 border border-border-color rounded-xl p-8 my-10 text-center">
+            <p className="text-3xl md:text-4xl font-bold text-text-primary mb-2">79%</p>
+            <p className="text-sm md:text-base text-text-secondary">Of solo lawyers now use cloud-based practice management software — significantly outpacing larger firms at 47%. (<a href="https://www.clio.com/resources/legal-trends/2025-solo-small-firm-report/" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">Clio's 2025 Legal Trends Report</a>)</p>
+          </div>
+
+          <div className="bg-border-color/30 border border-border-color rounded-xl p-8 my-10 text-center">
             <p className="text-3xl md:text-4xl font-bold text-text-primary mb-2">26% vs 45%</p>
             <p className="text-sm md:text-base text-text-secondary">Solo attorney utilization rate vs large firm utilization rate. The gap is not talent. It is admin overhead eating billable hours. (<a href="https://lexhelper.com/blog/business-tips/billing-gap-solo-attorneys-large-firms-2025/" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">Clio 2024 data via LexHelper</a>)</p>
           </div>
@@ -126,6 +131,10 @@ export default function BlogPost() {
             <p className="text-base md:text-lg text-text-primary font-medium leading-relaxed">The real question is not "should I get case management software?" It is "can I reclaim at least 1-2 hours per week?" At $150/hour, that is $7,200-$14,400/year. At $300/hour, it is double. Against software costing $468-$708/year, the math usually works.</p>
           </div>
 
+          <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
+            The data backs this up. According to <a href="https://www.leanlaw.co/blog/a-guide-to-setting-your-own-salary-as-a-solo-law-firm-owner-the-2025-data-driven-approach/" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">LeanLaw's 2025 analysis</a>, <span className="text-text-primary font-semibold">solo practitioners using practice management software billed an average of 64 additional hours annually, valued at $22,425</span> at typical billable rates. Practice management solutions that cost $200-$500 monthly save solo practitioners 5-10 hours weekly on administrative tasks, generating a 10-20% revenue increase from better time capture and collection.
+          </p>
+
           <hr className="border-border-color my-12" />
 
           <h2 className="text-2xl md:text-3xl font-bold mt-16 mb-4">Workflow-First Evaluation (Not Feature Checklists)</h2>
@@ -151,7 +160,7 @@ export default function BlogPost() {
 
           <h3 className="text-xl md:text-2xl font-bold mt-8 mb-3">4. Document Assembly</h3>
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
-            According to the <a href="https://www.lawnext.com/2025/03/aba-tech-survey-finds-growing-adoption-of-ai-in-legal-practice-with-efficiency-gains-as-primary-driver.html" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">ABA 2024 Legal Technology Survey</a>, only 37% of solo attorneys use document assembly software. That means 63% are still doing manual find-and-replace in Word templates. If you use the same 10-15 document templates regularly, automation here pays off fast.
+            According to the <a href="https://www.lawnext.com/2025/03/aba-tech-survey-finds-growing-adoption-of-ai-in-legal-practice-with-efficiency-gains-as-primary-driver.html" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">ABA 2024 Legal Technology Survey</a>, only 37% of solo attorneys use document assembly software. That means 63% are still doing manual find-and-replace in Word templates. <a href="https://www.legalgps.com/solo-attorney/tech-stack-solo-attorney-2025-compete-big-firms" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">Solo attorneys spend 30-60 minutes per document</a> on manual preparation for contracts and similar legal documents. Document automation can reduce this by 80-90%, enabling solos to handle 25-37% more cases through efficiency gains. If you use the same 10-15 document templates regularly, automation here pays off fast.
           </p>
 
           <div className="bg-border-color/30 border border-border-color rounded-xl p-6 my-8">
@@ -283,6 +292,15 @@ export default function BlogPost() {
             You have probably heard that AI is transforming legal practice. The <a href="https://www.lawnext.com/2025/03/aba-tech-survey-finds-growing-adoption-of-ai-in-legal-practice-with-efficiency-gains-as-primary-driver.html" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">ABA 2024 survey</a> found that <span className="text-text-primary font-semibold">18% of solo practitioners now use AI tools</span>, up from 10% in 2023 and 0% in 2022. That is significant growth, but it is still a minority.
           </p>
 
+          <div className="bg-border-color/30 border border-border-color rounded-xl p-8 my-10 text-center">
+            <p className="text-3xl md:text-4xl font-bold text-text-primary mb-2">3.9x</p>
+            <p className="text-sm md:text-base text-text-secondary">Higher ROI for law firms with visible AI strategies compared to non-adopters. (<a href="https://legal.thomsonreuters.com/blog/5-small-and-midsize-law-firms-share-their-professional-grade-ai-investment-results/" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">Thomson Reuters 2025</a>)</p>
+          </div>
+
+          <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
+            According to <a href="https://www.clio.com/resources/legal-trends/2025-solo-small-firm-report/" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">Clio's 2025 data</a>, <span className="text-text-primary font-semibold">71% of solo lawyers use AI in some capacity, though only 8% have adopted it widely</span>. Firms using AI report 2x revenue growth and 37% higher caseloads. The takeaway: early adoption is paying off, but most are still experimenting rather than fully integrating AI into workflows.
+          </p>
+
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
             Here is our take: AI in case management software is currently table stakes for research (ChatGPT, CoCounsel, Lexis+ AI) but gimmicky for core case management. The tools that advertise "AI-powered" features mostly mean they have added a chatbot. The fundamentals of calendaring, client communication, and document management have not changed.
           </p>
@@ -311,6 +329,52 @@ export default function BlogPost() {
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
             <span className="text-text-primary font-semibold">Bottom line:</span> If your folders and QuickBooks have worked for 27 years, they might work for 27 more. But if you are handling 20+ matters and spending more than 10 hours/week on admin, $39/month is probably the cheapest raise you will ever give yourself.
           </p>
+
+          <hr className="border-border-color my-12" />
+
+          <h2 className="text-2xl md:text-3xl font-bold mt-16 mb-4">Frequently Asked Questions</h2>
+
+          <div className="space-y-6 my-8">
+            <div className="bg-border-color/20 rounded-xl p-5">
+              <h3 className="text-lg font-bold text-text-primary mb-2">What is the average ROI timeline for case management software investment?</h3>
+              <p className="text-text-secondary text-base leading-relaxed">Most solo attorneys see ROI within 3-6 months. If you are billing at $150/hour and the software saves you 2 hours per week, that is $15,600/year in reclaimed capacity against an annual cost of $468-$708. The payback period is typically 2-3 weeks of time savings.</p>
+            </div>
+
+            <div className="bg-border-color/20 rounded-xl p-5">
+              <h3 className="text-lg font-bold text-text-primary mb-2">Can I migrate my existing data from folders/QuickBooks to case management software?</h3>
+              <p className="text-text-secondary text-base leading-relaxed">Yes. Most platforms (MyCase, Clio, PracticePanther) offer data migration services as part of onboarding. They will import client contact information, matter details, and documents from your existing system. The migration process typically takes 1-2 weeks depending on the volume of data and how organized your current system is. Some vendors charge for migration; others include it in the setup fee.</p>
+            </div>
+
+            <div className="bg-border-color/20 rounded-xl p-5">
+              <h3 className="text-lg font-bold text-text-primary mb-2">Do I need technical skills to set up and use case management software?</h3>
+              <p className="text-text-secondary text-base leading-relaxed">No. These tools are designed for attorneys, not developers. Setup involves answering configuration questions (practice areas, billing rates, trust accounting preferences) through a web interface. Most platforms provide dedicated onboarding support, live training sessions, and video tutorials. If you can use Outlook and QuickBooks, you can use case management software.</p>
+            </div>
+
+            <div className="bg-border-color/20 rounded-xl p-5">
+              <h3 className="text-lg font-bold text-text-primary mb-2">What happens to my data if I switch providers or cancel my subscription?</h3>
+              <p className="text-text-secondary text-base leading-relaxed">Reputable platforms let you export your data in standard formats (CSV, PDF, sometimes JSON). Read the contract before committing. Some vendors lock you into proprietary formats or charge export fees. Ask explicitly: "Can I export all my data at any time? In what format? Is there a fee?" This is your exit strategy. Do not skip this question.</p>
+            </div>
+
+            <div className="bg-border-color/20 rounded-xl p-5">
+              <h3 className="text-lg font-bold text-text-primary mb-2">How does case management software integrate with my existing tools?</h3>
+              <p className="text-text-secondary text-base leading-relaxed">Most platforms sync with Outlook or Google Calendar for calendaring, QuickBooks for accounting, and payment processors (Stripe, LawPay) for client billing. Clio has the most integrations (200+), but for solo practices the essential integrations are email, calendar, and accounting. Check the vendor's integration page before committing to ensure your existing tools are supported.</p>
+            </div>
+
+            <div className="bg-border-color/20 rounded-xl p-5">
+              <h3 className="text-lg font-bold text-text-primary mb-2">Are client portals included in all case management platforms?</h3>
+              <p className="text-text-secondary text-base leading-relaxed">Not always. Some basic plans exclude client portals or charge extra. MyCase and Clio include client portals in their entry-level plans ($39-49/month). PracticePanther includes it at $59/month. SimpleLaw includes it at $39/month. Always verify what is included in the tier you are considering. Client portals are one of the highest-ROI features for solo practices because they reduce document-chasing time significantly.</p>
+            </div>
+
+            <div className="bg-border-color/20 rounded-xl p-5">
+              <h3 className="text-lg font-bold text-text-primary mb-2">What security certifications should I look for in case management software?</h3>
+              <p className="text-text-secondary text-base leading-relaxed">Look for SOC 2 Type II compliance, AES 256-bit encryption for data at rest, TLS/SSL encryption for data in transit, and multi-factor authentication (MFA). Most major platforms (Clio, MyCase, PracticePanther) meet these standards. If a vendor cannot answer security questions clearly or does not publish a security page on their website, that is a red flag. You are responsible for client data security under bar rules. Choose vendors who take it seriously.</p>
+            </div>
+
+            <div className="bg-border-color/20 rounded-xl p-5">
+              <h3 className="text-lg font-bold text-text-primary mb-2">Can case management software help with bar compliance requirements?</h3>
+              <p className="text-text-secondary text-base leading-relaxed">Yes, particularly for trust accounting (IOLTA compliance) and calendaring (malpractice prevention). Platforms like CosmoLex and Clio have built-in trust accounting that automatically tracks client funds, generates required reports, and flags compliance issues. For calendaring, dual-calendar systems and automated deadline tracking reduce the risk of missed filing deadlines — one of the most common sources of malpractice claims. Some malpractice insurers offer premium discounts for attorneys using compliant case management software.</p>
+            </div>
+          </div>
 
         </article>
 
