@@ -74,6 +74,16 @@ export default defineSchema({
     // Krishna's review feedback (audit trail — agents still read from Slack)
     krishnaFeedback: v.optional(v.string()),
 
+    // Revision history — snapshots of previous versions on minor revisions
+    revisionHistory: v.optional(v.array(v.object({
+      version: v.number(),           // version number this entry captures (1 = original)
+      title: v.string(),             // title before revision
+      primaryKeyword: v.string(),    // keyword before revision
+      suggestedStructure: v.optional(v.string()), // structure before revision
+      feedback: v.string(),          // krishnaFeedback that triggered this revision
+      revisedAt: v.string(),         // ISO timestamp when Vibhishana made the revision
+    }))),
+
     // Agent metadata
     agentName: v.string(),
   })

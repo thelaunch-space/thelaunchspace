@@ -17,7 +17,6 @@ import type * as http from "../http.js";
 import type * as lib_activityHelper from "../lib/activityHelper.js";
 import type * as linkedinPosts from "../linkedinPosts.js";
 import type * as manualTasks from "../manualTasks.js";
-import type * as migrations from "../migrations.js";
 import type * as pitchBookings from "../pitchBookings.js";
 import type * as questions from "../questions.js";
 import type * as toolOpportunities from "../toolOpportunities.js";
@@ -40,7 +39,6 @@ declare const fullApi: ApiFromModules<{
   "lib/activityHelper": typeof lib_activityHelper;
   linkedinPosts: typeof linkedinPosts;
   manualTasks: typeof manualTasks;
-  migrations: typeof migrations;
   pitchBookings: typeof pitchBookings;
   questions: typeof questions;
   toolOpportunities: typeof toolOpportunities;

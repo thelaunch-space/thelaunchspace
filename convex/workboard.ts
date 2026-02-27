@@ -123,6 +123,7 @@ export const getBoard = query({
           primaryKeyword: brief.primaryKeyword,
           category: brief.category ?? null,
           krishnaFeedback: brief.krishnaFeedback ?? null,
+          revisionHistory: brief.revisionHistory ?? null,
         },
       });
     }

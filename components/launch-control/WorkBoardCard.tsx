@@ -83,6 +83,17 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const [feedback, setFeedback] = useState<string>("");
   const [confirming, setConfirming] = useState(false);
+  const [revisionOpen, setRevisionOpen] = useState(false);
+
+  type RevisionEntry = {
+    version: number;
+    title: string;
+    primaryKeyword: string;
+    suggestedStructure?: string;
+    feedback: string;
+    revisedAt: string;
+  };
+  const revisionHistory = (task.meta.revisionHistory as RevisionEntry[] | null) ?? [];
 
   const menuRef = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -326,6 +337,42 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
     );
   }
 
+  // Revision history — shown on brief cards that have been revised in place
+  function renderRevisionHistory() {
+    if (task.type !== "brief" || revisionHistory.length === 0) return null;
+    const count = revisionHistory.length;
+    const label = count === 1 ? "1 revision" : `${count} revisions`;
+
+    return (
+      <div className="mt-2">
+        <button
+          onClick={() => setRevisionOpen((v) => !v)}
+          className="flex items-center gap-1 text-[10px] text-text-secondary/50 hover:text-text-secondary transition-colors"
+        >
+          <span className="text-[9px]">{revisionOpen ? "▲" : "▼"}</span>
+          ↩ {label}
+        </button>
+        {revisionOpen && (
+          <div className="mt-1.5 space-y-1.5">
+            {[...revisionHistory].reverse().map((entry) => (
+              <div key={entry.version} className="bg-surface-alt/40 border border-border-color/20 rounded-lg px-2 py-1.5">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[9px] font-medium text-text-secondary/50 uppercase tracking-wide">v{entry.version}</span>
+                  <span className="text-[9px] text-text-secondary/40 font-mono">{relativeTime(entry.revisedAt)}</span>
+                </div>
+                <p className="text-[10px] text-text-secondary/60 line-through leading-snug mb-1">{entry.title}</p>
+                <span className="text-[9px] font-mono bg-surface text-text-secondary/50 px-1 py-0.5 rounded">{entry.primaryKeyword}</span>
+                {entry.feedback && (
+                  <p className="text-[10px] text-amber-700/70 mt-1.5 leading-relaxed italic">&ldquo;{entry.feedback}&rdquo;</p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
   // Stored feedback display — shown on blocked cards that have feedback saved
   function renderFeedbackBadge() {
     const storedFeedback = task.meta.krishnaFeedback as string | null;
@@ -354,11 +401,18 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
   return (
     <>
       <div className="bg-surface border border-border-color/30 rounded-xl p-3 shadow-sm hover:shadow-card hover:border-border-color/60 transition-all cursor-default">
-        {/* Header row: badge + overflow menu */}
+        {/* Header row: badge + version pill + overflow menu */}
         <div className="flex items-center justify-between gap-2 mb-1.5">
-          <span className={`shrink-0 text-[10px] font-medium px-1.5 py-0.5 rounded-full border ${badge.color} ${badge.bg}`}>
-            {badge.label}
-          </span>
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className={`shrink-0 text-[10px] font-medium px-1.5 py-0.5 rounded-full border ${badge.color} ${badge.bg}`}>
+              {badge.label}
+            </span>
+            {task.type === "brief" && revisionHistory.length > 0 && (
+              <span className="text-[9px] font-mono text-text-secondary/50 bg-surface-alt px-1 py-0.5 rounded border border-border-color/20 shrink-0">
+                v{revisionHistory.length + 1}
+              </span>
+            )}
+          </div>
 
           {/* Overflow menu button */}
           <button
@@ -404,6 +458,9 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
 
         {/* Stored feedback badge (blocked cards with saved feedback) */}
         {usesDropdown && renderFeedbackBadge()}
+
+        {/* Revision history (brief cards revised in place) */}
+        {renderRevisionHistory()}
 
         {/* Status dropdown (brief / blog / linkedin) */}
         {usesDropdown && task.column !== "done" && renderStatusDropdown()}
