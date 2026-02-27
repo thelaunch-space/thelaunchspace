@@ -110,7 +110,7 @@ export default function LeadCaptureSection() {
   };
 
   return (
-    <section id="lead-capture" className="scroll-mt-24">
+    <section id="contact" className="scroll-mt-24">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -123,7 +123,7 @@ export default function LeadCaptureSection() {
         </h2>
 
         <div className="mt-3 mb-2 flex flex-col items-center gap-1.5 text-xs text-text-secondary/70 text-center">
-          <span>No contracts. Cancel anytime.</span>
+          <span>One-time setup. You own the system.</span>
           <span>Your agents start producing within 48 hours.</span>
           <span>{getPriceDisplay(config)} &mdash; less than one freelance blog post.</span>
         </div>

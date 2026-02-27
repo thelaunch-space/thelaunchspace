@@ -50,7 +50,7 @@ app/
 │   ├── vibhishana/
 │   ├── vidura/             # NEW — Vidura detail page
 │   └── vyasa/
-├── hire-your-24x7-team/
+├── your-ai-team/
 │   └── page.tsx            # Server component → <PitchPage /> (service pitch page with live Convex data)
 ├── launch-control/
 │   └── page.tsx            # Server component — metadata + renders LaunchControlDashboard

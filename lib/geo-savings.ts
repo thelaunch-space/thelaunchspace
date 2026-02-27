@@ -11,12 +11,13 @@ interface AgentSavings {
 export interface GeoPricing {
   pocPrice: number;
   pocDisplay: string;
-  pocOriginalPrice: string;
+  pocOriginalPrice?: string;
   growthPrice: number;
   growthDisplay: string;
-  growthOriginalPrice: string;
+  growthOriginalPrice?: string;
   pocCta: string;
   growthCta: string;
+  growthLaunchLabel: string;
 }
 
 export interface GeoSavingsConfig {
@@ -35,7 +36,7 @@ export function getMultiplier(config: GeoSavingsConfig): string {
 }
 
 export function getPriceDisplay(config: GeoSavingsConfig): string {
-  return config.pricing.pocDisplay + "/mo";
+  return config.pricing.pocDisplay;
 }
 
 const INTL_CONFIG: GeoSavingsConfig = {
@@ -43,14 +44,15 @@ const INTL_CONFIG: GeoSavingsConfig = {
   totalMonthly: 4000,
   totalDisplay: "$4K/mo",
   pricing: {
-    pocPrice: 99,
-    pocDisplay: "$99",
-    pocOriginalPrice: "$199",
-    growthPrice: 699,
-    growthDisplay: "$699",
-    growthOriginalPrice: "$1,000",
-    pocCta: "Start my team — $99/mo",
+    pocPrice: 299,
+    pocDisplay: "$299",
+    pocOriginalPrice: undefined,
+    growthPrice: 1500,
+    growthDisplay: "$1,500",
+    growthOriginalPrice: undefined,
+    pocCta: "Set up my team — $299",
     growthCta: "Talk to us",
+    growthLaunchLabel: "First month $750 · then $1,500/mo",
   },
   agents: {
     parthasarathi: {
@@ -89,14 +91,15 @@ const IN_CONFIG: GeoSavingsConfig = {
   totalMonthly: 64000,
   totalDisplay: "₹64K/mo",
   pricing: {
-    pocPrice: 9999,
-    pocDisplay: "₹9,999",
-    pocOriginalPrice: "₹17,999",
-    growthPrice: 65000,
-    growthDisplay: "₹65,000",
-    growthOriginalPrice: "₹90,000",
-    pocCta: "Start my team — ₹9,999/mo",
+    pocPrice: 24999,
+    pocDisplay: "₹24,999",
+    pocOriginalPrice: undefined,
+    growthPrice: 120000,
+    growthDisplay: "₹1,20,000",
+    growthOriginalPrice: undefined,
+    pocCta: "Set up my team — ₹24,999",
     growthCta: "Talk to us",
+    growthLaunchLabel: "First month ₹65,000 · then ₹1,20,000/mo",
   },
   agents: {
     parthasarathi: {

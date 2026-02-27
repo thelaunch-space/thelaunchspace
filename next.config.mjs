@@ -13,23 +13,33 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: "/hire-your-24x7-team",
+        destination: "/your-ai-team",
+        permanent: true,
+      },
+      {
+        source: "/hire-your-24x7-team/:path*",
+        destination: "/your-ai-team",
+        permanent: true,
+      },
+      {
         source: "/build-your-ai-team",
-        destination: "/hire-your-24x7-team",
+        destination: "/your-ai-team",
         permanent: true,
       },
       {
         source: "/build-your-ai-team/:path*",
-        destination: "/hire-your-24x7-team#team",
+        destination: "/your-ai-team",
         permanent: true,
       },
       {
         source: "/my-ai-employees",
-        destination: "/hire-your-24x7-team",
+        destination: "/your-ai-team",
         permanent: true,
       },
       {
         source: "/my-ai-employees/:path*",
-        destination: "/hire-your-24x7-team",
+        destination: "/your-ai-team",
         permanent: true,
       },
     ];

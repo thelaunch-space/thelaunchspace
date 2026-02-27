@@ -74,7 +74,8 @@ export const weeklyStats = query({
     return {
       questions: questions.filter((q) => q.scannedAt >= sevenDaysAgo).length,
       briefs: briefs.filter((b) => b.createdAt >= sevenDaysAgo).length,
-      blogs: blogs.filter((b) => b.createdAt >= sevenDaysAgo).length,
+      // Only count blogs that are actually live on the site
+      blogs: blogs.filter((b) => b.status === "published" && b.createdAt >= sevenDaysAgo).length,
       clusters: clusters.filter((c) => c.createdAt >= sevenDaysAgo).length,
       tools: tools.filter((t) => t.createdAt >= sevenDaysAgo).length,
     };
@@ -92,7 +93,8 @@ export const allTimeStats = query({
     return {
       questions: questions.length,
       briefs: briefs.length,
-      blogs: blogs.length,
+      // Only count blogs that are actually live on the site
+      blogs: blogs.filter((b) => b.status === "published").length,
       clusters: clusters.length,
       tools: tools.length,
     };

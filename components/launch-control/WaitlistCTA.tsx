@@ -15,7 +15,7 @@ export default function WaitlistCTA() {
         Want an AI team like this?
       </p>
       <Link
-        href="/hire-your-24x7-team#lead-capture"
+        href="/your-ai-team#contact"
         className="block text-center text-xs font-semibold px-3 py-2 sm:py-1.5 rounded-lg bg-accent-blue text-white hover:bg-accent-blue/90 transition-colors"
       >
         Get Your AI Team

@@ -2,8 +2,8 @@
 
 Status: BUILT AND LIVE — 14 components under `components/pitch/`, live Convex data, deployed to production
 Created: 2026-02-16
-Last updated: 2026-02-18 (v3 — Vidura added, pricing updated to $99/$699, geo savings, 4 active agents)
-URL: `/hire-your-24x7-team`
+Last updated: 2026-02-27 (v4 — slug renamed to /your-ai-team, anchor #contact, pricing overhauled)
+URL: `/your-ai-team` (redirects from `/hire-your-24x7-team`)
 
 ---
 
@@ -43,7 +43,8 @@ Key shifts:
 | `/hire-ai-seo-team` | Too narrow. Locks us into SEO only. |
 | `/hire-ai-content-team` | Better, but still content-only. |
 | `/ai-seo-team` | Too short. Doesn't convey action. |
-| **`/hire-your-24x7-team`** | **Winner. "24x7" is the hook — your team never sleeps. Broad enough for SEO, content, ops, anything. "Hire" frames it as a service, not a tool.** |
+| `/hire-your-24x7-team` | Too long and awkward. Redirects to /your-ai-team. |
+| **`/your-ai-team`** | **Current slug (v4). Shorter, more personal, still broad.** |
 
 ### Why "24x7" works for the ICP
 - Founders are tired of being the bottleneck. "24x7" directly promises relief.
@@ -59,7 +60,7 @@ Key shifts:
 LinkedIn/X post ("I hired 3 AI employees for $200/month")
   |
   v
-thelaunch.space/hire-your-24x7-team (THE PITCH)
+thelaunch.space/your-ai-team (THE PITCH)
   - Explains value in plain English
   - Shows what the team does (organic content & SEO)
   - Introduces agents as Pokemon/WWE stat cards
@@ -78,7 +79,7 @@ Two paths:
 
 ---
 
-## Page Structure: `/hire-your-24x7-team`
+## Page Structure: `/your-ai-team`
 
 This page scrolls. Mobile-first. LinkedIn audience clicks from phones.
 

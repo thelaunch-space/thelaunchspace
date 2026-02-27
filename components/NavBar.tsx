@@ -9,7 +9,7 @@ import XIcon from "@/components/XIcon";
 export default function NavBar() {
   const pathname = usePathname();
   const isBlog = pathname.startsWith("/blogs");
-  const isHireTeam = pathname.startsWith("/hire-your-24x7-team");
+  const isHireTeam = pathname.startsWith("/your-ai-team");
   const isLaunchControl = pathname.startsWith("/launch-control");
 
   const [scrolled, setScrolled] = useState(false);
@@ -70,14 +70,14 @@ export default function NavBar() {
             Blog
           </Link>
           <Link
-            href="/hire-your-24x7-team"
+            href="/your-ai-team"
             className={`text-sm font-medium transition-all duration-200 rounded-lg px-3 py-1.5 ${
               isHireTeam
                 ? "text-text-primary bg-accent-blue/[0.07]"
                 : "text-text-secondary hover:text-text-primary hover:bg-black/[0.03]"
             }`}
           >
-            Hire Your 24/7 Team
+            Your AI Team
           </Link>
           <div className="w-px h-4 bg-border-color/60" />
           <div className={`flex items-center gap-6 transition-all duration-300 ${showCTA ? "hidden sm:flex" : "flex"}`}>
@@ -131,12 +131,12 @@ export default function NavBar() {
               Blog
             </Link>
             <Link
-              href="/hire-your-24x7-team"
+              href="/your-ai-team"
               className={`text-sm font-medium transition-all duration-200 rounded-lg px-3 py-2 -mx-1 ${
                 isHireTeam ? "text-text-primary bg-accent-blue/[0.07]" : "text-text-secondary"
               }`}
             >
-              Hire Your 24/7 Team
+              Your AI Team
             </Link>
             <div className="h-px bg-border-color/40" />
             <div className="flex items-center gap-5">

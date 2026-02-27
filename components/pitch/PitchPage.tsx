@@ -85,7 +85,7 @@ export default function PitchPage() {
               Ready to put them to work for you?
             </p>
             <a
-              href="#lead-capture"
+              href="#contact"
               className="inline-block mt-4 rounded-xl bg-gradient-to-r from-accent-blue to-accent-purple px-6 py-3 text-sm font-semibold text-white shadow-cta hover:-translate-y-0.5 hover:shadow-cta-hover transition-all duration-300"
             >
               Get my AI team &rarr;
@@ -134,7 +134,7 @@ export default function PitchPage() {
           Watch live
         </motion.a>
         <motion.a
-          href="#lead-capture"
+          href="#contact"
           className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-sm bg-gradient-to-r from-accent-blue to-accent-purple text-white shadow-cta hover:shadow-cta-hover"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.97 }}

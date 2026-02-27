@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 
-const VISIBLE_PATHS = ["/", "/hire-your-24x7-team"];
+const VISIBLE_PATHS = ["/", "/your-ai-team"];
 
 export default function AnnouncementRibbon() {
   const pathname = usePathname();
