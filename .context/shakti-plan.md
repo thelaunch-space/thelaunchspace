@@ -2,7 +2,7 @@
 
 **Created:** 2026-02-28
 **Last updated:** 2026-02-28
-**Status:** Track A Phases 0+1 complete (including WorkspacePanel v2 with status editing, delete, task history). Seed data and Track B (Phase 2+) pending.
+**Status:** All phases complete. Phases 0+1 (Convex + LC UI) in production. Phase 2 (Shakti VPS setup) complete as of 2026-02-28 — Shakti live, 4 crons running, 3 clients + 16 projects seeded in prod Convex.
 **Folder:** `openclaw-config-global/new-agent-brainstorm/`
 
 ---
@@ -42,8 +42,8 @@
 | `updateArtifactStatus` handles `"task"` type | `convex/workboard.ts` | ✅ Done |
 | Convex deployed to dev instance | — | ✅ Done (`npx convex dev --once`) |
 | Typecheck + lint passing | — | ✅ Done |
-| **Seed data (clients + projects)** | Convex dashboard or curl | ❌ **Pending** |
-| Deployed to production | `git push main` | ❌ **Pending** |
+| **Seed data (clients + projects)** | Convex dashboard or curl | ✅ Done (3 clients, 16 projects seeded to prod 2026-02-28) |
+| Deployed to production | `git push main` | ✅ Done |
 
 **Phase 1 — Launch Control UI** ✅ Complete
 
@@ -70,12 +70,14 @@
 - [ ] Test locally: verify Client Task form populates from seeded data
 - [ ] `git checkout main && git merge staging && git push` → production deploy
 
-**Phase 2 — Shakti VPS Setup (Track B):**
-- [ ] Krishna creates `#shakti-ops` Slack channel (or asks Parthasarathi to do it)
-- [ ] Google Calendar OAuth credential created and token stored on VPS
-- [ ] Claude Code drafts `clients/beacon-house.md`, `clients/edutechplus.md`, `clients/thelaunch-space.md` content
-- [ ] Krishna sends Phase 2 setup prompt to Parthasarathi via Slack DM
-- [ ] Parthasarathi creates full Shakti workspace on VPS (SOUL.md, AGENTS.md, MEMORY.md, pace-model.md, USER.md, 3 client files, 4 crons)
+**Phase 2 — Shakti VPS Setup (Track B): ✅ COMPLETE (2026-02-28)**
+- [x] `#shakti-ops` Slack channel created (C0AJKV6H2G0)
+- [ ] Google Calendar OAuth credential — deferred until Shakti is settled
+- [x] Client files drafted and saved to VPS: `clients/beacon-house.md`, `clients/edutechplus.md`, `clients/thelaunch-space.md` (self-contained, no local Mac paths)
+- [x] Shakti workspace on VPS: SOUL.md, AGENTS.md, MEMORY.md, pace-model.md, USER.md, IDENTITY.md, TOOLS.md, HEARTBEAT.md, memory/, clients/
+- [x] 4 crons registered (7AM/4:30PM/9:30PM IST daily + Sunday 10AM IST)
+- [x] Parthasarathi AGENTS.md updated — Shakti in watched paths + team table
+- [x] 3 clients + 16 projects seeded in production Convex (`curious-iguana-738`)
 
 **Phase 3 — Learning Loop:** Happens naturally after Shakti runs for 3-5 days. No separate session needed to start.
 

@@ -1,6 +1,6 @@
 # Todo — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-28 (Shakti Phase 0+1 marked done, blog enrichment batch done)
+Last updated: 2026-02-28 (Shakti Phase 2 complete — VPS, crons, seed data)
 
 ## Priority: High
 - [ ] **Production blog cleanup** — 4 junk/duplicate blog entries still in production Convex (`final-test-blog-1772095578`, `canonical-test-2026-02-26`, and pr_created duplicates of `ai-generated-code-deployment-reality` + `why-mvp-costs-too-much-validation-first`). Can drop them directly via Kanban dropdown now that "Drop" option exists. Or run `migrations:dropJunkBlogs` against prod with deploy key.
@@ -29,9 +29,10 @@ Last updated: 2026-02-28 (Shakti Phase 0+1 marked done, blog enrichment batch do
 - [ ] Regenerate Valmiki avatar using updated sage prompt (design-system-v2.md)
 
 ## Done (moved from above)
-- [x] **Shakti Phase 0 — Convex Foundation** — `clients`, `projects`, `tasks` tables added. `convex/clients.ts`, `convex/projects.ts`, `convex/shaktiTasks.ts` created. 9 new HTTP endpoints live (`/push/clients`, `/push/projects`, `/push/tasks`, `/update/task-status`, `/query/clients`, `/query/projects`, `/query/tasks`). WorkBoard `task` card type wired in `getBoard` + `updateArtifactStatus`. (2026-02-28)
-- [x] **Shakti Phase 1 — WorkBoard UI** — `WorkBoardCard.tsx` renders `type: "task"` cards with client/project labels, task type badge, estimated hours, action buttons. (2026-02-28)
-- [x] **Shakti added to agents.ts, pitch-data.ts, geo-savings.ts** — 7th agent live. Sanjaya is now the only coming-soon agent. (2026-02-28)
+- [x] **Shakti Phase 0 — Convex Foundation** — `clients`, `projects`, `tasks` tables added. 9 HTTP endpoints live. WorkBoard `task` card type wired. (2026-02-28)
+- [x] **Shakti Phase 1 — WorkBoard UI** — `WorkBoardCard.tsx` renders `type: "task"` cards. `WorkspacePanel.tsx` (admin clients/projects manager). `AddTaskForm.tsx`. (2026-02-28)
+- [x] **Shakti added to agents.ts, pitch-data.ts, geo-savings.ts** — 7th agent live. (2026-02-28)
+- [x] **Shakti Phase 2 — VPS Agent Setup** — Workspace at `/home/node/openclaw/shakti/`. 3 client files (self-contained). 4 crons live. Parthasarathi AGENTS.md updated. 3 clients + 16 projects seeded to prod Convex. Google Calendar deferred. (2026-02-28)
 - [x] **Blog enrichment batch (Feb 28)** — 6 blogs enriched + 1 new (landing-page-zero-signups-distribution). Total: 22 published posts. (2026-02-28)
 - [x] **Brief revision two-path logic** — Vibhishana now decides MINOR vs MAJOR when handling `needs_revision`. MINOR: updates same slug in place, appends `revisionHistory` snapshot, sets status back to `pending_review`. MAJOR: marks old brief `dropped`, creates new brief with new slug. Partha updated Vibhishana AGENTS.md. (2026-02-27)
 - [x] **`revisionHistory` schema + WorkBoardCard UI** — `revisionHistory` optional array added to `briefs` table (version, title, primaryKeyword, suggestedStructure, feedback, revisedAt). Kanban cards show `v2` pill in header and collapsible `↩ 1 revision` panel with old title (struck through), old keyword, and feedback. Deployed to prod. (2026-02-27)

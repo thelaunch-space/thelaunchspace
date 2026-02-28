@@ -284,8 +284,8 @@ Indexes: `by_slug`, `by_status`
 | Field | Type | Required |
 |-------|------|----------|
 | `clientSlug` | string | yes | References clients.slug (denormalized) |
-| `name` | string | yes | "WhatsApp Automation", "Fractions V5" |
-| `slug` | string | yes | "whatsapp-automation", "fractions-v5" |
+| `name` | string | yes | "WhatsApp Automation", "Voice Interaction Learning Journey" |
+| `slug` | string | yes | "whatsapp-automation", "voice-interaction-learning-journey" |
 | `type` | string | yes | "feature" / "maintenance" / "internal" / "retainer" |
 | `status` | string | yes | "active" / "on-hold" / "completed" |
 | `notes` | string | optional | |

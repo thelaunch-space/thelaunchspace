@@ -1,6 +1,6 @@
 # Progress — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-28 (Shakti Phase 0+1 complete, 7th agent, blog enrichments, design-system Shakti prompt)
+Last updated: 2026-02-28 (Shakti Phase 2 complete — VPS setup, 4 crons, 3 clients + 16 projects seeded)
 
 ## Completed
 - [x] Project scaffolding (originally Vite + React 18, later migrated to Next.js 14)
@@ -203,6 +203,7 @@ Last updated: 2026-02-28 (Shakti Phase 0+1 complete, 7th agent, blog enrichments
 - [x] **Shakti Phase 0 — Convex Foundation** — `clients`, `projects`, `tasks` tables + `convex/clients.ts`, `convex/projects.ts`, `convex/shaktiTasks.ts` + 9 new HTTP endpoints. WorkBoard `task` type wired. (2026-02-28)
 - [x] **Shakti Phase 1 — WorkBoard UI** — `WorkBoardCard.tsx` handles `type: "task"` with client/project labels, task type badge, estimated hours, action buttons. (2026-02-28)
 - [x] **7th agent: Shakti "The Chief of Staff"** — `lib/agents.ts`, `lib/pitch-data.ts`, `lib/geo-savings.ts` all updated. Sanjaya is now the only coming-soon agent. (2026-02-28)
+- [x] **Shakti Phase 2 — VPS Agent Setup** — Full Shakti workspace at `/home/node/openclaw/shakti/` (10 files). 3 client context files (beacon-house, edutechplus, thelaunch-space) saved to VPS — self-contained, no local Mac paths. 4 crons registered (7AM Morning Brief, 4:30PM Afternoon Check, 9:30PM Evening Consolidation, Sunday 10AM Weekly Digest IST). Parthasarathi AGENTS.md updated (Shakti in watched paths + team table). 3 clients + 16 projects seeded to prod Convex. (2026-02-28)
 - [x] **Blog enrichment batch (Feb 28)** — 6 blogs enriched; 1 new blog added (Why Your Landing Page Gets Zero Signups). Total: 22 posts. (2026-02-28)
 - [x] **Design system Shakti avatar prompt** — Prompt 7 of 8 + team hero Prompt 8 of 8 (7 characters, camera spec, DO NOT list). (2026-02-28)
 - [x] **Slug, anchor & pricing overhaul (2026-02-27)** — Route renamed `/hire-your-24x7-team` → `/your-ai-team`. Permanent redirect added. Anchor `#lead-capture` → `#contact` in LeadCaptureSection, PitchPage (2 instances). NavBar label "Hire Your 24/7 Team" → "Your AI Team", all hrefs updated. AnnouncementRibbon, WaitlistCTA, PreviewGate, sitemap all updated. Pricing tiers renamed: "Proof of Concept" → "DIY Kickstart" ($299 one-time), "Growth Partnership" → "Founder's Partnership" ($1,500/mo, first month $750). Geo pricing updated (India: ₹24,999 / ₹1,20,000). `pocOriginalPrice`/`growthOriginalPrice` removed (no strikethrough). `pocLaunchLabel`/`growthLaunchLabel` added to `GeoPricing` interface. `getPriceDisplay` no longer appends "/mo". LeadCaptureSection copy updated ("One-time setup. You own the system.").
