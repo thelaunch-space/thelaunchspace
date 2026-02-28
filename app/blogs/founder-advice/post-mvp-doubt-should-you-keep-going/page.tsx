@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     siteName: "thelaunch.space",
     type: "article",
     publishedTime: "2026-02-17T00:00:00.000Z",
-    modifiedTime: "2026-02-22T00:00:00.000Z",
+    modifiedTime: "2026-02-28T00:00:00.000Z",
     authors: ["thelaunch.space"],
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Post-MVP Doubt: Should You Keep Going or Quit?" }],
   },
@@ -30,7 +30,7 @@ const jsonLd = {
   description: "The post-MVP crisis isn't burnout—it's validation anxiety. Here's how to tell the difference and a 2-week framework for deciding what to do next.",
   url: "https://thelaunch.space/blogs/founder-advice/post-mvp-doubt-should-you-keep-going",
   datePublished: "2026-02-17T00:00:00.000Z",
-  dateModified: "2026-02-22T00:00:00.000Z",
+  dateModified: "2026-02-28T00:00:00.000Z",
   author: { "@type": "Organization", name: "thelaunch.space", url: "https://thelaunch.space" },
   publisher: {
     "@type": "Organization",
@@ -61,7 +61,7 @@ export default function BlogPost() {
           <div className="flex items-center gap-3 text-sm text-text-secondary mb-10">
             <span>thelaunch.space</span><span>·</span>
             <time dateTime="2026-02-17">Feb 17, 2026</time><span>·</span>
-            <span>Updated Feb 22, 2026</span><span>·</span>
+            <span>Updated Feb 28, 2026</span><span>·</span>
             <span>9 min read</span>
           </div>
 
@@ -79,14 +79,13 @@ export default function BlogPost() {
 
           <div className="bg-border-color/30 border border-border-color rounded-xl p-8 my-10">
             <div className="text-center mb-6">
-              <p className="text-3xl md:text-4xl font-bold text-text-primary mb-2">54%</p>
-              <p className="text-sm md:text-base text-text-secondary">of founders experienced burnout in the past 12 months, according to a <a href="https://sifted.eu/articles/founders-mental-health-2025" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">2025 Sifted survey</a>.</p>
+              <p className="text-3xl md:text-4xl font-bold text-text-primary mb-2">87.7%</p>
+              <p className="text-sm md:text-base text-text-secondary">of founders struggle with <a href="https://founderreports.com/entrepreneur-mental-health-statistics/" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">at least one mental health issue</a>, with anxiety (50.2%), high stress (45.8%), and burnout (34.4%) most common.</p>
             </div>
-            <div className="text-center mb-6">
-              <p className="text-3xl md:text-4xl font-bold text-text-primary mb-2">75%</p>
-              <p className="text-sm md:text-base text-text-secondary">experienced anxiety in the past 12 months, with <a href="https://founderreports.com/entrepreneur-mental-health-statistics/" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">87.7% reporting at least one mental health issue</a>.</p>
+            <div className="text-center">
+              <p className="text-3xl md:text-4xl font-bold text-text-primary mb-2">30%</p>
+              <p className="text-sm md:text-base text-text-secondary">of <a href="https://explodingtopics.com/blog/startup-failure-stats" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">venture-backed startups fail</a>, while 75% never return cash to investors—making clarity about traction essential.</p>
             </div>
-            <p className="text-sm md:text-base text-text-secondary text-center">But burnout and validation doubt require different interventions.</p>
           </div>
 
           <hr className="border-border-color my-12" />
@@ -116,7 +115,7 @@ export default function BlogPost() {
           </p>
 
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
-            The timeline to product-market fit varies by model: <a href="https://maccelerator.la/en/blog/entrepreneurship/product-market-fit-timeline-startup-validation-phases/" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">B2B startups average 14-24 months</a>, while B2C can achieve it in 4-8 months. If you&apos;re at month three post-launch and feeling uncertain, you&apos;re not behind. You&apos;re on schedule.
+            The timeline to product-market fit varies by model: B2B SaaS products average <a href="https://ideaproof.io/guides/product-market-fit" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">18-36 months (median 2-3 years)</a> due to extended sales cycles and enterprise complexities, while B2C products can achieve it in 4-8 months. If you&apos;re at month three post-launch and feeling uncertain, you&apos;re not behind. You&apos;re on schedule.
           </p>
 
           <hr className="border-border-color my-12" />
@@ -216,13 +215,14 @@ export default function BlogPost() {
           </p>
 
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
-            Context matters here: <a href="https://sendbird.com/blog/app-retention-benchmarks-broken-down-by-industry" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">Week 1 retention for SaaS products averages 12-17%</a>, with marketplace apps reaching 16%. Top-performing products hit 40% retention by Month 1. Use these benchmarks to calibrate your expectations.
+            Context matters here: for software products overall, <a href="https://www.pendo.io/pendo-blog/user-retention-rate-benchmarks/" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">Month 1 retention averages 39%</a>, with the top 10% achieving around 66%. For B2B SaaS specifically, Week 1 retention for new products averages 12-17%, with marketplace apps reaching 16%. Use these benchmarks to calibrate your expectations.
           </p>
 
           <ul className="list-disc list-inside space-y-2 text-text-secondary text-base md:text-lg mb-6">
-            <li>Week 1 retention above 40%? Strong signal. Keep going.</li>
-            <li>Week 1 retention between 20-40%? Mixed signal. Talk to churned users.</li>
-            <li>Week 1 retention below 20%? Weak signal. Something fundamental is off.</li>
+            <li>Month 1 retention above 66%? You&apos;re in the top 10%. Very strong signal.</li>
+            <li>Month 1 retention 40-66%? Above median. Good signal. Keep going.</li>
+            <li>Month 1 retention 20-39%? Below median. Mixed signal. Talk to churned users.</li>
+            <li>Month 1 retention below 20%? Weak signal. Something fundamental is off.</li>
           </ul>
 
           <h3 className="text-xl md:text-2xl font-bold mt-8 mb-3">Experiment 2: The Payment Test</h3>
@@ -304,6 +304,14 @@ export default function BlogPost() {
             </div>
           </div>
 
+          <div className="bg-border-color/30 border border-border-color rounded-xl p-8 my-10">
+            <div className="text-center mb-4">
+              <p className="text-3xl md:text-4xl font-bold text-text-primary mb-2">3.6x</p>
+              <p className="text-sm md:text-base text-text-secondary mb-6">Startups that <a href="https://explodingtopics.com/blog/startup-failure-stats" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">pivot once or twice</a> increase user growth by 3.6x and generate 2.5x more returns compared to those that don&apos;t pivot or pivot excessively.</p>
+            </div>
+            <p className="text-sm md:text-base text-text-secondary text-center">The key: pivot based on data, not panic. Successful pivots reuse existing assets (technology, customer insights, distribution) to test a new, evidence-backed hypothesis.</p>
+          </div>
+
           <h3 className="text-xl md:text-2xl font-bold mt-8 mb-3">Signals That Say &quot;Quit&quot;</h3>
 
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
@@ -351,7 +359,7 @@ export default function BlogPost() {
           <h2 className="text-2xl md:text-3xl font-bold mt-16 mb-4">This Is Normal. It Doesn&apos;t Mean You&apos;re Failing.</h2>
 
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
-            Seventy-two percent of founders report mental health impacts including anxiety, depression, and burnout. If you&apos;re struggling post-MVP, you&apos;re in the majority, not the exception.
+            According to <a href="https://founderreports.com/entrepreneur-mental-health-statistics/" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">comprehensive founder mental health research</a>, 87.7% of entrepreneurs struggle with at least one mental health issue, with anxiety affecting 50.2% and burnout impacting 34.4%. If you&apos;re struggling post-MVP, you&apos;re in the majority, not the exception.
           </p>
 
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
@@ -400,6 +408,13 @@ export default function BlogPost() {
               <h3 className="text-lg md:text-xl font-bold text-text-primary mb-2">What&apos;s the difference between a pivot and giving up?</h3>
               <p className="text-base text-text-secondary leading-relaxed">
                 A pivot reuses your existing assets (technology, team, customer insights, distribution channels) to test a new hypothesis based on what you&apos;ve learned. Giving up means walking away entirely. If your research dashboard isn&apos;t working but users love one specific data export feature, pivoting to focus solely on that export tool uses what you&apos;ve built. Giving up is shutting down the entire project. Pivots are evidence-based adjustments. Quitting is a strategic decision that the opportunity doesn&apos;t exist.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-lg md:text-xl font-bold text-text-primary mb-2">How do I know if my pivot is working?</h3>
+              <p className="text-base text-text-secondary leading-relaxed">
+                Track the same three validation signals you used for your original idea: retention (are more users sticking around?), willingness to pay (are conversion rates improving?), and user sentiment (are Sean Ellis scores rising?). A successful pivot shows measurable improvement within 4-6 weeks—not necessarily product-market fit yet, but clear directional progress. If your second iteration shows no better signal than your first after two months, that&apos;s a red flag. The pattern matters more than the count: data-driven pivots outperform reactive ones.
               </p>
             </div>
 
