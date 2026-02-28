@@ -1,6 +1,6 @@
 # Progress — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-27 (Netlify Durable Cache bug fixed)
+Last updated: 2026-02-28 (Shakti Phase 0+1 complete, 7th agent, blog enrichments, design-system Shakti prompt)
 
 ## Completed
 - [x] Project scaffolding (originally Vite + React 18, later migrated to Next.js 14)
@@ -200,6 +200,11 @@ Last updated: 2026-02-27 (Netlify Durable Cache bug fixed)
 - [x] **Convex SSOT migration** — canonical `/push/*` and `/update/*` write endpoints deployed. GET read endpoints live: `/query/briefs`, `/query/topic-clusters`, `/query/tool-opportunities`, `/query/linkedin-posts`. `linkedinPosts` + `manualTasks` tables added. All agent helper scripts rewired (Vyasa, Vibhishana, Vidura, Valmiki). Sheets now fallback-only. (2026-02-26)
 - [x] **Kanban status dropdown + feedback loop** — Replaced action buttons on brief/blog/LinkedIn cards with nuanced status dropdown (Approve / Needs Revision / Drop / Publish / Skip etc). Confirm step with optional feedback textarea for non-approval statuses. Feedback stored in `krishnaFeedback` field (briefs + linkedinPosts). Blocked cards show stored feedback + Slack reminder to paste it to the agent. Blog cleanup migration run: 4 junk/duplicate blog entries marked "dropped" on dev (production cleanup pending). Partha brief written at `openclaw-config-global/prompts/kanban-feedback-loop-brief-for-partha.md`. (2026-02-26)
 
+- [x] **Shakti Phase 0 — Convex Foundation** — `clients`, `projects`, `tasks` tables + `convex/clients.ts`, `convex/projects.ts`, `convex/shaktiTasks.ts` + 9 new HTTP endpoints. WorkBoard `task` type wired. (2026-02-28)
+- [x] **Shakti Phase 1 — WorkBoard UI** — `WorkBoardCard.tsx` handles `type: "task"` with client/project labels, task type badge, estimated hours, action buttons. (2026-02-28)
+- [x] **7th agent: Shakti "The Chief of Staff"** — `lib/agents.ts`, `lib/pitch-data.ts`, `lib/geo-savings.ts` all updated. Sanjaya is now the only coming-soon agent. (2026-02-28)
+- [x] **Blog enrichment batch (Feb 28)** — 6 blogs enriched; 1 new blog added (Why Your Landing Page Gets Zero Signups). Total: 22 posts. (2026-02-28)
+- [x] **Design system Shakti avatar prompt** — Prompt 7 of 8 + team hero Prompt 8 of 8 (7 characters, camera spec, DO NOT list). (2026-02-28)
 - [x] **Slug, anchor & pricing overhaul (2026-02-27)** — Route renamed `/hire-your-24x7-team` → `/your-ai-team`. Permanent redirect added. Anchor `#lead-capture` → `#contact` in LeadCaptureSection, PitchPage (2 instances). NavBar label "Hire Your 24/7 Team" → "Your AI Team", all hrefs updated. AnnouncementRibbon, WaitlistCTA, PreviewGate, sitemap all updated. Pricing tiers renamed: "Proof of Concept" → "DIY Kickstart" ($299 one-time), "Growth Partnership" → "Founder's Partnership" ($1,500/mo, first month $750). Geo pricing updated (India: ₹24,999 / ₹1,20,000). `pocOriginalPrice`/`growthOriginalPrice` removed (no strikethrough). `pocLaunchLabel`/`growthLaunchLabel` added to `GeoPricing` interface. `getPriceDisplay` no longer appends "/mo". LeadCaptureSection copy updated ("One-time setup. You own the system.").
 
 ## In Progress
@@ -213,7 +218,11 @@ Last updated: 2026-02-27 (Netlify Durable Cache bug fixed)
 - **Question count mismatch** — Prod Convex has 771 unique questions, Google Sheet has 891. ~120 questions may not have been pushed to Convex, or have slightly different URLs. Needs investigation.
 
 ## Recent Changes (latest first)
-1. **Netlify Durable Cache bug fixed** — `netlify.toml` `Netlify-CDN-Cache-Control: no-store` on `/*` prevents HTML from being cached in Durable Cache. `/_next/static/*` override keeps static asset caching. New `app/api/deploy-hook/route.ts` purge endpoint. One-time purge run. Full incident doc at `.context/netlify-caching-incident.md`. (2026-02-27)
+1. **Shakti Phase 0 + 1 — COMPLETE** — `clients`, `projects`, `tasks` tables added to Convex schema (13 tables total). `convex/clients.ts`, `convex/projects.ts`, `convex/shaktiTasks.ts` created. 9 new HTTP endpoints: `/push/clients`, `/push/projects`, `/push/tasks`, `/update/task-status`, `/query/clients`, `/query/projects`, `/query/tasks`. WorkBoard `task` card type wired in `workboard.ts` (`getBoard` + `updateArtifactStatus`) and `WorkBoardCard.tsx` (client/project badges, task type badge, estimated hours, action buttons). (2026-02-28)
+2. **7th agent: Shakti** — "The Chief of Staff" added to `lib/agents.ts` (indigo accent #4F46E5, 6 task types, daily planning KRAs), `lib/pitch-data.ts` (Pace: 9, Intel: 8, active — Sanjaya remains only coming-soon), `lib/geo-savings.ts` ($800/mo INTL, ₹15K/mo IN for Task management). (2026-02-28)
+3. **Design system: Shakti avatar prompt** — `.context/design-system-v2.md` updated: Shakti Prompt 7 of 8 added (deep magenta glowing eyes, charcoal blazer over magenta silk kurta, 4 orbiting holographic task panels). All individual agent prompts renumbered 1 of 8 through 7 of 8. Team hero updated to Prompt 8 of 8 — now includes all 7 characters, full camera spec (24–35mm, 2.5:1 panoramic, chest-height, studio lighting), 14-item DO NOT list, and troubleshooting table. (2026-02-28)
+4. **New blog + 6 enrichments** — New blog: "Why Your Landing Page Gets Zero Signups" (founder-advice). Enriched: `why-agency-mvp-failed`, `how-to-find-technical-cofounder`, `hire-developer-vs-build-with-ai`, `when-no-code-tools-stop-working`, `find-technical-cofounder-alternative`, `solo-lawyer-case-management-decision`. Blog total: **22 published posts** (8 startup-mvps, 10 founder-advice, 4 ai-tools). (2026-02-28)
+5. **Netlify Durable Cache bug fixed** — `netlify.toml` `Netlify-CDN-Cache-Control: no-store` on `/*` prevents HTML from being cached in Durable Cache. `/_next/static/*` override keeps static asset caching. New `app/api/deploy-hook/route.ts` purge endpoint. One-time purge run. Full incident doc at `.context/netlify-caching-incident.md`. (2026-02-27)
 2. Kanban status dropdown — replaced action buttons on brief/blog/LinkedIn cards with dropdown + confirm + feedback textarea. `krishnaFeedback` stored in Convex. Blocked cards show Slack reminder. Blog cleanup migration run (4 junk entries → dropped). Partha brief written. (2026-02-26)
 2. Work Mode Kanban — owner tags, health bar, archive column, header stats, sidebar hidden in work mode. Hydration fix. Deployed to production. (2026-02-26)
 3. Convex SSOT migration — GET endpoints live, all agent helper scripts rewired (Vyasa/Vibhishana/Vidura/Valmiki). Sheets = fallback only. (2026-02-26)

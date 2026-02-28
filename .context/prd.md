@@ -1,6 +1,6 @@
 # Product Requirements — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-16 (v2 — pitch page, FTUE tour, nav changes)
+Last updated: 2026-02-28 (pricing corrected, URL corrected, blog counts updated, 7 agents, Shakti added)
 
 ## Core Concept
 "Tweet-sized" landing page — deliver the full value prop instantly, no scrolling. Reflects agency ethos: cut bureaucracy, deliver fast. Also hosts SEO-optimized blog posts for programmatic content marketing.
@@ -45,19 +45,20 @@ Ambitious founders and product leaders who prioritize execution and clarity over
 - Light "Quiet Luxury" theme — off-white base, surface elevation, layered shadows, noise grain texture, blue/purple accents
 - Google Fonts: Inter (body), Cormorant Garamond (headings), JetBrains Mono (labels)
 
-### Hire Your 24/7 Team — Service Pitch Page (LIVE)
-- Full scrolling ICP-focused pitch page at `/hire-your-24x7-team`
+### Your AI Team — Service Pitch Page (LIVE)
+- Full scrolling ICP-focused pitch page at `/your-ai-team` (permanent redirect from `/hire-your-24x7-team`)
 - **The front door.** LinkedIn/X posts → this page → lead capture or Launch Control (proof).
 - 14 components under `components/pitch/`
 - **Live data from Convex:** Weekly stats, agent summaries, recent questions/briefs/blogs — all real-time via `useQuery()`
-- **Sections:** Hook (headline + live stats) → How It Works (4-step daily workflow) → Meet Your Team (3 Pokemon-style stat cards) → Trust Nudge → Recent Work (tabbed Q/B/B from Convex) → 4-Week Timeline → Pricing ($200 POC + $1K Growth) → Lead Capture (form + time slots) → Secondary CTA (→ Launch Control) → Footer Tease
-- **Agent cards:** Parthasarathi "The Manager", Vibhishana "The Scout", Vyasa "The Writer" — with stat bars, skills, weekly feed
+- **Sections:** Hook (headline + live stats) → How It Works (4-step daily workflow) → Meet Your Team (6 active AgentStatCards + 1 coming soon) → Trust Nudge → Recent Work (tabbed Q/B/B from Convex) → 4-Week Timeline → Pricing ($299 DIY Kickstart + $1,500/mo Founder's Partnership) → Lead Capture (form + time slots, anchor #contact) → Secondary CTA (→ Launch Control) → Footer Tease
+- **Agent cards:** 6 active (Parthasarathi, Vibhishana, Vyasa, Vidura, Valmiki, Shakti) + 1 coming soon (Sanjaya). Each has stat bars, skills, weekly feed.
 - **Floating dual CTA** after 600px scroll: "Watch live" + "Get your AI team"
+- **Pricing:** DIY Kickstart $299 one-time (₹24,999 INR) + Founder's Partnership $1,500/mo first month $750 (₹1,20,000 INR). Geo-detected currency. No strikethrough.
 - Full brainstorm: `.context/hire-your-24x7-team.md`
 
 ### Site-Wide Navigation (NavBar)
 - Rendered in root layout, visible on ALL pages except `/launch-control`
-- Left: Logo linked to `/` — Right: "Blog" link, "Hire Your 24/7 Team" link, X icon, LinkedIn icon
+- Left: Logo linked to `/` — Right: "Blog" link, "Your AI Team" link (→ `/your-ai-team`), X icon, LinkedIn icon
 - **No "Launch Control" link** — LC is discoverable only via pitch page secondary CTA or direct URL
 - Active link highlighting via `usePathname()`
 - Scroll-aware CTA on blog pages: "Get Your Launch Roadmap" button appears in navbar after 100px scroll (rounded-xl, matches navbar radius). On mobile, replaces social icons; on desktop, coexists.
@@ -70,15 +71,15 @@ Ambitious founders and product leaders who prioritize execution and clarity over
 - Blog CTAs link to `/?cta=open` (directly opens lead capture modal)
 - Human reviews and merges every post before it goes live
 - Category index pages at `/blogs/<topic>/` show filtered post listings per topic
-- **Categories:** startup-mvps (6 posts), founder-advice (1 post), ai-tools (1 post)
+- **Categories:** startup-mvps (8 posts), founder-advice (10 posts), ai-tools (4 posts) — 22 total
 - `lib/blog-labels.ts` — client-safe category labels (extracted from `lib/blog.ts` to avoid `fs` import in client components)
 
 ### Build Your AI Team Section
-- Showcase page at `/build-your-ai-team` presenting all 5 AI agents as a team
+- Showcase page at `/build-your-ai-team` presenting all 7 AI agents as a team (legacy section — no navbar link)
 - Layout: Left-sticky hero text + right-scrolling 2-column card grid
 - Hero copy: "Your Brain. Your Agents. Real Output." eyebrow, "Meet My AI Employees" headline, scaling-your-thinking body copy with bold/italic emphasis
 - CTAs: Primary WhatsApp (wa.me with pre-filled message), secondary LinkedIn (brand blue), tertiary email link
-- 5 agents in order: Parthasarathi, Vyasa, Vibhishana, Sanjaya, Valmiki
+- 7 agents: Parthasarathi, Vyasa, Vibhishana, Sanjaya, Valmiki, Vidura, Shakti
 - Partha gets highlight card (bigger), others standard size in 2-col grid
 - Card sizes: highlight (h-48/h-64), standard (h-40/h-48), compact (h-28/h-36)
 - Pipeline visualization section showing how agents work together

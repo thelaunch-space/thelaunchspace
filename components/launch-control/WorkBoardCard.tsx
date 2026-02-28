@@ -65,6 +65,13 @@ function columnToStatus(column: KanbanColumn, type: string): string {
       if (column === "blocked") return "blocked";
       if (column === "done") return "done";
       return "todo";
+    case "task":
+      if (column === "backlog") return "backlog";
+      if (column === "todo") return "todo";
+      if (column === "in_progress") return "in_progress";
+      if (column === "blocked") return "blocked";
+      if (column === "done") return "done";
+      return "todo";
     default:
       return "todo";
   }
@@ -242,6 +249,17 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
     if (type === "manual" && meta.description) {
       return <span className="text-[10px] text-text-secondary truncate italic">{meta.description as string}</span>;
     }
+    if (type === "task") {
+      const clientSlug = meta.clientSlug as string;
+      const projectSlug = meta.projectSlug as string;
+      const taskType = meta.taskType as string;
+      return (
+        <div className="flex flex-col gap-0.5 overflow-hidden">
+          <span className="text-[10px] text-text-secondary truncate">{clientSlug} / {projectSlug}</span>
+          <span className="text-[9px] font-mono bg-surface-alt text-text-secondary px-1 py-0.5 rounded w-fit">{taskType}</span>
+        </div>
+      );
+    }
     return null;
   }
 
@@ -273,6 +291,17 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
     if (type === "manual") {
       if (status === "todo") return <ActionBtn label="Start" onClick={() => handleStatusChange("in_progress")} primary />;
       if (status === "in_progress") return <ActionBtn label="Done" onClick={() => handleStatusChange("done")} primary />;
+    }
+
+    if (type === "task") {
+      if (status === "todo") return <ActionBtn label="Start" onClick={() => handleStatusChange("in_progress")} primary />;
+      if (status === "in_progress") return (
+        <>
+          <ActionBtn label="Done" onClick={() => handleStatusChange("done")} primary />
+          <ActionBtn label="Block" onClick={() => handleStatusChange("blocked")} danger />
+        </>
+      );
+      if (status === "blocked") return <ActionBtn label="Unblock" onClick={() => handleStatusChange("in_progress")} primary />;
     }
 
     return null;

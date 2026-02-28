@@ -2,7 +2,7 @@
 
 Status: LIVE IN PRODUCTION
 Created: 2026-02-14
-Last updated: 2026-02-26 (linkedinPosts + manualTasks live, Kanban shipped, feedback loop closed)
+Last updated: 2026-02-28 (13 tables: clients + projects + tasks added for Shakti, 9 new HTTP endpoints)
 URL: `thelaunch.space/launch-control`
 
 ---
@@ -74,7 +74,7 @@ Agent does work on VPS → curl POST to Convex HTTP Action → validates secret 
 
 ---
 
-## 4. Convex Schema (as deployed — 10 tables)
+## 4. Convex Schema (as deployed — 13 tables)
 
 **Production deployment:** `curious-iguana-738`
 **HTTP base URL:** `https://curious-iguana-738.convex.site`
@@ -266,6 +266,56 @@ Indexes: `by_status`, `by_sourceBlogSlug`, `by_createdAt`
 
 Indexes: `by_status`, `by_createdAt`
 
+### Table 11: `clients` (Shakti's client registry — LIVE as of 2026-02-28)
+
+| Field | Type | Required |
+|-------|------|----------|
+| `name` | string | yes | "Beacon House", "EduTechPlus", "thelaunch.space" |
+| `slug` | string | yes | "beacon-house", "edutechplus", "thelaunch-space" |
+| `type` | string | yes | "retainer" / "project" / "internal" |
+| `status` | string | yes | "active" / "paused" / "completed" |
+| `notes` | string | optional | Brief context |
+| `createdAt` | string | yes | |
+
+Indexes: `by_slug`, `by_status`
+
+### Table 12: `projects` (Shakti's project registry — LIVE as of 2026-02-28)
+
+| Field | Type | Required |
+|-------|------|----------|
+| `clientSlug` | string | yes | References clients.slug (denormalized) |
+| `name` | string | yes | "WhatsApp Automation", "Fractions V5" |
+| `slug` | string | yes | "whatsapp-automation", "fractions-v5" |
+| `type` | string | yes | "feature" / "maintenance" / "internal" / "retainer" |
+| `status` | string | yes | "active" / "on-hold" / "completed" |
+| `notes` | string | optional | |
+| `createdAt` | string | yes | |
+
+Indexes: `by_clientSlug`, `by_slug`, `by_status`
+
+### Table 13: `tasks` (Shakti's task backlog — LIVE as of 2026-02-28)
+
+| Field | Type | Required |
+|-------|------|----------|
+| `clientSlug` | string | yes | Denormalized for filtering |
+| `projectSlug` | string | yes | References projects.slug |
+| `title` | string | yes | |
+| `description` | string | optional | |
+| `taskType` | string | yes | "build" / "review" / "debug" / "strategy" / "client-comms" / "admin" |
+| `status` | string | yes | "backlog" / "todo" / "in_progress" / "blocked" / "done" |
+| `priority` | number | optional | 1=high, 2=medium, 3=low |
+| `estimatedHours` | number | optional | Shakti's prediction |
+| `actualHours` | number | optional | Ground truth (logged at completion) |
+| `deadline` | string | optional | ISO date string |
+| `paceNotes` | string | optional | Shakti's learning notes on this task |
+| `createdAt` | string | yes | |
+| `updatedAt` | string | yes | |
+| `createdBy` | string | yes | "Krishna" / "Shakti" |
+
+Indexes: `by_clientSlug`, `by_projectSlug`, `by_status`, `by_taskType`, `by_deadline`, `by_createdAt`
+
+WorkBoard integration: `tasks` appear as `type: "task"` cards in the Work Mode Kanban alongside `manualTasks`. Same 5 columns. Orange/amber source badge to distinguish from manual tasks.
+
 ---
 
 ## 5. HTTP Endpoints (canonical + legacy aliases)
@@ -282,8 +332,12 @@ Indexes: `by_status`, `by_createdAt`
 | `/push/tool-opportunities` | POST | Vidura | Upsert by toolName |
 | `/push/documents` | POST | Any agent | Upsert by slug |
 | `/push/linkedin-posts` | POST | Valmiki | Upsert by insightName+sourceBlogSlug. **Do NOT pass `krishnaFeedback: null`** — omit the field entirely. |
+| `/push/clients` | POST | Shakti | Upsert by slug |
+| `/push/projects` | POST | Shakti | Upsert by slug |
+| `/push/tasks` | POST | Shakti | Upsert by clientSlug+projectSlug+title |
 | `/update/brief-status` | POST | Any | Update brief status by slug |
 | `/update/blog-enrichment` | POST | Vyasa | Update enrichment metadata by slug |
+| `/update/task-status` | POST | Shakti | Update status, actualHours, paceNotes by task ID or title+projectSlug |
 
 **GET query endpoints** (agents read from these):
 
@@ -295,6 +349,9 @@ Indexes: `by_status`, `by_createdAt`
 | `/query/topic-clusters` | GET | Vidura | All clusters all statuses |
 | `/query/tool-opportunities` | GET | Vidura | All tools all statuses |
 | `/query/linkedin-posts` | GET | Valmiki | All posts — filter client-side for needs_revision + krishnaFeedback |
+| `/query/clients` | GET | Shakti | All clients |
+| `/query/projects?clientSlug=<optional>` | GET | Shakti | Projects, optionally filtered by clientSlug |
+| `/query/tasks?status=&clientSlug=&projectSlug=` | GET | Shakti | Tasks with flexible filtering (all params optional) |
 
 All require `Authorization: Bearer <AGENT_API_KEY>`. Legacy alias paths (`/ingestBrief`, `/upsertBrief`, etc.) remain permanently active. See `CONVEX-API-REFERENCE.md` for full alias list.
 
@@ -400,7 +457,7 @@ Key details:
 
 **All steps DONE (shipped Feb 15-18, 2026):**
 
-- [x] Convex backend — 10 tables, canonical /push/* + /update/* + /query/* HTTP routes + legacy aliases, Clerk auth, 20+ indexes
+- [x] Convex backend — 13 tables, canonical /push/* + /update/* + /query/* HTTP routes + legacy aliases, Clerk auth, 20+ indexes
 - [x] Agent skills — 4 SKILL.md files deployed on VPS, test pushes confirmed
 - [x] Frontend dashboard — 33+ components, 3-column layout, 8 tabs (6 public + 2 admin-only)
 - [x] All tabs open — no blur, full data for public visitors on all 6 non-admin tabs (as of 2026-02-25)

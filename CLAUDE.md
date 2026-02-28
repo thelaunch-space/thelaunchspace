@@ -166,6 +166,8 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 ---
 IMPORTANT: After ANY code change, update relevant .context/ docs to keep this system alive and accurate.
 
+IMPORTANT: `openclaw-config-global/my-openclaw-agent-setup-v2/` is READ-ONLY — Claude Code must NEVER edit any files inside it. This is the VPS mirror repo that Parthasarathi pushes to. Read-only reference only.
+
 IMPORTANT: When Krishna reports bugs, design feedback, or issues during a session, ALWAYS log them to `.context/feedback-and-bugs.md` — include the date, description, root cause (if known), fix status, and affected files. This is the living record of all feedback.
 
 IMPORTANT: When brainstorming or making decisions with Krishna, do NOT leave open questions in docs for "next session." Use the AskUserQuestion tool to ask Krishna immediately. Only mark something as an open question if Krishna explicitly says he doesn't know the answer yet and needs to think about it.

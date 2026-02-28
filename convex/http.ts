@@ -560,6 +560,163 @@ http.route({
   }),
 });
 
+// ---------------------------------------------------------------------------
+// Shakti PA — client, project, and task endpoints
+// ---------------------------------------------------------------------------
+
+http.route({
+  path: "/query/clients",
+  method: "GET",
+  handler: httpAction(async (ctx, request) => {
+    if (!validateAuth(request)) {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
+    try {
+      const clients = await ctx.runQuery(internal.agentQueries.getAllClients, {});
+      return jsonResponse(clients.map((c) => ({
+        _id: c._id,
+        name: c.name,
+        slug: c.slug,
+        type: c.type,
+        status: c.status,
+        notes: c.notes ?? null,
+      })));
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
+  }),
+});
+
+http.route({
+  path: "/query/projects",
+  method: "GET",
+  handler: httpAction(async (ctx, request) => {
+    if (!validateAuth(request)) {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
+    try {
+      const url = new URL(request.url);
+      const clientSlug = url.searchParams.get("clientSlug") ?? undefined;
+      const projects = await ctx.runQuery(internal.agentQueries.getAllProjects, { clientSlug });
+      return jsonResponse(projects.map((p) => ({
+        _id: p._id,
+        clientSlug: p.clientSlug,
+        name: p.name,
+        slug: p.slug,
+        type: p.type,
+        status: p.status,
+        notes: p.notes ?? null,
+      })));
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
+  }),
+});
+
+http.route({
+  path: "/query/tasks",
+  method: "GET",
+  handler: httpAction(async (ctx, request) => {
+    if (!validateAuth(request)) {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
+    try {
+      const url = new URL(request.url);
+      const status = url.searchParams.get("status") ?? undefined;
+      const clientSlug = url.searchParams.get("clientSlug") ?? undefined;
+      const projectSlug = url.searchParams.get("projectSlug") ?? undefined;
+      const tasks = await ctx.runQuery(internal.agentQueries.getTasksByFilters, { status, clientSlug, projectSlug });
+      return jsonResponse(tasks.map((t) => ({
+        _id: t._id,
+        clientSlug: t.clientSlug,
+        projectSlug: t.projectSlug,
+        title: t.title,
+        description: t.description ?? null,
+        taskType: t.taskType,
+        status: t.status,
+        priority: t.priority ?? null,
+        estimatedHours: t.estimatedHours ?? null,
+        actualHours: t.actualHours ?? null,
+        deadline: t.deadline ?? null,
+        paceNotes: t.paceNotes ?? null,
+        createdBy: t.createdBy,
+        createdAt: t.createdAt,
+        updatedAt: t.updatedAt,
+      })));
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
+  }),
+});
+
+http.route({
+  path: "/push/clients",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    if (!validateAuth(request)) {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
+    try {
+      const body = await request.json();
+      const result = await ctx.runMutation(internal.clients.upsert, body);
+      return jsonResponse({ success: true, ...result });
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
+  }),
+});
+
+http.route({
+  path: "/push/projects",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    if (!validateAuth(request)) {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
+    try {
+      const body = await request.json();
+      const result = await ctx.runMutation(internal.projects.upsert, body);
+      return jsonResponse({ success: true, ...result });
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
+  }),
+});
+
+http.route({
+  path: "/push/tasks",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    if (!validateAuth(request)) {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
+    try {
+      const body = await request.json();
+      const result = await ctx.runMutation(internal.shaktiTasks.upsert, body);
+      return jsonResponse({ success: true, ...result });
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
+  }),
+});
+
+http.route({
+  path: "/update/task-status",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    if (!validateAuth(request)) {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
+    try {
+      const body = await request.json();
+      await ctx.runMutation(internal.shaktiTasks.updateStatus, body);
+      return jsonResponse({ success: true });
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
+  }),
+});
+
 // Handle CORS preflight for all routes (legacy aliases + canonical)
 for (const path of [
   // Legacy aliases — kept for backward compatibility
@@ -574,6 +731,10 @@ for (const path of [
   "/update/brief-status", "/update/blog-enrichment",
   // GET query endpoints
   "/query/briefs", "/query/topic-clusters", "/query/tool-opportunities", "/query/linkedin-posts",
+  // Shakti PA endpoints
+  "/query/clients", "/query/projects", "/query/tasks",
+  "/push/clients", "/push/projects", "/push/tasks",
+  "/update/task-status",
 ]) {
   http.route({
     path,

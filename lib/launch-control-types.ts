@@ -107,7 +107,7 @@ export interface ToolOpportunity {
 // ---------------------------------------------------------------------------
 
 export type KanbanColumn = "backlog" | "todo" | "in_progress" | "blocked" | "done";
-export type CardType = "brief" | "blog" | "linkedin" | "booking" | "tool" | "cluster" | "manual";
+export type CardType = "brief" | "blog" | "linkedin" | "booking" | "tool" | "cluster" | "manual" | "task";
 
 export interface WorkBoardTask {
   id: string;
@@ -135,6 +135,7 @@ export const OWNER_TAG_CONFIG: Record<string, { color: string; bg: string; borde
   Vidura:        { color: "text-amber-800",   bg: "bg-amber-100",   border: "border-amber-200" },
   Valmiki:       { color: "text-emerald-800", bg: "bg-emerald-100", border: "border-emerald-200" },
   Vishwakarma:   { color: "text-slate-700",   bg: "bg-slate-100",   border: "border-slate-200" },
+  Shakti:        { color: "text-indigo-800",  bg: "bg-indigo-100",  border: "border-indigo-200" },
   Krishna:       { color: "text-orange-800",  bg: "bg-orange-100",  border: "border-orange-200" },
 };
 
@@ -146,4 +147,5 @@ export const CARD_BADGE_CONFIG: Record<CardType, { label: string; color: string;
   tool:     { label: "Tool",     color: "text-cyan-700",    bg: "bg-cyan-500/10 border-cyan-500/20" },
   cluster:  { label: "Cluster",  color: "text-blue-700",    bg: "bg-blue-500/10 border-blue-500/20" },
   manual:   { label: "Task",     color: "text-text-secondary", bg: "bg-surface-alt border-border-color/40" },
+  task:     { label: "Task",     color: "text-orange-700",     bg: "bg-orange-500/10 border-orange-500/20" },
 };

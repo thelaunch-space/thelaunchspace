@@ -417,6 +417,68 @@ export const agents: Agent[] = [
     ],
     pipelineRole: "Strategizes → Pipeline executes with purpose",
   },
+  {
+    id: "shakti",
+    name: "Shakti",
+    plainTitle: "The Chief of Staff",
+    role: "Personal AI Assistant",
+    description:
+      "Krishna's AI chief of staff. Shakti tracks every open task across thelaunch.space, Beacon House, and EduTechPlus — estimates time, flags blockers, and delivers a clear daily plan so nothing falls through the cracks.",
+    status: "active",
+    accentColor: "accent-indigo",
+    accentHex: "#4F46E5",
+    avatarPath: "/agents/shakti.png",
+    workPageSlug: "shakti",
+    roleForICP: "Keeps your task backlog organized and your day on track",
+    outcomes: [
+      "Never lose track of an open task again",
+      "Clear daily plan delivered every morning",
+      "Blockers flagged before they kill a deadline",
+    ],
+    kras: [
+      {
+        title: "Task Ingestion",
+        what: "Creates and categorizes tasks from your inputs, flags duplicates, and routes them to the right project",
+        outcome: "One source of truth for everything on your plate",
+        frequency: "On demand",
+      },
+      {
+        title: "Daily Planning",
+        what: "Analyzes backlog by deadline and priority, builds a realistic daily plan you can actually execute",
+        outcome: "You start every day knowing exactly what to do first",
+        frequency: "Daily morning",
+      },
+      {
+        title: "Time Estimation",
+        what: "Estimates hours per task based on type so you can see if your day is overpacked before it starts",
+        outcome: "No more end-of-day regret — realistic planning from the start",
+        frequency: "Per task",
+      },
+      {
+        title: "Blocker Detection",
+        what: "Tracks blocked tasks, records why they're stuck, and reminds you to unblock them",
+        outcome: "Blockers get resolved in hours, not forgotten for weeks",
+        frequency: "Daily",
+      },
+    ],
+    dailyRhythm: [
+      "Morning — Review backlog, build today's plan",
+      "Midday — Check in on in-progress tasks",
+      "Evening — Update backlog, flag blockers",
+      "On demand — Capture new tasks from Slack",
+    ],
+    proofPoints: [
+      { type: "stat", label: "Work streams tracked", value: "3" },
+      { type: "stat", label: "Task types supported", value: "6" },
+      {
+        type: "quote",
+        label: "Design goal",
+        value:
+          "You stop context-switching because you always know what's next",
+      },
+    ],
+    pipelineRole: "Tracks backlog → Plans your day → Nothing slips",
+  },
 ];
 
 export function getAgent(id: string): Agent | undefined {

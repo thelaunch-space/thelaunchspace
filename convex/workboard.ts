@@ -5,7 +5,7 @@ import type { Id } from "./_generated/dataModel";
 // Unified task shape returned by getBoard
 type WorkBoardTask = {
   id: string;
-  type: "brief" | "blog" | "linkedin" | "booking" | "tool" | "cluster" | "manual";
+  type: "brief" | "blog" | "linkedin" | "booking" | "tool" | "cluster" | "manual" | "task";
   title: string;
   status: string;
   column: "backlog" | "todo" | "in_progress" | "blocked" | "done";
@@ -88,6 +88,17 @@ function mapManualStatus(status: string): { column: WorkBoardTask["column"]; own
   }
 }
 
+function mapTaskStatus(status: string): { column: WorkBoardTask["column"]; owner: string | null } {
+  switch (status) {
+    case "backlog":     return { column: "backlog", owner: null };
+    case "todo":        return { column: "todo", owner: "Krishna" };
+    case "in_progress": return { column: "in_progress", owner: "Krishna" };
+    case "blocked":     return { column: "blocked", owner: "Krishna" };
+    case "done":        return { column: "done", owner: null };
+    default:            return { column: "backlog", owner: null };
+  }
+}
+
 // Auth-gated query — returns all kanban tasks unified from all source tables
 export const getBoard = query({
   args: {},
@@ -95,7 +106,7 @@ export const getBoard = query({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) return [];
 
-    const [briefs, blogs, linkedinPosts, pitchBookings, toolOpportunities, topicClusters, manualTasks] =
+    const [briefs, blogs, linkedinPosts, pitchBookings, toolOpportunities, topicClusters, manualTasks, shaktiTasksList] =
       await Promise.all([
         ctx.db.query("briefs").collect(),
         ctx.db.query("blogs").collect(),
@@ -104,6 +115,7 @@ export const getBoard = query({
         ctx.db.query("toolOpportunities").collect(),
         ctx.db.query("topicClusters").collect(),
         ctx.db.query("manualTasks").collect(),
+        ctx.db.query("tasks").collect(),
       ]);
 
     const tasks: WorkBoardTask[] = [];
@@ -241,6 +253,28 @@ export const getBoard = query({
       });
     }
 
+    for (const t of shaktiTasksList) {
+      const { column, owner } = mapTaskStatus(t.status);
+      tasks.push({
+        id: t._id,
+        type: "task",
+        title: t.title,
+        status: t.status,
+        column,
+        owner,
+        timestamp: t.updatedAt,
+        meta: {
+          clientSlug: t.clientSlug,
+          projectSlug: t.projectSlug,
+          taskType: t.taskType,
+          description: t.description ?? null,
+          estimatedHours: t.estimatedHours ?? null,
+          priority: t.priority ?? null,
+          deadline: t.deadline ?? null,
+        },
+      });
+    }
+
     // Sort newest first within each type (stable sort, column grouping done on client)
     return tasks.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
   },
@@ -289,6 +323,13 @@ export const updateArtifactStatus = mutation({
         break;
       case "manual":
         await ctx.db.patch(id as Id<"manualTasks">, { status: newStatus, updatedAt: now });
+        break;
+      case "task":
+        await ctx.db.patch(id as Id<"tasks">, {
+          status: newStatus,
+          updatedAt: now,
+          ...(feedback !== undefined && { paceNotes: feedback }),
+        });
         break;
       default:
         throw new Error(`Unknown artifact type: ${type}`);

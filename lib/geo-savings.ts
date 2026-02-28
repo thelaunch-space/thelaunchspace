@@ -73,11 +73,15 @@ const INTL_CONFIG: GeoSavingsConfig = {
     },
     valmiki: {
       monthlySavings: "$3.5K",
-      costEquivalent: "Replaces a $3.5K/month social media manager",
+      costEquivalent: "Social media management worth ~$3.5K/mo",
     },
     sanjaya: {
       monthlySavings: "$4K",
-      costEquivalent: "Replaces a $4K/month lead researcher",
+      costEquivalent: "Lead research & intelligence worth ~$4K/mo",
+    },
+    shakti: {
+      monthlySavings: "$800",
+      costEquivalent: "Task management & planning worth ~$800/mo",
     },
   },
   comparisonLine:
@@ -120,11 +124,15 @@ const IN_CONFIG: GeoSavingsConfig = {
     },
     valmiki: {
       monthlySavings: "₹50K",
-      costEquivalent: "Replaces a ₹50K/month social media manager",
+      costEquivalent: "Social media management worth ~₹50K/mo",
     },
     sanjaya: {
       monthlySavings: "₹60K",
-      costEquivalent: "Replaces a ₹60K/month lead researcher",
+      costEquivalent: "Lead research & intelligence worth ~₹60K/mo",
+    },
+    shakti: {
+      monthlySavings: "₹15K",
+      costEquivalent: "Task management & planning worth ~₹15K/mo",
     },
   },
   comparisonLine:

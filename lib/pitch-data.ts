@@ -87,6 +87,21 @@ export const PITCH_AGENTS: PitchAgent[] = [
     ],
   },
   {
+    agentId: "shakti",
+    plainTitle: "The Chief of Staff",
+    tagline: "Every open task, every deadline, every work stream — organised and prioritised, automatically.",
+    paceScore: 9,
+    intelScore: 8,
+    skillTags: ["Task Management", "Daily Planning", "Blocker Detection"],
+    jdSubtitle: "Your AI chief of staff. Organizes your backlog so you can actually focus.",
+    jdBullets: [
+      "Tracks every open task across all your work streams in one place",
+      "Estimates time and builds your daily plan each morning automatically",
+      "Flags blocked tasks before they become missed deadlines",
+      "Lets your other AI agents push tasks directly into your backlog",
+    ],
+  },
+  {
     agentId: "sanjaya",
     plainTitle: "The Hunter",
     tagline: "Finds your next client before they start looking for you.",

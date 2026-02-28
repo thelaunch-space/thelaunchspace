@@ -222,6 +222,56 @@ export default defineSchema({
     .index("by_status", ["status"])
     .index("by_createdAt", ["createdAt"]),
 
+  // Shakti's client registry
+  clients: defineTable({
+    name: v.string(),
+    slug: v.string(),
+    type: v.string(),           // "retainer" | "project" | "internal"
+    status: v.string(),         // "active" | "paused" | "completed"
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_status", ["status"]),
+
+  // Shakti's project registry
+  projects: defineTable({
+    clientSlug: v.string(),
+    name: v.string(),
+    slug: v.string(),
+    type: v.string(),           // "feature" | "maintenance" | "internal" | "retainer"
+    status: v.string(),         // "active" | "on-hold" | "completed"
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_clientSlug", ["clientSlug"])
+    .index("by_slug", ["slug"])
+    .index("by_status", ["status"]),
+
+  // Shakti's task backlog
+  tasks: defineTable({
+    clientSlug: v.string(),
+    projectSlug: v.string(),
+    title: v.string(),
+    description: v.optional(v.string()),
+    taskType: v.string(),       // "build"|"review"|"debug"|"strategy"|"client-comms"|"admin"
+    status: v.string(),         // "backlog"|"todo"|"in_progress"|"blocked"|"done"
+    priority: v.optional(v.number()),       // 1=high, 2=medium, 3=low
+    estimatedHours: v.optional(v.number()),
+    actualHours: v.optional(v.number()),
+    deadline: v.optional(v.string()),       // ISO date string
+    paceNotes: v.optional(v.string()),
+    createdAt: v.string(),
+    updatedAt: v.string(),
+    createdBy: v.string(),      // "Krishna" | "Shakti"
+  })
+    .index("by_clientSlug", ["clientSlug"])
+    .index("by_projectSlug", ["projectSlug"])
+    .index("by_status", ["status"])
+    .index("by_taskType", ["taskType"])
+    .index("by_deadline", ["deadline"])
+    .index("by_createdAt", ["createdAt"]),
+
   // All agents — milestone activity log
   agentActivity: defineTable({
     agentName: v.string(),          // "Parthasarathi" | "Vibhishana" | "Vyasa"

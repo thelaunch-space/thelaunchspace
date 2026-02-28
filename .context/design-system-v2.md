@@ -107,7 +107,7 @@ Based on research from [Imagine.art NBP Guide](https://www.imagine.art/blogs/nan
 
 ---
 
-### Prompt 1 of 7: Parthasarathi (Operations Orchestrator)
+### Prompt 1 of 8: Parthasarathi (Operations Orchestrator)
 
 ```
 A digital illustration of an Indian man in his mid-30s, drawn in the style of a high-quality adult animated series or modern comic book. This character is inspired by the mythological Parthasarathi (Lord Krishna as Arjuna's charioteer) reimagined as a modern digital operations manager who coordinates a team of AI agents.
@@ -127,7 +127,7 @@ Composition: Full body visible from head to feet. Character centered in frame. H
 
 ---
 
-### Prompt 2 of 7: Sanjaya (Lead Intelligence Scout)
+### Prompt 2 of 8: Sanjaya (Lead Intelligence Scout)
 
 ```
 A digital illustration of an Indian man in his late 20s, drawn in the style of a high-quality adult animated series or modern comic book. This character is inspired by the mythological Sanjaya (the narrator in the Mahabharata who was blessed with divine sight — divya drishti — and could see the entire Kurukshetra battlefield from a palace room) reimagined as a modern digital intelligence scout who finds sales leads and prospects before anyone else.
@@ -147,7 +147,7 @@ Composition: Full body visible from head to feet. Character centered in frame. H
 
 ---
 
-### Prompt 3 of 7: Valmiki (Social Content Strategist)
+### Prompt 3 of 8: Valmiki (Social Content Strategist)
 
 ```
 A digital illustration of an Indian sage-figure in his late 50s, drawn in the style of a high-quality adult animated series or modern comic book. This character is inspired by the mythological Valmiki (the Adi Kavi — the first poet — the sage who authored the Ramayana, invented the shloka verse form, and transformed from a bandit into the greatest storyteller in history) reimagined as a modern digital social media content strategist who writes posts in his client's authentic voice.
@@ -167,7 +167,7 @@ Composition: Full body visible from head to feet. Character centered in frame. H
 
 ---
 
-### Prompt 4 of 7: Vibhishana (Research Intelligence Analyst)
+### Prompt 4 of 8: Vibhishana (Research Intelligence Analyst)
 
 ```
 A digital illustration of an Indian man in his mid-30s, drawn in the style of a high-quality adult animated series or modern comic book. This character is inspired by the mythological Vibhishana (the righteous brother of Ravana in the Ramayana who saw the truth others refused to see, left Lanka, and chose integrity over blind loyalty) reimagined as a modern digital research intelligence analyst who monitors online communities and extracts real pain points hidden beneath surface chatter.
@@ -187,7 +187,7 @@ Composition: Full body visible from head to feet. Character centered in frame. H
 
 ---
 
-### Prompt 5 of 7: Vyasa (SEO Blog Writer)
+### Prompt 5 of 8: Vyasa (SEO Blog Writer)
 
 ```
 A digital illustration of an Indian sage-figure in his 50s, drawn in the style of a high-quality adult animated series or modern comic book. This character is inspired by the mythological Vyasa (the legendary compiler of the Mahabharata — the longest epic ever written — who also compiled the Vedas and authored the Puranas, the ultimate long-form content creator) reimagined as a modern digital SEO blog writer who turns raw research into authoritative content that ranks in search engines.
@@ -207,7 +207,7 @@ Composition: Full body visible from head to feet. Character centered in frame. H
 
 ---
 
-### Prompt 6 of 7: Vidura (SEO Intelligence Strategist)
+### Prompt 6 of 8: Vidura (SEO Intelligence Strategist)
 
 ```
 A digital illustration of an Indian man in his mid-30s, drawn in the style of a high-quality adult animated series or modern comic book. This character is inspired by the mythological Vidura (the wise counselor of the Kuru court in the Mahabharata — the man who saw the truth when kings were blinded by ego, who gave strategic counsel that could have prevented the entire war, the sharpest political mind in the epic) reimagined as a modern digital SEO intelligence strategist who analyzes data, spots patterns others miss, and tells the content pipeline exactly where to aim for maximum impact.
@@ -221,6 +221,26 @@ Pose: Standing in a deliberate strategist's stance — one hand raised to his ch
 Art style: High-quality digital illustration in the style of an adult animated series like Arcane or a premium Indian comic book. Warm vibrant saturated colors. Detailed clothing textures and fabric folds. Clean bold linework. Rich warm color palette with deep teals, charcoal grays, and dark navies accented by warm skin tones. The character should look sharp, calculated, and quietly commanding — NOT cute, NOT chibi, NOT like a children's cartoon. This is a grown man who sees the entire board while everyone else is staring at one piece.
 
 Background: Solid pure white background with no environment or scene. A soft subtle drop shadow beneath his feet so he appears to be standing on the white surface.
+
+Composition: Full body visible from head to feet. Character centered in frame. High detail, 4K resolution.
+```
+
+---
+
+### Prompt 7 of 8: Shakti (Personal Assistant)
+
+```
+A digital illustration of an Indian woman in her mid-30s, drawn in the style of a high-quality adult animated series or modern comic book. This character is inspired by the mythological Shakti (the primordial cosmic energy — the divine force that empowers all creation, the unseen intelligence behind every victory, the goddess who holds the universe in balance across a thousand simultaneous forms) reimagined as a modern digital personal assistant and planning intelligence who sees across all work streams at once, owns the full task backlog, and structures each day before anyone else has opened their eyes.
+
+Face and body: Adult female with warm medium-brown skin, sharp elegant features, high cheekbones, a composed and quietly commanding expression — the face of a woman who has already mapped the next three days and is deciding what to surface first. Her eyes are solid glowing deep magenta with no visible pupils — just pure luminous magenta glow, like priority signals and deadlines firing in perfect orchestration. Long dark black hair worn in a sleek high bun secured with a glowing magenta-gold hairpin — deliberate and efficient, not decorative. A single small gold bindi mark on her forehead — refined, intentional. Adult proportions — upright, poised, a stillness that carries authority. Mature confident face — not girlish, not soft. This is a woman of immense organizational power.
+
+Clothing: A fitted deep charcoal structured blazer over a rich deep magenta silk kurta — sharp, modern, commanding. The kurta fabric has faint concentric calendar-grid line patterns subtly woven into it — a visual echo of time, planning, and order. No lanyard, no shawl. A single slim gold cuff bracelet on her right wrist — the only ornamentation. Everything else has been removed because it served no purpose.
+
+Pose: Standing in a calm, centered stance — grounded and unhurried, weight evenly distributed. Four glowing holographic task panels orbit around her at different heights, each one representing a different client work stream (one amber, one teal, one emerald, one violet — echoing her team members' colors). Her right hand is raised slightly, two fingers extended in a quiet directing gesture — mid-sequence, allocating priorities in real time. A faint magenta timeline arc extends from her right hand outward and curves behind her — the visual metaphor of a day being structured and owned. Small floating calendar and clock icons drift near the panels.
+
+Art style: High-quality digital illustration in the style of an adult animated series like Arcane or a premium Indian comic book. Warm vibrant saturated colors. Detailed clothing textures and fabric folds. Clean bold linework. Rich warm color palette with deep magentas, charcoal grays, and warm gold accents against medium-brown skin. The character should look calm, commanding, and quietly formidable — NOT cute, NOT chibi, NOT like a children's cartoon. This is a grown woman who plans the entire operation before the rest of the team has woken up.
+
+Background: Solid pure white background with no environment or scene. A soft subtle drop shadow beneath her feet so she appears to be standing on the white surface.
 
 Composition: Full body visible from head to feet. Character centered in frame. High detail, 4K resolution.
 ```
@@ -290,42 +310,120 @@ The thelaunch.space logo is a **diamond/rhombus shape** with a **cyan-to-royal-b
 - Should sit on the page's `#F9F9F9` background with no visible edge — pure white blends in
 
 ### How to Generate
-1. Upload all 5 individual agent avatar PNGs as reference images
-2. Tell the model: "Use these exact characters — preserve their faces, clothing, colors, accessories, and art style exactly as shown. Generate a new group image with all five together."
-3. Then paste the prompt below
+1. Upload all 7 individual agent avatar PNGs as reference images (Sanjaya, Vibhishana, Parthasarathi, Vyasa, Valmiki, Vidura, Shakti)
+2. In your first message, say exactly: *"I am uploading 7 character reference images. I need you to generate a group illustration of ALL SEVEN characters together. Do not remove, merge, or replace any character. Every single one of the 7 uploaded characters must appear in the final image, full body, head to feet."*
+3. Then paste the full prompt below as your second message
 
-### Prompt 7 of 7: Team Hero (Group Shot)
+### Prompt 8 of 8: Team Hero (Group Shot)
 
 ```
-Using the five uploaded character reference images exactly as they are — same faces, same clothing, same colors, same accessories, same art style — create a new group illustration of all five standing together as a team.
+CRITICAL INSTRUCTION — READ BEFORE GENERATING:
+You have been given 7 character reference images. ALL SEVEN characters must appear in the final image. Do not remove any character. Do not replace any character with a new one. Do not merge two characters into one. Do not crop any character out of frame. If all seven do not fit with full bodies visible, zoom the camera out further until they do. Reducing character count is never an acceptable solution.
 
-They are standing on a minimal pure white circular disc platform — like a subtle elevated stage. The disc has a very faint blue-gray gradient edge to give it depth. Below the disc, soft diffused drop shadows from each character fall on the white ground — natural and grounded, not harsh.
+---
 
-Character placement from left to right:
+REFERENCE CHARACTERS — identify each by these unique markers before you begin:
 
-1. SANJAYA (gold eyes, gold circlet visor, amber vest, scout pose with hand at forehead) — far left, alert forward lean
+1. SANJAYA — amber-gold glowing eyes, gold circlet visor band across forehead, fitted amber-gold vest, no beard, lean build, hand-at-forehead scout pose
+2. VIBHISHANA — emerald-green glowing eyes, small gold crown headband with emerald gem, emerald green shirt, dark structured vest, orange-gold tie, holding a clipboard tablet
+3. PARTHASARATHI — blue glowing eyes, navy blazer over white kurta, peacock feather tucked behind one ear, blue corporate lanyard, clean-shaven, arms crossed
+4. VYASA — violet-purple glowing eyes, long silver-white beard, tripundra (three horizontal ash marks) on forehead, white kurta, saffron-orange shawl, reading glasses pushed up on forehead
+5. VALMIKI — crimson-rose glowing eyes, silver-streaked dark beard, burgundy-rose kurta, cream shawl draped over left shoulder, holding a rose-colored glowing quill pen, thumbs up pose
+6. VIDURA — deep teal-cyan glowing eyes, charcoal-gray Nehru/bandhgala jacket with teal data-grid patterns, dark navy mandarin-collar shirt, teal pocket square, one hand at chin in evaluating gesture
+7. SHAKTI — deep magenta glowing eyes, charcoal structured blazer over deep magenta silk kurta, sleek high bun with magenta-gold hairpin, gold bindi on forehead, gold cuff bracelet on right wrist, four small holographic task panels orbiting around her
 
-2. VIBHISHANA (green eyes, emerald shirt, dark vest, gold crown headband, holding clipboard tablet) — left of center, upright dignified stance
+Verify: before generating, confirm you can identify all 7 characters by their unique eye color + one unique accessory. If you cannot distinguish all 7, do not proceed — ask for clarification.
 
-3. PARTHASARATHI (blue eyes, navy blazer, white kurta, peacock feather, blue lanyard) — CENTER, standing slightly forward of the group as the leader, arms crossed, confident knowing smile
+---
 
-4. VYASA (purple eyes, silver-white beard, tripundra forehead marks, white kurta, saffron shawl) — right of center, arms crossed, serene calm presence
+CAMERA AND SHOOTING STYLE:
 
-5. VALMIKI (crimson eyes, silver-streaked beard, burgundy-rose kurta, cream shawl, thumbs up, holding rose quill) — far right, relaxed wise stance
+Lens: Wide-angle group shot. Equivalent to a 24–35mm lens on full frame. The camera is positioned at mid-torso height of an average adult — roughly chest level — so no character is shot from above or below. This gives a natural eye-level team photo feeling, not a dramatic low-angle or bird's-eye view.
 
-Group composition: Parthasarathi is center and slightly forward as the leader. The other four flank him in a loose confident V-formation. They are spaced naturally — not shoulder-to-shoulder cramped, but close enough to feel like a tight team. Each character has their distinct pose and energy but they all face forward toward the viewer.
+Distance: Camera is pulled back far enough that all 7 characters are fully visible from the top of their heads to the soles of their feet, with comfortable breathing room (roughly one character-width of empty space) above the tallest character and below the platform. No character is cropped at any edge.
 
-Platform: Minimal pure white circular disc. Very faint blue-gray gradient edge for depth. Soft diffused shadows falling below — like real people standing under soft overhead lighting.
+Framing: Ultra-wide horizontal format — 2.5:1 or 21:9 cinematic aspect ratio. Think wide panoramic group photograph. The full width of the image is used by the group. No character is pushed to the extreme edge with less than half a character-width of margin.
 
-Art style: Match the exact art style of the uploaded reference images. High-quality adult animated series style. Warm vibrant saturated colors. Detailed clothing textures. Clean bold linework. All characters look mature, capable, professional — NOT cute, NOT chibi, NOT cartoon for children.
+Depth: All 7 characters are on the same focal plane — no one is blurred or out of focus. This is a sharp, evenly-lit ensemble shot, not a portrait with selective focus.
 
-Background: Solid pure white. No environment, no scene, no gradient, no decorative elements. Only the five characters, the white disc platform, and their soft shadows.
+Lighting: Soft overhead studio lighting — even and diffused, like a professional photography lightbox. No dramatic shadows, no side-lighting, no rim lighting. Every character is equally lit. The light source is directly above and slightly in front, creating mild, natural drop shadows beneath each character's feet.
 
-Composition: Wide horizontal format (roughly 16:9 or 2:1 aspect ratio). All five characters fully visible from head to feet. Group centered in frame. High detail, 4K resolution.
+---
+
+CHARACTER PLACEMENT — left to right, evenly spaced across the full image width:
+
+Position 1 (far left): SANJAYA — alert forward lean, hand raised to forehead in scout pose, slight outward angle toward the viewer
+Position 2 (left): VIBHISHANA — upright dignified stance, holding clipboard tablet at his side, facing forward
+Position 3 (left of center): VIDURA — deliberate strategist stance, one hand raised to chin in evaluating gesture, calm and composed
+Position 4 (CENTER, slightly forward): PARTHASARATHI — standing one step ahead of the rest of the group, arms crossed, confident knowing smile. He is the leader — his forward position makes this clear without him being larger than anyone else
+Position 5 (right of center): SHAKTI — centered and grounded stance, right hand raised with two fingers in quiet directing gesture, four small magenta holographic task panels orbiting around her at different heights
+Position 6 (right): VYASA — arms crossed, serene and unhurried, slight knowing half-smile
+Position 7 (far right): VALMIKI — relaxed wise stance, one hand giving thumbs up, other hand holding glowing rose quill at his side
+
+Spacing: Characters are evenly distributed across the full image width. Each character has equal horizontal space. No two characters are shoulder-to-shoulder touching. No gap in the middle of the group. The formation is a very shallow V — Parthasarathi is one step forward at center, everyone else is on the same slightly recessed line behind him.
+
+---
+
+PLATFORM AND GROUND:
+
+All 7 characters stand on a single minimal pure white circular disc platform — wide enough to comfortably fit all seven with space between them. The disc has a very faint blue-gray gradient along its curved edge to give it subtle depth and separation from the white background. Soft, diffused drop shadows from each character fall on the disc surface below their feet — natural overhead-lit shadows, not harsh or elongated.
+
+---
+
+ART STYLE — STRICT FIDELITY TO REFERENCE IMAGES:
+
+Match the exact art style of the 7 uploaded reference images with zero deviation. This means:
+- High-quality digital illustration in the style of an adult animated series (Arcane-level quality) or premium Indian comic book
+- Warm, vibrant, saturated colors — rich and detailed, not muted or washed out
+- Clean bold linework with visible outlines on all characters
+- Detailed clothing textures — fabric folds, embroidery patterns, material weight all visible
+- All 7 characters look mature, adult, and professional — NOT cute, NOT chibi, NOT toy-like, NOT baby-faced
+
+Every character's unique eye glow color, clothing, accessories, facial features, and body proportions must match their reference image exactly. Do not average out styles or simplify details for the group image.
+
+---
+
+BACKGROUND:
+
+Solid pure white (#FFFFFF). No environment, no buildings, no sky, no floor texture, no gradient wash, no decorative elements, no floating particles. Only the seven characters, the white circular disc platform, and their soft shadows beneath their feet.
+
+---
+
+ABSOLUTE DO NOTs — violations that require regeneration:
+
+DO NOT remove any of the 7 characters from the final image for any reason
+DO NOT crop any character at the top, bottom, or sides — full body head-to-feet for every character
+DO NOT change any character's face, clothing, accessories, or eye glow color from their reference image
+DO NOT merge two characters into one composite character
+DO NOT zoom in so close that characters are cut off — zoom out until all 7 fit fully
+DO NOT use dramatic low-angle or high-angle camera — eye-level only
+DO NOT add backgrounds, environments, or decorative elements behind the group
+DO NOT make the image square or portrait orientation — horizontal panoramic only
+DO NOT make characters photorealistic — match the illustrated art style of the reference images
+DO NOT make characters chibi, cute, or cartoon-for-children — adult animated series style only
+DO NOT let any two characters overlap each other or stand in front of another — everyone must be fully visible
+DO NOT change Parthasarathi's peacock feather, Vyasa's tripundra marks, Shakti's holographic panels, or any other signature detail
+DO NOT add new characters, props, or elements not described in this prompt
+
+---
+
+OUTPUT SPECIFICATION:
+
+Format: Ultra-wide horizontal (2.5:1 or 21:9 aspect ratio, minimum 2500px wide)
+Resolution: 4K, high detail
+All 7 characters: fully visible, head to feet, evenly spaced, on the white disc platform
+Style: Exact match to the 7 uploaded reference images
+Background: Pure white only
 ```
 
-### Troubleshooting
-- If the model changes character faces or clothing, re-upload the individual avatars and emphasize "preserve these exact characters, do not change any details"
-- If it drifts toward photorealism, add "NOT photorealistic, NOT realistic rendering — match the uploaded art style exactly"
-- If proportions go chibi/cute, add "Adult proportions only, mature faces, NOT exaggerated heads"
-- If the white disc doesn't appear, try "standing on a circular white pedestal platform with a soft shadow beneath"
+### Troubleshooting — If It Goes Wrong
+
+| Problem | Fix |
+|---|---|
+| A character is missing from the group | Start fresh. In your opening message, number each uploaded image (1–7) and explicitly name which character each one is. Then add: "All 7 numbered characters must appear. If you cannot fit all 7, zoom out — do not remove anyone." |
+| A character's pose, clothing, or accessories changed | Re-upload that character's individual avatar as a separate message and say: "Character X in the group image must match this reference exactly — face, clothing, accessories, pose direction, eye color. Do not change any detail." |
+| Characters are cropped or too close to the camera | Add to your prompt: "Pull the camera back significantly. I want to see empty white space above all characters' heads and below the platform. If any character is cropped, zoom out further." |
+| Two characters look too similar or merged | Add: "Each of the 7 characters has a unique eye glow color: blue (Parthasarathi), amber-gold (Sanjaya), crimson (Valmiki), emerald (Vibhishana), violet-purple (Vyasa), teal-cyan (Vidura), deep magenta (Shakti). Use these to keep each character visually distinct." |
+| Art style drifts toward photorealism | Add: "NOT photorealistic. NOT realistic 3D rendering. Match the illustrated adult animated series style of the reference images exactly." |
+| Image comes out portrait or square | Add: "Output MUST be ultra-wide horizontal format — 2.5:1 aspect ratio or wider. Do not generate portrait or square formats under any circumstances." |
+| Group is too cramped | Add: "Increase spacing between every character. Each person needs their own space — they should not be touching or overlapping. Imagine each character standing on their own tile." |

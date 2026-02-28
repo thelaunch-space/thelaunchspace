@@ -1,9 +1,9 @@
 # Architecture — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-28 (10 Convex tables, Work Mode Kanban, linkedinPosts + manualTasks, /your-ai-team slug, 8 LC tabs)
+Last updated: 2026-02-28 (13 Convex tables, Shakti Phase 0+1, 7 agents, 22 blogs, pricing corrected)
 
 ## Overview
-Next.js 14 App Router application. Server-side rendered for SEO/crawlability. Landing page content rendered as a client component for interactivity. Blog posts are static Server Components created by an AI agent via GitHub PRs. "Build Your AI Team" section showcases 6 AI agents with index + detail pages. Webhook proxy via API route (server-side, no secrets exposed to browser). Hosted on Netlify. Google Analytics (GA4) tracking via `next/script`. **Convex** real-time database for Launch Control dashboard (agent activity, questions, briefs, blogs, topic clusters, tool opportunities, pitch bookings). **Clerk** authentication for admin access. Entire app wrapped in ConvexProviderWithClerk + ClerkProvider. **Geo-detected pricing** — middleware sets `geo_region` cookie (IN/INTL) for localized cost savings display.
+Next.js 14 App Router application. Server-side rendered for SEO/crawlability. Landing page content rendered as a client component for interactivity. Blog posts are static Server Components created by an AI agent via GitHub PRs. "Build Your AI Team" section showcases 7 AI agents with index + detail pages. Webhook proxy via API route (server-side, no secrets exposed to browser). Hosted on Netlify. Google Analytics (GA4) tracking via `next/script`. **Convex** real-time database for Launch Control dashboard (agent activity, questions, briefs, blogs, topic clusters, tool opportunities, pitch bookings). **Clerk** authentication for admin access. Entire app wrapped in ConvexProviderWithClerk + ClerkProvider. **Geo-detected pricing** — middleware sets `geo_region` cookie (IN/INTL) for localized cost savings display.
 
 ## File Structure
 ```
@@ -28,17 +28,22 @@ app/
 │   ├── hire-developer-vs-build-with-ai/
 │   ├── agency-vs-in-house-development/
 │   └── why-mvp-costs-too-much-validation-first/
-├── blogs/founder-advice/   # Blog topic folder (6 posts)
+├── blogs/founder-advice/   # Blog topic folder (10 posts)
 │   ├── validate-startup-idea-domain-expert/
 │   ├── post-mvp-doubt-should-you-keep-going/
 │   ├── crm-for-small-service-business/
 │   ├── why-founders-fail-distribution-getting-customers/
 │   ├── when-to-skip-landing-page-tests/
-│   └── when-to-stop-using-spreadsheets-for-leads/
-├── blogs/ai-tools/         # Blog topic folder (3 posts)
+│   ├── when-to-stop-using-spreadsheets-for-leads/
+│   ├── solo-lawyer-case-management-decision/
+│   ├── landing-page-zero-signups-distribution/
+│   ├── when-to-stop-using-spreadsheets-for-leads/ (enriched)
+│   └── ... (10 posts total)
+├── blogs/ai-tools/         # Blog topic folder (4 posts)
 │   ├── ai-tools-non-technical-founders-mvp/
 │   ├── ai-generated-code-deployment-reality/
-│   └── invoice-automation-small-business-ocr-custom/
+│   ├── invoice-automation-small-business-ocr-custom/
+│   └── vibe-coding-scaling-wall/
 ├── build-your-ai-team/     # AI team showcase section (legacy — no navbar link, accessible via direct URL only. 301 redirect to /your-ai-team is still a TODO)
 │   ├── layout.tsx          # Section layout
 │   ├── page.tsx            # Agent index page (card grid)
@@ -83,7 +88,7 @@ components/
 │   ├── TrustNudge.tsx             # Inline social proof nudge with arrow animation → links to Launch Control
 │   ├── RecentWorkSection.tsx      # Tabbed section (Questions/Briefs/Blogs) showing real Convex data
 │   ├── TimelineSection.tsx        # 4-week engagement timeline (Setup → Trial → Iteration → Handoff)
-│   ├── PricingSection.tsx         # $200 POC + $1K Growth Partnership cards
+│   ├── PricingSection.tsx         # DIY Kickstart ($299 one-time) + Founder's Partnership ($1,500/mo, first month $750)
 │   ├── LeadCaptureSection.tsx     # Lead form (company, website, challenge dropdown) → Make.com + TimeSlotPicker
 │   ├── TimeSlotPicker.tsx         # Inline time slot selector for booking calls
 │   ├── SecondaryCtaSection.tsx    # "See the proof" → /launch-control secondary CTA
@@ -123,12 +128,12 @@ components/
     ├── WorkBoardArchive.tsx        # Archive column — previous weeks grouped by collapsible week panes
     └── AddManualTaskForm.tsx       # Form to create manual tasks in the Kanban (title, description, assignee)
 lib/
-├── agents.ts              # Agent data layer (6 agents, typed interfaces, structured for future DB migration). Includes Vidura.
+├── agents.ts              # Agent data layer (7 agents, typed interfaces, structured for future DB migration). Includes Vidura + Shakti ("The Chief of Staff", indigo accent).
 ├── blog.ts                # Blog discovery utility (shared by sitemap.ts + blogs/page.tsx). Server-only (uses fs).
 ├── blog-labels.ts         # CATEGORY_LABELS extracted for client components (no fs import). Used by BlogsTable, blog index.
 ├── geo-savings.ts         # Geo-detected pricing/savings config. GeoRegion (IN/INTL), calculateCostSaved, calculateHoursSaved, formatCurrency, getGeoConfig. INR rates for India, USD for international.
 ├── useGeo.ts              # Client hook: reads geo_region cookie set by middleware, returns GeoRegion.
-├── pitch-data.ts          # Pitch page data: PITCH_AGENTS (6 agents with stat scores, skill tags), TIMELINE_STEPS, PRICING_TIERS ($99 POC/$699 Growth), CHALLENGE_OPTIONS, COUNTRY_CODES.
+├── pitch-data.ts          # Pitch page data: PITCH_AGENTS (7 agents — 6 active + Sanjaya coming-soon), TIMELINE_STEPS, PRICING_TIERS ($299 DIY Kickstart one-time / $1,500/mo Founder's Partnership), CHALLENGE_OPTIONS, COUNTRY_CODES.
 ├── launch-control-types.ts # LC TypeScript interfaces, agent schedule data (IST times), status badge configs
 ├── useCountUp.ts          # Custom hook: animated count-up with requestAnimationFrame + easing
 ├── utils.ts               # cn() (clsx+tailwind-merge), scaleValue()
@@ -143,7 +148,7 @@ public/
 └── ...                     # Static assets (logos, OG image, favicon)
 convex/
 ├── _generated/             # Auto-generated types + API references (do not edit)
-├── schema.ts               # 10 tables: questions, briefs, blogs, agentActivity, topicClusters, toolOpportunities, pitchBookings, documents, linkedinPosts, manualTasks (with indexes)
+├── schema.ts               # 13 tables: questions, briefs, blogs, agentActivity, topicClusters, toolOpportunities, pitchBookings, documents, linkedinPosts, manualTasks, clients, projects, tasks (with indexes)
 ├── auth.config.ts          # Clerk identity provider config for Convex
 ├── http.ts                 # HTTP Action router — canonical /push/* + /update/* + /query/* routes + legacy /ingest* aliases. Bearer token auth + CORS.
 ├── questions.ts            # ingestBatch (internal, upsert by URL) + listRecent (public) + listFullDetails (admin)
@@ -155,8 +160,11 @@ convex/
 ├── documents.ts            # upsert (internal, dedup by slug) + listMetadata (admin) + getDocument (admin) — agent research/strategy docs
 ├── linkedinPosts.ts        # ingest (internal, upsert by insightName+sourceBlogSlug) + listRecent/listFull + updateStatus — Valmiki's LinkedIn drafts
 ├── manualTasks.ts          # CRUD (add, list, updateStatus) — Krishna-created tasks surfaced in Work Mode Kanban
-├── workboard.ts            # getBoard, updateTaskStatus, moveTask, archiveWeek, addManualTask — Work Mode Kanban queries
-├── agentQueries.ts         # Shared query helpers used across multiple agent tables
+├── clients.ts              # upsert (internal, dedup by slug) — Shakti's client registry
+├── projects.ts             # upsert (internal, dedup by slug) — Shakti's project registry
+├── shaktiTasks.ts          # upsert (internal, dedup by clientSlug+projectSlug+title) + updateStatus — Shakti's task backlog
+├── workboard.ts            # getBoard (8 card types: brief/blog/linkedin/booking/tool/cluster/manual/task), updateArtifactStatus — Work Mode Kanban queries
+├── agentQueries.ts         # Shared query helpers — includes getAllClients, getAllProjects, getTasksByFilters for Shakti HTTP endpoints
 └── lib/
     └── activityHelper.ts   # logActivityIfNew — shared dedup-aware activity logging helper
 skills/
@@ -200,14 +208,14 @@ RootLayout (Server)
 │       ├── TrustNudge              — Social proof nudge → Launch Control
 │       ├── RecentWorkSection       — Tabbed (Questions/Briefs/Blogs) live Convex data
 │       ├── TimelineSection         — 4-week engagement timeline
-│       ├── PricingSection          — DIY Kickstart $99/mo (one-time, geo: ₹24,999) + Founder's Partnership $699/mo (geo: ₹1,20,000). No strikethrough prices.
+│       ├── PricingSection          — DIY Kickstart $299 one-time (geo: ₹24,999) + Founder's Partnership $1,500/mo first month $750 (geo: ₹1,20,000). No strikethrough prices.
 │       ├── LeadCaptureSection      — Form → Make.com + TimeSlotPicker
 │       ├── SecondaryCtaSection     — "See the proof" → /launch-control
 │       └── FooterTease             — "More workstreams coming"
 └── launch-control/page.tsx (Server)
     └── LaunchControlDashboard ("use client")
         ├── HeaderBar              — Title, stat pills, date, Clerk UserButton
-        ├── AgentSidebar (left)    — 5 agents, StatusDots, click → AgentExpandedPanel
+        ├── AgentSidebar (left)    — 6 agents, StatusDots, click → AgentExpandedPanel
         │   └── AgentAvatarStrip   — Mobile-only horizontal strip
         ├── CenterTabs (center)    — Tabbed: 8 tabs total. 6 visible to everyone (Overview/Blogs/Communities/Questions/Briefs/Strategy). 2 admin-only (Documents/Meetings). Full data, no blur on public tabs.
         │   ├── Overview tab       — Scoreboard ("This Week"/"All Time" toggle, hero pair for Hours/Cost Saved with geo currency) + DailyTimeline
@@ -260,11 +268,11 @@ RootLayout (Server)
 - Full scrolling pitch page at `/your-ai-team` — the ICP-facing entry point. Permanent redirect from `/hire-your-24x7-team`.
 - 14 components under `components/pitch/`
 - **Live Convex data:** weeklyStats, allTimeStats, agentStatuses, per-agent weeklySummary, recent questions/briefs/blogs — all pulled via `useQuery()` in PitchPage.tsx
-- **Sections (in order):** HookSection (headline + live stats + CTA) → HowItWorksSection (4-step daily workflow) → TeamSection (4 active AgentStatCards with StatBars, portraits, skills tags, weekly summaries + 2 coming soon) → TrustNudge ("I'm my own first customer") → RecentWorkSection (tabbed Questions/Briefs/Blogs) → TrustNudge ("Not a demo") → TimelineSection (4-week engagement) → PricingSection (DIY Kickstart $99/mo one-time + Founder's Partnership $699/mo first month $749) → LeadCaptureSection (form + TimeSlotPicker, anchor #contact) → SecondaryCtaSection (→ Launch Control) → FooterTease
+- **Sections (in order):** HookSection (headline + live stats + CTA) → HowItWorksSection (4-step daily workflow) → TeamSection (6 active AgentStatCards with StatBars, portraits, skills tags, weekly summaries + 1 coming soon) → TrustNudge ("I'm my own first customer") → RecentWorkSection (tabbed Questions/Briefs/Blogs) → TrustNudge ("Not a demo") → TimelineSection (4-week engagement) → PricingSection (DIY Kickstart $299 one-time + Founder's Partnership $1,500/mo first month $750) → LeadCaptureSection (form + TimeSlotPicker, anchor #contact) → SecondaryCtaSection (→ Launch Control) → FooterTease
 - **Floating dual CTA:** Appears after 600px scroll — "Watch live" (→ /launch-control) + "Get your AI team" (→ #contact anchor)
 - **Lead capture:** Company name + website + challenge dropdown → POSTs to `/api/lead` (same Make.com webhook). TimeSlotPicker for booking. Stores in `pitchBookings` Convex table.
-- **Pricing:** DIY Kickstart ($99/mo USD one-time, ₹24,999 INR) + Founder's Partnership ($699/mo first month $749, ₹1,20,000 INR). No strikethrough prices. "Launch price — first 10 founders."
-- **Agent cards:** 4 active agents (Parthasarathi "The Manager", Vibhishana "The Scout", Vyasa "The Writer", Vidura "The Strategist") + 2 coming soon (Valmiki "The Voice", Sanjaya "The Hunter")
+- **Pricing:** DIY Kickstart ($299 USD one-time, ₹24,999 INR) + Founder's Partnership ($1,500/mo first month $750, ₹1,20,000 INR). No strikethrough prices.
+- **Agent cards:** 6 active agents (Parthasarathi "The Manager", Vibhishana "The Scout", Vyasa "The Writer", Vidura "The Strategist", Valmiki "The Voice", Shakti "The Chief of Staff") + 1 coming soon (Sanjaya "The Hunter")
 - **Data note:** Same Convex backend as Launch Control — one-time setup, always live
 - Full brainstorm: `.context/hire-your-24x7-team.md`
 
@@ -285,39 +293,58 @@ RootLayout (Server)
 
 ## Convex Backend (Launch Control)
 
-### Database Tables (Convex) — 10 tables
+### Database Tables (Convex) — 13 tables
 | Table | Purpose | Ingestion |
 |-------|---------|-----------|
-| `questions` | Vibhishana's Reddit scans | Batch via `/ingestQuestions` or `/upsertQuestions` (upsert by URL) |
-| `briefs` | Vibhishana's research briefs | Single via `/ingestBrief` or `/upsertBrief` (upsert by slug) |
-| `blogs` | Vyasa's published blog metadata (+enrichment tracking) | Single via `/ingestBlog` or `/upsertBlog` (upsert by slug) |
-| `agentActivity` | All agent milestones (dedup by dedupKey) | Single via `/ingestActivity` |
-| `topicClusters` | Vidura's SEO topic clusters (pillar→cluster mapping) | Single via `/ingestTopicCluster` |
-| `toolOpportunities` | Vidura's interactive tool proposals | Single via `/ingestToolOpportunity` |
+| `questions` | Vibhishana's Reddit scans | Batch via `/push/questions` (upsert by URL) |
+| `briefs` | Vibhishana's research briefs (with revisionHistory) | Single via `/push/briefs` (upsert by slug) |
+| `blogs` | Vyasa's published blog metadata (+enrichment tracking) | Single via `/push/blogs` (upsert by slug) |
+| `agentActivity` | All agent milestones (dedup by dedupKey) | Single via `/push/activity` |
+| `topicClusters` | Vidura's SEO topic clusters (pillar→cluster mapping) | Single via `/push/topic-clusters` |
+| `toolOpportunities` | Vidura's interactive tool proposals | Single via `/push/tool-opportunities` |
 | `pitchBookings` | Lead capture from pitch page meeting form | Direct mutation |
-| `documents` | Agent research reports, strategy docs, process docs | Single via `/upsertDocument` (upsert by slug) |
+| `documents` | Agent research reports, strategy docs, process docs | Single via `/push/documents` (upsert by slug) |
+| `linkedinPosts` | Valmiki's LinkedIn post drafts (with krishnaFeedback) | Single via `/push/linkedin-posts` (upsert by insightName+sourceBlogSlug) |
+| `manualTasks` | Krishna-created tasks for Work Mode Kanban | Direct mutation via AddManualTaskForm |
+| `clients` | Shakti's client registry (name, slug, type, status) | Single via `/push/clients` (upsert by slug) |
+| `projects` | Shakti's project registry (linked to clientSlug) | Single via `/push/projects` (upsert by slug) |
+| `tasks` | Shakti's task backlog (6 task types, priority, estimates) | Single via `/push/tasks`, status updates via `/update/task-status` |
 
-### HTTP Endpoints (12 POST routes)
+### HTTP Endpoints (canonical `/push/*` + `/update/*` + `/query/*`)
 Base URL: `https://curious-iguana-738.convex.site` (production deployment)
-- All POST endpoints require `Authorization: Bearer <AGENT_API_KEY>`
+- All endpoints require `Authorization: Bearer <AGENT_API_KEY>`
 - AGENT_API_KEY stored in Convex env vars (server-side only)
-- CORS preflight (OPTIONS) handled for all 12 endpoints
-- `/ingestQuestions` and `/upsertQuestions` accept array OR single object (normalizes to array)
+- CORS preflight (OPTIONS) handled for all endpoints
+- Legacy `/ingest*` and `/upsert*` paths kept as aliases for backward compatibility
 
+**POST — write/upsert:**
 | Endpoint | Purpose |
 |----------|---------|
-| `/ingestQuestions` | Batch ingest questions (upsert by URL) |
-| `/ingestBrief` | Ingest single brief |
-| `/ingestBlog` | Ingest blog metadata (upsert by slug) |
-| `/ingestActivity` | Ingest milestone activity (dedup by dedupKey) |
-| `/ingestTopicCluster` | Ingest topic cluster |
-| `/ingestToolOpportunity` | Ingest tool opportunity |
-| `/updateBlogEnrichment` | Update blog enrichment count/date/log by slug |
-| `/updateBriefStatus` | Update brief status by slug |
-| `/upsertQuestions` | Alias for /ingestQuestions (same dedup logic) |
-| `/upsertBlog` | Alias for /ingestBlog (same dedup logic) |
-| `/upsertBrief` | Upsert brief by slug |
-| `/upsertDocument` | Upsert document by slug (auto-logs activity) |
+| `/push/questions` | Batch upsert questions (dedup by URL) |
+| `/push/briefs` | Upsert brief by slug |
+| `/push/blogs` | Upsert blog metadata by slug |
+| `/push/activity` | Ingest milestone activity (dedup by dedupKey) |
+| `/push/topic-clusters` | Upsert topic cluster |
+| `/push/tool-opportunities` | Upsert tool opportunity |
+| `/push/documents` | Upsert document by slug (auto-logs activity) |
+| `/push/linkedin-posts` | Upsert LinkedIn post (dedup by insightName+sourceBlogSlug) |
+| `/push/clients` | Upsert Shakti client (dedup by slug) |
+| `/push/projects` | Upsert Shakti project (dedup by slug) |
+| `/push/tasks` | Upsert Shakti task (dedup by clientSlug+projectSlug+title) |
+| `/update/brief-status` | Update brief status + krishnaFeedback by slug |
+| `/update/blog-enrichment` | Update blog enrichment count/date/log by slug |
+| `/update/task-status` | Update task status, actualHours, paceNotes by ID or title+projectSlug |
+
+**GET — read (agents query these):**
+| Endpoint | Purpose |
+|----------|---------|
+| `/query/briefs?status=<status>` | Briefs filtered by status (brief_ready / pending_review / needs_revision) |
+| `/query/topic-clusters` | All topic clusters |
+| `/query/tool-opportunities` | All tool opportunities |
+| `/query/linkedin-posts` | All LinkedIn posts |
+| `/query/clients` | All clients |
+| `/query/projects?clientSlug=<optional>` | Projects, optionally filtered by clientSlug |
+| `/query/tasks?status=&clientSlug=&projectSlug=` | Tasks with flexible filtering (all params optional) |
 
 ### Query Functions
 - **Public (no auth):** `questions.listRecent`, `questions.communityBreakdown`, `briefs.listMetadata`, `briefs.getPublicBrief`, `blogs.listRecent`, `agentActivity.agentStatuses`, `agentActivity.recentFeed`, `agentActivity.weeklyStats`, `agentActivity.allTimeStats`, `agentActivity.agentTodayActivity`, `agentActivity.agentWeeklySummary`, `topicClusters.listRecent`, `toolOpportunities.listRecent`
