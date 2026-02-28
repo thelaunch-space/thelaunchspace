@@ -1,6 +1,6 @@
 # Architecture — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-24 (documents table, upsert endpoints, blog counts updated, 8 Convex tables)
+Last updated: 2026-02-28 (10 Convex tables, Work Mode Kanban, linkedinPosts + manualTasks, /your-ai-team slug, 8 LC tabs)
 
 ## Overview
 Next.js 14 App Router application. Server-side rendered for SEO/crawlability. Landing page content rendered as a client component for interactivity. Blog posts are static Server Components created by an AI agent via GitHub PRs. "Build Your AI Team" section showcases 6 AI agents with index + detail pages. Webhook proxy via API route (server-side, no secrets exposed to browser). Hosted on Netlify. Google Analytics (GA4) tracking via `next/script`. **Convex** real-time database for Launch Control dashboard (agent activity, questions, briefs, blogs, topic clusters, tool opportunities, pitch bookings). **Clerk** authentication for admin access. Entire app wrapped in ConvexProviderWithClerk + ClerkProvider. **Geo-detected pricing** — middleware sets `geo_region` cookie (IN/INTL) for localized cost savings display.
@@ -39,7 +39,7 @@ app/
 │   ├── ai-tools-non-technical-founders-mvp/
 │   ├── ai-generated-code-deployment-reality/
 │   └── invoice-automation-small-business-ocr-custom/
-├── build-your-ai-team/     # AI team showcase section (legacy, redirects planned to /hire-your-24x7-team)
+├── build-your-ai-team/     # AI team showcase section (legacy — no navbar link, accessible via direct URL only. 301 redirect to /your-ai-team is still a TODO)
 │   ├── layout.tsx          # Section layout
 │   ├── page.tsx            # Agent index page (card grid)
 │   ├── parthasarathi/      # Agent detail pages (one per agent)
@@ -50,14 +50,19 @@ app/
 │   ├── vibhishana/
 │   ├── vidura/             # NEW — Vidura detail page
 │   └── vyasa/
+├── hire-your-24x7-team/    # Permanent redirect → /your-ai-team (old slug, 301 redirect page)
 ├── your-ai-team/
 │   └── page.tsx            # Server component → <PitchPage /> (service pitch page with live Convex data)
 ├── launch-control/
 │   └── page.tsx            # Server component — metadata + renders LaunchControlDashboard
+├── admin/
+│   └── page.tsx            # Clerk <SignIn> only (no sign-up). Redirects to /launch-control after auth. Secret URL — no site link.
+├── api/deploy-hook/
+│   └── route.ts            # POST endpoint: Netlify Durable Cache purge trigger
 └── tools/[tool-slug]/      # Future tool routes (placeholder)
 middleware.ts               # Geo cookie only (sets geo_region=IN/INTL from x-country header). NO Clerk — auth is client-side only.
 components/
-├── NavBar.tsx              # "use client" — site-wide nav (hidden on /launch-control). Logo, Blog, "Hire Your 24/7 Team", socials, hamburger mobile, scroll CTA on blog pages. NO Launch Control link.
+├── NavBar.tsx              # "use client" — site-wide nav (hidden on /launch-control). Logo, Blog, "Your AI Team", socials, hamburger mobile, scroll CTA on blog pages. NO Launch Control link.
 ├── LandingPage.tsx         # "use client" — main landing page (hero + services)
 ├── AgentCard.tsx           # "use client" — agent showcase card (highlight/standard/compact sizes)
 ├── AgentDetailPage.tsx     # "use client" — full agent detail view (KRAs, rhythm, proof points)
@@ -68,7 +73,7 @@ components/
 │   ├── dock.tsx            # "use client" — macOS-style magnification dock
 │   ├── sparkles.tsx        # "use client" — tsparticles background
 │   └── SavingsTooltip.tsx  # "use client" — tooltip explaining cost savings calculation rationale
-├── pitch/                  # 14 components for the /hire-your-24x7-team service pitch page
+├── pitch/                  # 14 components for the /your-ai-team service pitch page
 │   ├── PitchPage.tsx              # Master orchestrator. Live Convex data (weeklyStats, allTimeStats, agent summaries, questions, briefs, blogs). Floating dual CTA.
 │   ├── HookSection.tsx            # Above-fold hook — headline, subhead, live weekly stats from Convex, CTA
 │   ├── HowItWorksSection.tsx      # 4-step "here's what happens daily" workflow in plain English
@@ -91,7 +96,7 @@ components/
     ├── AgentAvatarStrip.tsx        # Mobile-only horizontal avatar scroll strip
     ├── StatusDot.tsx               # Animated status dot (green pulse / orange static / red blink / gray)
     ├── AdminTabs.tsx               # Admin-only tab management (when signed in)
-    ├── CenterTabs.tsx              # Tabbed center: 7 tabs (Overview/Blogs/Communities/Questions/Briefs/Strategy/Meetings). Preview vs full based on auth. Tab descriptions for each.
+    ├── CenterTabs.tsx              # Tabbed center: 8 tabs (Overview/Blogs/Communities/Questions/Briefs/Strategy/Documents/Meetings). 6 public + 2 admin-only (Documents + Meetings). Tab descriptions for each.
     ├── Scoreboard.tsx              # Count-up stat cards with "This Week"/"All Time" toggle. Hero pair layout for Hours Saved + Cost Saved. Geo-detected currency (INR/USD) via useGeo + SavingsTooltip.
     ├── DailyTimeline.tsx           # Today's pipeline chronological view (11 scheduled items)
     ├── TimelineItem.tsx            # Timeline entry (completed/active/upcoming states)
@@ -111,7 +116,12 @@ components/
     ├── StrategyPreview.tsx         # Strategy data (public) — 20 clusters + 10 tools, no blur
     ├── MeetingsPanel.tsx           # Pitch page bookings table (admin) — from pitchBookings Convex table
     ├── GuidedTour.tsx              # FTUE spotlight tour for first-time visitors (5 desktop / 4 mobile steps, localStorage tracking)
-    └── WaitlistCTA.tsx             # Email input: krishna@thelaunch.space reveals Clerk auth, others → lead capture
+    ├── WaitlistCTA.tsx             # "Get Your AI Team" button → /your-ai-team#contact (no email gate). Hides when signed in.
+    ├── WorkBoard.tsx               # Work Mode Kanban (5 columns + archive, full-viewport in work mode, hides agent sidebar)
+    ├── WorkBoardColumn.tsx         # Single kanban column with header (title, task count, color bar)
+    ├── WorkBoardCard.tsx           # Kanban task card — owner tag, health bar, status dropdown + feedback textarea, revisionHistory collapsible panel
+    ├── WorkBoardArchive.tsx        # Archive column — previous weeks grouped by collapsible week panes
+    └── AddManualTaskForm.tsx       # Form to create manual tasks in the Kanban (title, description, assignee)
 lib/
 ├── agents.ts              # Agent data layer (6 agents, typed interfaces, structured for future DB migration). Includes Vidura.
 ├── blog.ts                # Blog discovery utility (shared by sitemap.ts + blogs/page.tsx). Server-only (uses fs).
@@ -133,9 +143,9 @@ public/
 └── ...                     # Static assets (logos, OG image, favicon)
 convex/
 ├── _generated/             # Auto-generated types + API references (do not edit)
-├── schema.ts               # 8 tables: questions, briefs, blogs, agentActivity, topicClusters, toolOpportunities, pitchBookings, documents (with indexes)
+├── schema.ts               # 10 tables: questions, briefs, blogs, agentActivity, topicClusters, toolOpportunities, pitchBookings, documents, linkedinPosts, manualTasks (with indexes)
 ├── auth.config.ts          # Clerk identity provider config for Convex
-├── http.ts                 # HTTP Action router — 12 POST endpoints (6 ingest + 4 upsert aliases + 2 update) with Bearer token auth + CORS
+├── http.ts                 # HTTP Action router — canonical /push/* + /update/* + /query/* routes + legacy /ingest* aliases. Bearer token auth + CORS.
 ├── questions.ts            # ingestBatch (internal, upsert by URL) + listRecent (public) + listFullDetails (admin)
 ├── briefs.ts               # ingest (internal) + upsert (internal, dedup by slug) + updateStatus (internal) + listMetadata (public) + getFullBrief/getPublicBrief/listFull (admin)
 ├── blogs.ts                # ingest (internal, upsert by slug) + updateEnrichment (internal) + listRecent (public) + enrichment fields
@@ -143,6 +153,10 @@ convex/
 ├── topicClusters.ts        # ingest (internal) + listRecent (public) — Vidura's SEO topic clusters
 ├── toolOpportunities.ts    # ingest (internal) + listRecent (public) — Vidura's interactive tool proposals
 ├── documents.ts            # upsert (internal, dedup by slug) + listMetadata (admin) + getDocument (admin) — agent research/strategy docs
+├── linkedinPosts.ts        # ingest (internal, upsert by insightName+sourceBlogSlug) + listRecent/listFull + updateStatus — Valmiki's LinkedIn drafts
+├── manualTasks.ts          # CRUD (add, list, updateStatus) — Krishna-created tasks surfaced in Work Mode Kanban
+├── workboard.ts            # getBoard, updateTaskStatus, moveTask, archiveWeek, addManualTask — Work Mode Kanban queries
+├── agentQueries.ts         # Shared query helpers used across multiple agent tables
 └── lib/
     └── activityHelper.ts   # logActivityIfNew — shared dedup-aware activity logging helper
 skills/
@@ -157,8 +171,8 @@ netlify.toml                # Netlify build config — production: `npx convex d
 ```
 RootLayout (Server)
 ├── ConvexClientProvider ("use client") — ClerkProvider + ConvexProviderWithClerk (wraps everything below)
-├── AnnouncementRibbon              — Top banner (only visible on / and /hire-your-24x7-team paths)
-├── NavBar ("use client")           — Logo (link to /), Blog link, "Hire Your 24/7 Team" link, X + LinkedIn icons, scroll CTA on blog pages. NO Launch Control link.
+├── AnnouncementRibbon              — Top banner (only visible on / and /your-ai-team paths)
+├── NavBar ("use client")           — Logo (link to /), Blog link, "Your AI Team" link (→ /your-ai-team), X + LinkedIn icons, scroll CTA on blog pages. NO Launch Control link.
 ├── page.tsx (Server)
 │   └── Suspense
 │       └── LandingPage ("use client")
@@ -177,7 +191,7 @@ RootLayout (Server)
 ├── build-your-ai-team/<agent>/page.tsx (Server)
 │   ├── AgentDetailPage ("use client") — Full agent profile (KRAs, rhythm, proof)
 │   └── FloatingCTA ("use client")     — Scroll-triggered sticky CTA
-├── hire-your-24x7-team/page.tsx (Server)
+├── your-ai-team/page.tsx (Server)
 │   └── PitchPage ("use client")
 │       ├── HookSection             — Headline, subhead, live weekly stats from Convex, CTA
 │       ├── HowItWorksSection       — 4-step daily workflow
@@ -186,7 +200,7 @@ RootLayout (Server)
 │       ├── TrustNudge              — Social proof nudge → Launch Control
 │       ├── RecentWorkSection       — Tabbed (Questions/Briefs/Blogs) live Convex data
 │       ├── TimelineSection         — 4-week engagement timeline
-│       ├── PricingSection          — $200 POC + $1K Growth
+│       ├── PricingSection          — DIY Kickstart $99/mo (one-time, geo: ₹24,999) + Founder's Partnership $699/mo (geo: ₹1,20,000). No strikethrough prices.
 │       ├── LeadCaptureSection      — Form → Make.com + TimeSlotPicker
 │       ├── SecondaryCtaSection     — "See the proof" → /launch-control
 │       └── FooterTease             — "More workstreams coming"
@@ -195,14 +209,15 @@ RootLayout (Server)
         ├── HeaderBar              — Title, stat pills, date, Clerk UserButton
         ├── AgentSidebar (left)    — 5 agents, StatusDots, click → AgentExpandedPanel
         │   └── AgentAvatarStrip   — Mobile-only horizontal strip
-        ├── CenterTabs (center)    — Tabbed: all 7 tabs visible to everyone (preview vs full based on auth)
+        ├── CenterTabs (center)    — Tabbed: 8 tabs total. 6 visible to everyone (Overview/Blogs/Communities/Questions/Briefs/Strategy). 2 admin-only (Documents/Meetings). Full data, no blur on public tabs.
         │   ├── Overview tab       — Scoreboard ("This Week"/"All Time" toggle, hero pair for Hours/Cost Saved with geo currency) + DailyTimeline
         │   ├── Blogs tab          — BlogsPreview (public) / BlogsTable (admin — sortable, merges local + Convex data)
         │   ├── Communities tab    — CommunitiesPreview (public, placeholder data) / CommunitiesPanel (admin)
         │   ├── Questions tab      — QuestionsPreview (public, top 3 rows + blur) / QuestionsTable (admin)
-        │   ├── Briefs tab         — BriefsPreview (public, top 3 clickable + blur) / BriefsPanel → BriefCard → BriefReaderModal (admin)
-        │   ├── Strategy tab       — StrategyPreview (public) / StrategyPanel (admin — Vidura's topic clusters + tool opportunities)
-        │   └── Meetings tab       — MeetingsPanel (admin — pitch page bookings)
+        │   ├── Briefs tab         — BriefsPreview (public, 20 briefs, all clickable with reader modal) / BriefsPanel → BriefCard → BriefReaderModal (admin)
+        │   ├── Strategy tab       — StrategyPreview (public, 20 clusters + 10 tools) / StrategyPanel (admin — Vidura's topic clusters + tool opportunities)
+        │   ├── Documents tab      — DocumentsPanel (admin only — hidden from public visitors)
+        │   └── Meetings tab       — MeetingsPanel (admin only — pitch page bookings)
         ├── LiveFeed (right)       — Real-time activity feed (feed items rendered inline)
         ├── WaitlistCTA (right)    — Email gate (admin auth or lead capture)
         └── GuidedTour             — FTUE spotlight tour (non-admin first visit, 5 desktop / 4 mobile steps)
@@ -210,7 +225,7 @@ RootLayout (Server)
 
 ## NavBar
 - Rendered in `app/layout.tsx`, visible on ALL pages except `/launch-control`
-- Left: Logo linked to `/` (h-11 mobile, h-13 desktop) — Right: "Blog" link, "Hire Your 24/7 Team" link, X icon, LinkedIn icon
+- Left: Logo linked to `/` (h-11 mobile, h-13 desktop) — Right: "Blog" link, "Your AI Team" link (→ /your-ai-team), X icon, LinkedIn icon
 - **No "Launch Control" link** — LC is discoverable only via pitch page secondary CTA or direct URL
 - Active link indicators: subtle blue pill background (`bg-accent-blue/[0.07]`) on current page link, hover shows faint tint
 - Desktop: full nav inline — Mobile: hamburger menu (Menu/X icons from lucide), dropdown with links + socials
@@ -241,32 +256,27 @@ RootLayout (Server)
 - Blog index at `/blogs` auto-discovers and lists all posts — inline title row (no container), horizontal card rows per category, CTA in NavBar on scroll (no footer)
 - Category index at `/blogs/[topic]/` filters posts by topic slug, returns 404 for empty/unknown topics
 
-## Hire Your 24/7 Team — Service Pitch Page
-- Full scrolling pitch page at `/hire-your-24x7-team` — the ICP-facing entry point
+## Your AI Team — Service Pitch Page
+- Full scrolling pitch page at `/your-ai-team` — the ICP-facing entry point. Permanent redirect from `/hire-your-24x7-team`.
 - 14 components under `components/pitch/`
 - **Live Convex data:** weeklyStats, allTimeStats, agentStatuses, per-agent weeklySummary, recent questions/briefs/blogs — all pulled via `useQuery()` in PitchPage.tsx
-- **Sections (in order):** HookSection (headline + live stats + CTA) → HowItWorksSection (4-step daily workflow) → TeamSection (3 Pokemon-style AgentStatCards with StatBars, portraits, skills tags, weekly summaries) → TrustNudge ("I'm my own first customer") → RecentWorkSection (tabbed Questions/Briefs/Blogs) → TrustNudge ("Not a demo") → TimelineSection (4-week engagement) → PricingSection ($200 POC + $1K Growth) → LeadCaptureSection (form + TimeSlotPicker) → SecondaryCtaSection (→ Launch Control) → FooterTease
-- **Floating dual CTA:** Appears after 600px scroll — "Watch live" (→ /launch-control) + "Get your AI team" (→ #lead-capture anchor)
-- **Lead capture:** Company name + website + challenge dropdown → POSTs to `/api/lead` (same Make.com webhook). TimeSlotPicker for booking.
-- **Agent cards:** 4 active agents (Parthasarathi "The Manager", Vibhishana "The Scout", Vyasa "The Writer", Vidura "The Strategist") + 2 coming soon (Valmiki "The Voice", Sanjaya "The Hunter") with stat bars (pace, intelligence, monthly savings), skills tags, and "This Week" live feed from Convex
+- **Sections (in order):** HookSection (headline + live stats + CTA) → HowItWorksSection (4-step daily workflow) → TeamSection (4 active AgentStatCards with StatBars, portraits, skills tags, weekly summaries + 2 coming soon) → TrustNudge ("I'm my own first customer") → RecentWorkSection (tabbed Questions/Briefs/Blogs) → TrustNudge ("Not a demo") → TimelineSection (4-week engagement) → PricingSection (DIY Kickstart $99/mo one-time + Founder's Partnership $699/mo first month $749) → LeadCaptureSection (form + TimeSlotPicker, anchor #contact) → SecondaryCtaSection (→ Launch Control) → FooterTease
+- **Floating dual CTA:** Appears after 600px scroll — "Watch live" (→ /launch-control) + "Get your AI team" (→ #contact anchor)
+- **Lead capture:** Company name + website + challenge dropdown → POSTs to `/api/lead` (same Make.com webhook). TimeSlotPicker for booking. Stores in `pitchBookings` Convex table.
+- **Pricing:** DIY Kickstart ($99/mo USD one-time, ₹24,999 INR) + Founder's Partnership ($699/mo first month $749, ₹1,20,000 INR). No strikethrough prices. "Launch price — first 10 founders."
+- **Agent cards:** 4 active agents (Parthasarathi "The Manager", Vibhishana "The Scout", Vyasa "The Writer", Vidura "The Strategist") + 2 coming soon (Valmiki "The Voice", Sanjaya "The Hunter")
 - **Data note:** Same Convex backend as Launch Control — one-time setup, always live
 - Full brainstorm: `.context/hire-your-24x7-team.md`
 
 ## Build Your AI Team Section (Legacy)
+- **Status: Legacy. No navbar link.** Accessible via direct URL only. 301 redirect to `/your-ai-team` is still a pending TODO.
 - Index page at `/build-your-ai-team` — left-sticky hero + right-scrolling 2-column card grid
-- Hero: "Your Brain. Your Agents. Real Output." → "Meet My AI Employees" → scaling-thinking copy → WhatsApp/LinkedIn/email CTAs
-- Agent order: Parthasarathi (highlight card, full-width), then 2-col grid: Vyasa+Vibhishana, Sanjaya+Valmiki
-- Card sizes: `highlight` (h-48 md:h-64), `standard` (h-40 md:h-48), `compact` (h-28 md:h-36) — controlled via `size` prop
-- Pipeline visualization + bottom CTA (WhatsApp/LinkedIn/email) below card grid
-- Detail pages at `/build-your-ai-team/<agent>` show full profile: KRAs, daily rhythm, proof points
-- Agent data in `lib/agents.ts` — static TypeScript objects, structured for future Convex DB migration
-- 6 agents: Parthasarathi (ops), Sanjaya (lead intel), Valmiki (social content), Vibhishana (research), Vyasa (SEO blog), Vidura (SEO strategy)
-- Each agent has: accent color, avatar, KRAs with outcomes/frequency, daily rhythm, proof points
-- `AgentCard.tsx` — highlight/standard/compact sizes, fixed image heights, accent-colored gradients, image fallback to initials
+- Detail pages at `/build-your-ai-team/<agent>` — full agent profiles (KRAs, daily rhythm, proof points)
+- Agent data in `lib/agents.ts` — 6 agents: Parthasarathi (ops), Sanjaya (lead intel), Valmiki (social content), Vibhishana (research), Vyasa (SEO blog), Vidura (SEO strategy)
+- `AgentCard.tsx` — highlight/standard/compact sizes, fixed image heights, accent-colored gradients
 - `AgentDetailPage.tsx` — full detail view with breadcrumb, sections for KRAs/rhythm/proof
-- `FloatingCTA.tsx` — appears after 600px scroll, links to external booking/contact
-- NavBar includes "Build Your AI Team" link
-- Sitemap includes agent pages
+- `FloatingCTA.tsx` — appears after 600px scroll
+- Sitemap still includes agent pages (pending removal after redirects are set up)
 
 ## Google Analytics (GA4)
 - Measurement ID stored in `NEXT_PUBLIC_GA_MEASUREMENT_ID` env var
@@ -275,7 +285,7 @@ RootLayout (Server)
 
 ## Convex Backend (Launch Control)
 
-### Database Tables (Convex) — 8 tables
+### Database Tables (Convex) — 10 tables
 | Table | Purpose | Ingestion |
 |-------|---------|-----------|
 | `questions` | Vibhishana's Reddit scans | Batch via `/ingestQuestions` or `/upsertQuestions` (upsert by URL) |
@@ -344,7 +354,7 @@ Terminal 2: npm run dev       (Next.js dev server at localhost:3000)
 - No public "Sign In" button anywhere on the site.
 - Login: go to `/admin` (secret URL) → Clerk `<SignIn>` component → redirects to `/launch-control`.
 - When signed in, Clerk `UserButton` shows in HeaderBar. WaitlistCTA hides.
-- WaitlistCTA shows a "Get Your AI Team" button linking to `/hire-your-24x7-team#lead-capture` for non-authenticated visitors.
+- WaitlistCTA shows a "Get Your AI Team" button linking to `/your-ai-team#contact` for non-authenticated visitors.
 - Documents and Meetings tabs only appear when `isSignedIn` is true.
 - All other tabs (Blogs, Communities, Questions, Briefs, Strategy) are fully visible to all visitors — public data, no blur.
 

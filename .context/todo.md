@@ -1,6 +1,6 @@
 # Todo — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-27 (Brief revision two-path logic shipped — revisionHistory schema + WorkBoardCard v2 pill UI)
+Last updated: 2026-02-28 (context audit — redirect targets updated to /your-ai-team, stale Convex error noted)
 
 ## Priority: High
 - [ ] **Production blog cleanup** — 4 junk/duplicate blog entries still in production Convex (`final-test-blog-1772095578`, `canonical-test-2026-02-26`, and pr_created duplicates of `ai-generated-code-deployment-reality` + `why-mvp-costs-too-much-validation-first`). Can drop them directly via Kanban dropdown now that "Drop" option exists. Or run `migrations:dropJunkBlogs` against prod with deploy key.
@@ -9,9 +9,9 @@ Last updated: 2026-02-27 (Brief revision two-path logic shipped — revisionHist
 - [x] **Update Vidura skill URL to production** — DONE. VPS skill confirmed pointing to prod (`curious-iguana-738`). Stale dev-pointing copies in `skills/` folder deleted (Feb 19).
 - [x] **Deploy Vidura Convex changes to production** — DONE. Netlify auto-deploys Convex via `npx convex deploy --cmd 'npm run build'` on every merge to `main`. Vidura commit is on `main`.
 - [ ] **Investigate question count mismatch** — Prod Convex has 771 questions, Google Sheet has 891. ~120 questions missing from Convex. Check if agent pushes are failing or URLs differ.
-- [ ] **Diagnose Convex 500 error on /ingestBrief** — Vibhishana getting HTTP 500 (not auth issue). Request ID: `a07937d936186671`. Check Convex dashboard logs. Likely schema mismatch or extra field in agent payload.
+- [ ] **Diagnose Convex 500 error on /ingestBrief** — Vibhishana getting HTTP 500 (not auth issue). Request ID: `a07937d936186671`. *May be stale — agents have been running without obvious failures. Verify against Convex dashboard logs if briefs stop flowing.*
 - [ ] **Fix "cron delivery target is missing"** — 5+ agent crons failing post-recovery. Delivery config has `mode: "announce"` but no channel/to target. Needs Partha to patch cron configs on VPS.
-- [ ] **Set up 301 redirects** — `/build-your-ai-team` → `/hire-your-24x7-team`, `/build-your-ai-team/[agent]` → `/hire-your-24x7-team#team`. Old agent detail pages still exist as routes but navbar no longer links to them.
+- [ ] **Set up 301 redirects** — `/build-your-ai-team` → `/your-ai-team`, `/build-your-ai-team/[agent]` → `/your-ai-team#team`. Old agent detail pages still exist as routes but navbar no longer links to them. (Note: `/hire-your-24x7-team` → `/your-ai-team` redirect is already live as of 2026-02-27.)
 - [x] **Launch Control public view updates** — DONE. All public tabs open (no blur). Blogs, Questions, Communities, Strategy, Briefs fully visible. Documents + Meetings admin-only. (2026-02-25)
 - [ ] Build out free tools pages (`/tools/[tool-slug]`) — Vidura's tool opportunities data now feeds tool ideas via Convex
 

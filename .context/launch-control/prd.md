@@ -309,10 +309,10 @@ All require `Authorization: Bearer <AGENT_API_KEY>`. Legacy alias paths (`/inges
 ## 6. Auth
 
 - **Provider:** Clerk (ClerkProvider wraps ConvexProviderWithClerk)
-- **Middleware:** `middleware.ts` — permissive `clerkMiddleware()`, does not block any route
+- **Middleware:** `middleware.ts` — geo cookie only (sets `geo_region=IN/INTL` from `x-country` header). **NO Clerk middleware** — it was removed on 2026-02-25 (crashes Netlify edge functions). Clerk works entirely client-side via `ClerkProvider`.
 - **Admin queries:** Check `ctx.auth.getUserIdentity()` — throw if not authenticated
-- **Admin login:** `/admin` page has Clerk `<SignIn>` component. Redirects to `/launch-control` after sign-in. No email gate needed.
-- **Note:** Do NOT add `clerkMiddleware()` to `middleware.ts` — breaks Netlify edge functions. Clerk works entirely client-side.
+- **Admin login:** `/admin` page has Clerk `<SignIn>` component. Redirects to `/launch-control` after sign-in. Secret URL — no link on the site.
+- **IMPORTANT:** Never add `clerkMiddleware()` to `middleware.ts` — it breaks Netlify edge functions.
 
 ---
 
@@ -323,14 +323,16 @@ All require `Authorization: Bearer <AGENT_API_KEY>`. Legacy alias paths (`/inges
 | Agent statuses (active/sleeping) | Yes | Public query |
 | Activity feed | Yes | Public query |
 | Scoreboard stats | Yes | Weekly + all-time counts |
-| Question titles + subreddits + URLs | Top 3 rows | Via QuestionsPreview. Titles link to Reddit. |
-| Scanner analysis (pain, angles, ICP relevance) | Admin only | Requires Clerk auth |
-| Brief metadata (titles, status) | Top 3 rows | Via BriefsPreview |
-| Brief content (rendered markdown) | Top 3 only | Via `getPublicBrief` — strips sensitive SEO fields |
-| Full brief list + SEO metadata sidebar | Admin only | Requires Clerk auth |
-| Blog titles + URLs | Yes | Already public |
-| Communities (subreddits monitored) | Placeholder only | CommunitiesPreview uses fake subreddit names |
-| Sort/filter/scroll on tables | Admin only | Preview components: no scroll, max 320px height |
+| Question titles + subreddits + URLs | Yes — 20 recent | Via QuestionsPreview. No blur. Titles link to Reddit. |
+| Scanner analysis (pain, angles, ICP relevance) | Admin only | Requires Clerk auth — extra columns in QuestionsTable |
+| Brief metadata + full content (rendered markdown) | Yes — 20 briefs | All clickable, reader modal opens full brief. Admin gets SEO metadata sidebar. |
+| Full brief list | Yes — 20 items | BriefsPreview. Admin: BriefsPanel with sortable full list. |
+| Blog titles + URLs | Yes — 100 items | BlogsPreview. Admin: BlogsTable with enrichment data. |
+| Communities (subreddits monitored) | Yes | Real subreddit data via public `communityBreakdown` query. "Why It Was Picked" reasoning. |
+| Strategy (topic clusters + tool opportunities) | Yes — 20 clusters + 10 tools | StrategyPreview. Admin: StrategyPanel with full data. |
+| Documents (agent research reports) | Admin only | DocumentsPanel only visible when signed in |
+| Meetings (pitch bookings) | Admin only | MeetingsPanel only visible when signed in |
+| Sort/filter on tables | Admin only | Public views have fixed sort by date |
 
 ---
 
@@ -398,10 +400,10 @@ Key details:
 
 **All steps DONE (shipped Feb 15-18, 2026):**
 
-- [x] Convex backend — 8 tables, 12 HTTP POST endpoints, Clerk auth, 20+ indexes
+- [x] Convex backend — 10 tables, canonical /push/* + /update/* + /query/* HTTP routes + legacy aliases, Clerk auth, 20+ indexes
 - [x] Agent skills — 4 SKILL.md files deployed on VPS, test pushes confirmed
-- [x] Frontend dashboard — 28 components, 3-column layout, 7 tabs
-- [x] Public preview tabs — blur + waitlist CTA for non-auth visitors
+- [x] Frontend dashboard — 33+ components, 3-column layout, 8 tabs (6 public + 2 admin-only)
+- [x] All tabs open — no blur, full data for public visitors on all 6 non-admin tabs (as of 2026-02-25)
 - [x] Admin view — full brief reader, sortable tables, SEO metadata
 - [x] Mobile QA — 12 files fixed for responsive layout
 - [x] FTUE spotlight tour — GuidedTour.tsx
@@ -413,10 +415,16 @@ Key details:
 
 ---
 
-## 12. Phase 2 (After MVP — deferred)
+## 12. Phase 2 Progress
 
-- Two-way agent communication (send instructions back to agents)
+**SHIPPED after MVP:**
+- [x] **Work Mode Kanban** (2026-02-26) — WorkBoard, WorkBoardColumn, WorkBoardCard, WorkBoardArchive, AddManualTaskForm. 5 columns (To Do/In Progress/Blocked/Done/Archive) + collapsible archive by week. Owner tags (Krishna = orange "K"; agents = colored pills). Health bar per card (green→yellow→orange→red over 14 days). Header stats live from Convex. Work mode toggle in HeaderBar. Full spec at `.context/ideation/work-mode-kanban-spec.md`.
+- [x] **Kanban feedback loop** (2026-02-26) — Status dropdown (Approve/Needs Revision/Drop/Publish/Skip) + confirm step + optional feedback textarea. `krishnaFeedback` stored in briefs + linkedinPosts. Blocked cards show Slack reminder.
+- [x] **Valmiki LinkedIn post pipeline** (2026-02-26) — `linkedinPosts` + `manualTasks` Convex tables. Valmiki pushes drafts via `/push/linkedin-posts`. Full spec at `.context/ideation/valmiki-linkedin-pipeline-lc-spec.md`.
+- [x] **Brief revision protocol** (2026-02-27) — Two-path: MINOR (same topic) = Vibhishana updates in place, appends `revisionHistory` snapshot. MAJOR (new topic) = old brief → dropped, new brief created.
+
+**Still deferred:**
+- Two-way agent communication (send instructions back to agents) beyond the existing feedback field
 - Internal notes/comments on briefs
-- Agent-level pages showing live data instead of static marketing copy
-- Public metrics counters (total questions, briefs, blogs)
-- Work Mode Kanban board (spec at `.context/ideation/work-mode-kanban-spec.md`)
+- Agent-level pages showing live data instead of static `/build-your-ai-team/[agent]` marketing copy
+- Public metrics counters on the landing page

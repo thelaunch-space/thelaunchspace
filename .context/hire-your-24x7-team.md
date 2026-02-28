@@ -349,26 +349,30 @@ Separate from the pitch page — these are changes to what public (non-admin) vi
 - [x] 4 active agent cards (Partha, Vibhishana, Vyasa, Vidura) + 2 coming soon (Valmiki, Sanjaya)
 - [x] Tabbed "real work" section (Questions/Briefs/Blogs) — live from Convex
 - [x] 4-week timeline visual (Setup → Trial → Iteration → Handoff)
-- [x] Pricing section ($99 POC launch price / $699 Growth launch price, crossed-out originals)
+- [x] Pricing section ($99 DIY Kickstart one-time / $699 Founder's Partnership monthly first month $749 — geo-detected INR/USD, no strikethrough prices)
 - [x] Lead capture form (company, website, challenge dropdown) → Make.com + TimeSlotPicker
 - [x] Floating dual CTA (Watch live + Get your AI team)
 - [x] Geo-detected cost savings — INR for India visitors, USD for international (middleware geo cookie)
 
 ### Phase 2: Navigation & Redirects — PARTIAL
-- [x] Navbar updated: "Hire Your 24/7 Team" → `/hire-your-24x7-team`
+- [x] Navbar updated: "Your AI Team" → `/your-ai-team` (label was "Hire Your 24/7 Team" until 2026-02-27)
 - [x] "Launch Control" removed from navbar
-- [ ] Set up 301 redirects: `/build-your-ai-team` → `/hire-your-24x7-team`
-- [ ] Set up 301 redirects: `/build-your-ai-team/[agent]` → `/hire-your-24x7-team#team`
+- [x] Permanent redirect: `/hire-your-24x7-team` → `/your-ai-team` (v4 slug rename, 2026-02-27)
+- [ ] Set up 301 redirects: `/build-your-ai-team` → `/your-ai-team`
+- [ ] Set up 301 redirects: `/build-your-ai-team/[agent]` → `/your-ai-team#team`
 
-### Phase 3: Launch Control Public View — PARTIAL
+### Phase 3: Launch Control Public View — DONE
 - [x] FTUE spotlight tour built (GuidedTour.tsx — 5 desktop / 4 mobile steps)
-- [ ] Questions tab: show all questions openly (not just top 3)
-- [ ] Briefs tab: show 5 in full, blur/gate the rest
-- [ ] Blogs tab: show all freely, link to actual posts
+- [x] Questions tab: 20 recent questions shown openly, no blur, titles link to Reddit (2026-02-25)
+- [x] Briefs tab: 20 briefs shown in full, all clickable with reader modal, no blur (2026-02-25)
+- [x] Blogs tab: 100 posts shown with full data, links to actual blog posts (2026-02-25)
+- [x] Communities tab: real subreddit data with "Why It Was Picked" reasoning, no blur (2026-02-25)
+- [x] Strategy tab: 20 clusters + 10 tool opportunities, fully open (2026-02-25)
+- [x] Only Documents + Meetings tabs remain admin-only
 
 ### Phase 4: Polish
 - [x] Mobile layout + timeline card fixes
-- [ ] Update LinkedIn/X post links to point to `/hire-your-24x7-team`
+- [ ] Update LinkedIn/X post links to point to `/your-ai-team`
 
 ---
 
