@@ -5,11 +5,13 @@ import type { AdminTab } from "@/lib/launch-control-types";
 import CommunitiesPanel from "./CommunitiesPanel";
 import QuestionsTable from "./QuestionsTable";
 import BriefsPanel from "./BriefsPanel";
+import WorkspacePanel from "./WorkspacePanel";
 
 const TABS: { label: string; value: AdminTab }[] = [
   { label: "Communities", value: "communities" },
   { label: "Questions", value: "questions" },
   { label: "Briefs", value: "briefs" },
+  { label: "Workspace", value: "workspace" },
 ];
 
 export default function AdminTabs() {
@@ -40,6 +42,7 @@ export default function AdminTabs() {
         {activeTab === "communities" && <CommunitiesPanel />}
         {activeTab === "questions" && <QuestionsTable />}
         {activeTab === "briefs" && <BriefsPanel />}
+        {activeTab === "workspace" && <WorkspacePanel />}
       </div>
     </div>
   );

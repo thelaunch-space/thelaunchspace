@@ -1,4 +1,4 @@
-import { internalMutation, internalQuery } from "./_generated/server";
+import { internalMutation, internalQuery, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import type { Id } from "./_generated/dataModel";
 
@@ -60,6 +60,63 @@ export const updateStatus = internalMutation({
       ...(actualHours !== undefined && { actualHours }),
       ...(paceNotes !== undefined && { paceNotes }),
     });
+  },
+});
+
+// Delete a task by ID (public — for admin panel cleanup)
+export const remove = mutation({
+  args: { id: v.id("tasks") },
+  handler: async (ctx, { id }) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthorized");
+    await ctx.db.delete(id);
+  },
+});
+
+// Public mutation — for Krishna's manual task creation in Kanban
+export const create = mutation({
+  args: {
+    clientSlug: v.string(),
+    projectSlug: v.string(),
+    title: v.string(),
+    description: v.optional(v.string()),
+    taskType: v.string(),
+    status: v.optional(v.string()),
+    priority: v.optional(v.number()),
+    estimatedHours: v.optional(v.number()),
+    deadline: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthorized");
+    const now = new Date().toISOString();
+    const id = await ctx.db.insert("tasks", {
+      ...args,
+      status: args.status ?? "todo",
+      createdBy: "Krishna",
+      createdAt: now,
+      updatedAt: now,
+    });
+    return { id };
+  },
+});
+
+// Public query — done tasks for Task History view in WorkspacePanel
+export const listDone = query({
+  args: {
+    clientSlug: v.optional(v.string()),
+    projectSlug: v.optional(v.string()),
+  },
+  handler: async (ctx, { clientSlug, projectSlug }) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthorized");
+    let results = await ctx.db
+      .query("tasks")
+      .withIndex("by_status", (q) => q.eq("status", "done"))
+      .collect();
+    if (clientSlug) results = results.filter((t) => t.clientSlug === clientSlug);
+    if (projectSlug) results = results.filter((t) => t.projectSlug === projectSlug);
+    return results.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   },
 });
 

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import type { KanbanColumn, WorkBoardTask } from "@/lib/launch-control-types";
 import WorkBoardCard from "./WorkBoardCard";
-import AddManualTaskForm from "./AddManualTaskForm";
+import AddTaskForm from "./AddTaskForm";
 
 interface WorkBoardColumnProps {
   column: KanbanColumn;
@@ -77,7 +77,7 @@ export default function WorkBoardColumn({ column, label, tasks, loading }: WorkB
         <div className="flex-1 overflow-y-auto scrollbar-hide px-2 pb-2 space-y-2">
           {/* Inline add form at top of list */}
           {addingTask && (
-            <AddManualTaskForm onClose={() => setAddingTask(false)} />
+            <AddTaskForm onClose={() => setAddingTask(false)} />
           )}
 
           {tasks.length === 0 && !addingTask ? (

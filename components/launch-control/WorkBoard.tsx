@@ -6,6 +6,9 @@ import { api } from "@/convex/_generated/api";
 import { KANBAN_COLUMNS, type WorkBoardTask } from "@/lib/launch-control-types";
 import WorkBoardColumn from "./WorkBoardColumn";
 import WorkBoardArchive from "./WorkBoardArchive";
+import WorkspacePanel from "./WorkspacePanel";
+
+type WorkView = "kanban" | "workspace";
 
 function startOfCurrentWeek(): number {
   const now = new Date();
@@ -19,6 +22,7 @@ function startOfCurrentWeek(): number {
 export default function WorkBoard() {
   const tasks = useQuery(api.workboard.getBoard) as WorkBoardTask[] | undefined;
   const [activeColumn, setActiveColumn] = useState<string>("todo");
+  const [view, setView] = useState<WorkView>("kanban");
 
   const weekStart = startOfCurrentWeek();
 
@@ -40,6 +44,32 @@ export default function WorkBoard() {
 
   return (
     <div className="h-full flex flex-col">
+      {/* View toggle */}
+      <div className="flex items-center gap-1 mb-3 shrink-0">
+        {(["kanban", "workspace"] as WorkView[]).map((v) => (
+          <button
+            key={v}
+            onClick={() => setView(v)}
+            className={`text-xs font-medium px-3 py-1.5 rounded-lg transition-colors ${
+              view === v
+                ? "bg-surface text-text-primary shadow-sm border border-border-color/40"
+                : "text-text-secondary hover:text-text-primary hover:bg-surface-alt/60"
+            }`}
+          >
+            {v === "kanban" ? "Kanban" : "Workspace"}
+          </button>
+        ))}
+      </div>
+
+      {/* Workspace view */}
+      {view === "workspace" && (
+        <div className="flex-1 overflow-y-auto scrollbar-hide">
+          <WorkspacePanel />
+        </div>
+      )}
+
+      {/* Kanban view */}
+      {view === "kanban" && <>
       {/* Mobile: column selector pills */}
       <div className="lg:hidden flex items-center gap-1 mb-4 overflow-x-auto scrollbar-hide -mx-1 px-1 pb-1 shrink-0">
         {KANBAN_COLUMNS.map((col) => {
@@ -99,6 +129,7 @@ export default function WorkBoard() {
           <WorkBoardArchive tasks={archivedTasks} loading={tasks === undefined} />
         </div>
       </div>
+      </>}
     </div>
   );
 }

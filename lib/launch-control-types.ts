@@ -31,7 +31,7 @@ export interface CommunityBreakdownItem {
 
 export type StatusDotColor = "green" | "orange" | "red" | "gray";
 
-export type AdminTab = "overview" | "communities" | "questions" | "briefs" | "strategy";
+export type AdminTab = "overview" | "communities" | "questions" | "briefs" | "strategy" | "workspace";
 
 export type FeedFilter = "all" | "tasks" | "milestones";
 

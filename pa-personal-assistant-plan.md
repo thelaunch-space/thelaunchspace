@@ -1,8 +1,97 @@
 # Shakti [PA] — Personal Assistant Agent: Implementation Plan
 
 **Created:** 2026-02-28
-**Status:** Draft — Awaiting Krishna's review before implementation begins
+**Last updated:** 2026-02-28
+**Status:** Track A Phases 0+1 complete (including WorkspacePanel v2 with status editing, delete, task history). Seed data and Track B (Phase 2+) pending.
 **Folder:** `openclaw-config-global/new-agent-brainstorm/`
+
+---
+
+## Implementation Progress
+
+### What's done
+
+**Phase 0 — Convex Foundation** ✅ Complete (deployed to dev instance)
+
+| Item | File | Status |
+|------|------|--------|
+| `clients` table (schema) | `convex/schema.ts` | ✅ Done |
+| `projects` table (schema) | `convex/schema.ts` | ✅ Done |
+| `tasks` table (schema) | `convex/schema.ts` | ✅ Done |
+| HTTP `GET /query/clients` | `convex/http.ts` | ✅ Done |
+| HTTP `GET /query/projects` | `convex/http.ts` | ✅ Done |
+| HTTP `GET /query/tasks` | `convex/http.ts` | ✅ Done |
+| HTTP `POST /push/clients` | `convex/http.ts` | ✅ Done |
+| HTTP `POST /push/projects` | `convex/http.ts` | ✅ Done |
+| HTTP `POST /push/tasks` | `convex/http.ts` | ✅ Done |
+| HTTP `POST /update/task-status` | `convex/http.ts` | ✅ Done |
+| CORS OPTIONS loop updated | `convex/http.ts` | ✅ Done |
+| Public `clients.list` query | `convex/clients.ts` | ✅ Done |
+| Public `clients.listAll` query (all statuses, for admin) | `convex/clients.ts` | ✅ Done |
+| Public `clients.create` mutation | `convex/clients.ts` | ✅ Done |
+| Public `clients.updateStatus` mutation | `convex/clients.ts` | ✅ Done |
+| Public `clients.remove` mutation | `convex/clients.ts` | ✅ Done |
+| Public `projects.listByClient` query | `convex/projects.ts` | ✅ Done |
+| Public `projects.create` mutation (type optional, defaults to "general") | `convex/projects.ts` | ✅ Done |
+| Public `projects.updateStatus` mutation | `convex/projects.ts` | ✅ Done |
+| Public `projects.remove` mutation | `convex/projects.ts` | ✅ Done |
+| Public `shaktiTasks.create` mutation | `convex/shaktiTasks.ts` | ✅ Done |
+| Public `shaktiTasks.listDone` query (filterable by client/project) | `convex/shaktiTasks.ts` | ✅ Done |
+| Public `shaktiTasks.remove` mutation | `convex/shaktiTasks.ts` | ✅ Done |
+| `getBoard` includes `tasks` table | `convex/workboard.ts` | ✅ Done |
+| `updateArtifactStatus` handles `"task"` type | `convex/workboard.ts` | ✅ Done |
+| Convex deployed to dev instance | — | ✅ Done (`npx convex dev --once`) |
+| Typecheck + lint passing | — | ✅ Done |
+| **Seed data (clients + projects)** | Convex dashboard or curl | ❌ **Pending** |
+| Deployed to production | `git push main` | ❌ **Pending** |
+
+**Phase 1 — Launch Control UI** ✅ Complete
+
+| Item | File | Status |
+|------|------|--------|
+| `WorkBoardCard.tsx` renders `task` type (client/project slugs, taskType badge, estimatedHours) | `components/launch-control/WorkBoardCard.tsx` | ✅ Done |
+| `AddTaskForm.tsx` — Quick Task + Client Task modes | `components/launch-control/AddTaskForm.tsx` | ✅ Done (new file) |
+| `WorkBoardColumn.tsx` — `+` button uses `AddTaskForm` | `components/launch-control/WorkBoardColumn.tsx` | ✅ Done |
+| `WorkspacePanel.tsx` — Clients + Projects admin tables with inline add forms | `components/launch-control/WorkspacePanel.tsx` | ✅ Done (new file) |
+| `WorkspacePanel.tsx` — Status editing (inline select, all valid statuses) | `components/launch-control/WorkspacePanel.tsx` | ✅ Done |
+| `WorkspacePanel.tsx` — Delete buttons (clients, projects, tasks) | `components/launch-control/WorkspacePanel.tsx` | ✅ Done |
+| `WorkspacePanel.tsx` — Add project bug fixed (auto-selects client filter) | `components/launch-control/WorkspacePanel.tsx` | ✅ Done |
+| `WorkspacePanel.tsx` — Task History section (done tasks by client/project) | `components/launch-control/WorkspacePanel.tsx` | ✅ Done |
+| `WorkspacePanel.tsx` — Project type field removed from Add Project form | `components/launch-control/WorkspacePanel.tsx` | ✅ Done |
+| `AdminTabs.tsx` — "Workspace" tab added | `components/launch-control/AdminTabs.tsx` | ✅ Done |
+| `AdminTab` type includes `"workspace"` | `lib/launch-control-types.ts` | ✅ Done |
+
+---
+
+### What's pending
+
+**Immediate (before pushing to production):**
+- [ ] Seed clients and projects via Convex dashboard (data in Phase 0 → Seed Data section below)
+- [ ] Test locally: verify Client Task form populates from seeded data
+- [ ] `git checkout main && git merge staging && git push` → production deploy
+
+**Phase 2 — Shakti VPS Setup (Track B):**
+- [ ] Krishna creates `#shakti-ops` Slack channel (or asks Parthasarathi to do it)
+- [ ] Google Calendar OAuth credential created and token stored on VPS
+- [ ] Claude Code drafts `clients/beacon-house.md`, `clients/edutechplus.md`, `clients/thelaunch-space.md` content
+- [ ] Krishna sends Phase 2 setup prompt to Parthasarathi via Slack DM
+- [ ] Parthasarathi creates full Shakti workspace on VPS (SOUL.md, AGENTS.md, MEMORY.md, pace-model.md, USER.md, 3 client files, 4 crons)
+
+**Phase 3 — Learning Loop:** Happens naturally after Shakti runs for 3-5 days. No separate session needed to start.
+
+**Phase 4 — Parthasarathi AGENTS.md Trim:** Do when Partha has a quiet window. Not urgent.
+
+---
+
+## Resuming in a New Session
+
+If picking this up in a new Claude Code session:
+
+1. **For seed data:** Open Convex dashboard → dev instance (`impartial-pelican-672.convex.cloud`) → Data tab → manually insert rows into `clients` and `projects` tables using the data in the "Seed Data" table in Phase 0 below. Or run curl against `POST /push/clients` and `POST /push/projects` with AGENT_API_KEY.
+
+2. **For production push:** Run `npm run typecheck && npm run lint` to confirm clean, then `git checkout main && git merge staging && git push`.
+
+3. **For Phase 2 (Shakti VPS):** The setup prompt for Parthasarathi hasn't been drafted yet. Start a new session in `openclaw-config-global/`, load this doc + `krishna-and-thelaunch-space-context/` for the client context, and draft: (a) the 3 client files, (b) the full Parthasarathi setup prompt covering SOUL.md, AGENTS.md, MEMORY.md, pace-model.md, USER.md, and the 4 crons.
 
 ---
 
@@ -42,6 +131,186 @@ Claude Code makes the changes. Krishna tests locally, then pushes to main.
 Work that happens on the VPS via Slack DM with Parthasarathi.
 Claude Code designs and drafts the instructions. Krishna reviews and sends to Parthasarathi as a prompt.
 **Claude Code never edits files inside `my-openclaw-agent-setup-v2/`.**
+
+---
+
+## Convex API Reference (for Shakti setup — complete as of 2026-02-28)
+
+This section is the authoritative reference for all Shakti-accessible data. When drafting Parthasarathi's setup prompt for Shakti, use the exact field names, status values, and endpoint paths below.
+
+### Convex Instances
+
+| Instance | URL | When to use |
+|----------|-----|-------------|
+| **Dev** | `https://impartial-pelican-672.convex.cloud` | Local development only |
+| **Production** | `https://curious-iguana-738.convex.cloud` | Shakti's crons always hit this |
+
+### Auth — All HTTP endpoints
+
+All endpoints require: `Authorization: Bearer <AGENT_API_KEY>`
+
+The AGENT_API_KEY is stored on VPS at `/home/node/openclaw/credentials/convex-api-key.txt` (same credential used by all other agents).
+
+---
+
+### Valid Status Values
+
+**Clients:** `active` | `paused` | `completed` | `prospect`
+
+**Projects:** `active` | `on-hold` | `completed` | `cancelled`
+
+**Tasks:** `backlog` | `todo` | `in_progress` | `blocked` | `done`
+
+**Task types:** `build` | `review` | `debug` | `strategy` | `client-comms` | `admin`
+
+---
+
+### HTTP Endpoints (Shakti reads/writes via these)
+
+#### GET /query/clients
+Returns all active clients.
+
+Response array items:
+```json
+{ "_id": "...", "name": "Beacon House", "slug": "beacon-house", "type": "retainer", "status": "active", "notes": null }
+```
+
+#### GET /query/projects?clientSlug=beacon-house
+Returns projects for a client. `clientSlug` is optional — omit to get all projects.
+
+Response array items:
+```json
+{ "_id": "...", "clientSlug": "beacon-house", "name": "CRM System", "slug": "crm", "type": "maintenance", "status": "active", "notes": null }
+```
+
+#### GET /query/tasks?status=todo&clientSlug=beacon-house&projectSlug=crm
+Returns tasks filtered by any combination of `status`, `clientSlug`, `projectSlug`. All params optional.
+
+Response array items:
+```json
+{
+  "_id": "...",
+  "clientSlug": "beacon-house",
+  "projectSlug": "crm",
+  "title": "Add contact export to CSV",
+  "description": null,
+  "taskType": "build",
+  "status": "todo",
+  "priority": 1,
+  "estimatedHours": 2,
+  "actualHours": null,
+  "deadline": null,
+  "paceNotes": null,
+  "createdBy": "Shakti",
+  "createdAt": "2026-02-28T10:00:00.000Z",
+  "updatedAt": "2026-02-28T10:00:00.000Z"
+}
+```
+
+#### POST /push/clients
+Create or upsert a client (dedup key: `slug`).
+
+Request body:
+```json
+{
+  "name": "Beacon House",
+  "slug": "beacon-house",
+  "type": "retainer",
+  "status": "active",
+  "notes": "14-month retainer, Ivy League admissions platform",
+  "createdAt": "2026-02-28T10:00:00.000Z"
+}
+```
+
+Response: `{ "success": true, "id": "...", "action": "created" | "updated" }`
+
+#### POST /push/projects
+Create or upsert a project (dedup key: `slug`).
+
+Request body:
+```json
+{
+  "clientSlug": "beacon-house",
+  "name": "CRM System",
+  "slug": "crm",
+  "type": "maintenance",
+  "status": "active",
+  "notes": null,
+  "createdAt": "2026-02-28T10:00:00.000Z"
+}
+```
+
+Response: `{ "success": true, "id": "...", "action": "created" | "updated" }`
+
+#### POST /push/tasks
+Create or upsert a task (dedup key: `clientSlug + projectSlug + title`).
+
+Request body:
+```json
+{
+  "clientSlug": "beacon-house",
+  "projectSlug": "crm",
+  "title": "Add contact export to CSV",
+  "description": "Export contacts as CSV from admin view",
+  "taskType": "build",
+  "status": "todo",
+  "priority": 1,
+  "estimatedHours": 2,
+  "actualHours": null,
+  "deadline": null,
+  "paceNotes": null,
+  "createdAt": "2026-02-28T10:00:00.000Z",
+  "updatedAt": "2026-02-28T10:00:00.000Z",
+  "createdBy": "Shakti"
+}
+```
+
+Response: `{ "success": true, "id": "...", "action": "created" | "updated" }`
+
+#### POST /update/task-status
+Update status and optional tracking fields on a task by ID.
+
+Request body:
+```json
+{
+  "id": "<task _id from GET /query/tasks>",
+  "status": "done",
+  "actualHours": 2.5,
+  "paceNotes": "Took longer than expected — CSV library had encoding issues"
+}
+```
+
+`actualHours` and `paceNotes` are optional. `status` is required.
+
+Response: `{ "success": true }`
+
+---
+
+### Shakti's Typical API Call Pattern
+
+**Morning brief (7 AM):**
+1. `GET /query/tasks?status=todo` — what's planned
+2. `GET /query/tasks?status=in_progress` — what's already running
+3. `GET /query/tasks?status=blocked` — what's stuck
+4. `GET /query/tasks?status=backlog` — what's waiting to be planned (flag if > 3 days old)
+
+**When Krishna replies "go" to create calendar blocks:**
+- No Convex call needed — just create Google Calendar events based on the plan Shakti already built from the GET calls above
+
+**When Krishna marks a task done (DM to #shakti-ops):**
+```
+POST /update/task-status
+{ "id": "<task_id>", "status": "done", "actualHours": 1.5, "paceNotes": "..." }
+```
+
+**When Shakti creates a new task from Krishna's DM:**
+```
+POST /push/tasks
+{ "clientSlug": "...", "projectSlug": "...", "title": "...", "taskType": "...", "status": "todo", "estimatedHours": 1, "createdBy": "Shakti", "createdAt": "<now>", "updatedAt": "<now>" }
+```
+
+**Weekly digest (Sunday 10 AM) — pull all completed tasks this week:**
+- `GET /query/tasks?status=done` — returns all done tasks with `updatedAt`. Filter in memory to last 7 days.
 
 ---
 
@@ -212,11 +481,11 @@ After schema is deployed and endpoints are live, seed the initial clients and pr
 | SEO Pipeline | `seo-pipeline` | `internal` | `active` |
 
 ### Deployment Checklist (Phase 0)
-- [ ] Edit `convex/schema.ts` — add clients, projects, tasks tables
-- [ ] Edit `convex/http.ts` — add all new GET and POST routes + CORS loop entries
-- [ ] Edit `convex/workboard.ts` — add `tasks` type to `getBoard` and `updateArtifactStatus`
-- [ ] `npx convex dev --once` — deploy to dev instance
-- [ ] `npm run typecheck` — must pass clean
+- [x] Edit `convex/schema.ts` — add clients, projects, tasks tables
+- [x] Edit `convex/http.ts` — add all new GET and POST routes + CORS loop entries
+- [x] Edit `convex/workboard.ts` — add `tasks` type to `getBoard` and `updateArtifactStatus`
+- [x] `npx convex dev --once` — deploy to dev instance
+- [x] `npm run typecheck` — must pass clean
 - [ ] Test locally: create a client, create a project, create a task, verify WorkBoard shows it
 - [ ] `git checkout main && git merge staging && git push` — auto-deploys to production
 - [ ] Seed clients and projects via Convex dashboard or curl script
@@ -246,9 +515,10 @@ Make the new `tasks` table visible and useful in Launch Control. Krishna should 
 **Optional (can defer):** A filter bar above the Kanban to show only tasks for a specific client. Useful when the board gets crowded.
 
 ### Deployment Checklist (Phase 1)
-- [ ] Update `WorkBoardCard.tsx` — handle `type: "task"` with client/project labels and task type badge
-- [ ] Update `updateArtifactStatus` mutation in `workboard.ts` to handle `type: "task"`
-- [ ] `npx convex dev --once` + typecheck + lint + local test
+- [x] Update `WorkBoardCard.tsx` — handle `type: "task"` with client/project labels and task type badge
+- [x] Update `updateArtifactStatus` mutation in `workboard.ts` to handle `type: "task"`
+- [x] `npx convex dev --once` + typecheck + lint
+- [ ] Local test (requires seed data — see Phase 0 checklist)
 - [ ] Merge to main and confirm in production
 
 ---
