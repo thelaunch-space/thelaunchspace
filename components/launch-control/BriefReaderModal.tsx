@@ -43,7 +43,7 @@ export default function BriefReaderModal({ briefId, onClose }: BriefReaderModalP
       onClick={onClose}
     >
       <div
-        className="bg-surface border border-border-color/60 rounded-t-2xl sm:rounded-2xl shadow-card-hover w-full sm:max-w-[1200px] max-h-[95vh] sm:max-h-[90vh] relative animate-scaleIn overflow-hidden flex flex-col sm:mx-4"
+        className="bg-surface border border-border-color/60 rounded-t-2xl sm:rounded-2xl shadow-card-hover w-full sm:max-w-[1200px] max-h-[95dvh] sm:max-h-[90dvh] relative animate-scaleIn overflow-hidden flex flex-col sm:mx-4"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Mobile drag handle */}
