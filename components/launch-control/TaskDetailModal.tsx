@@ -76,6 +76,14 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
         className="bg-surface border border-border-color/60 rounded-t-2xl sm:rounded-2xl shadow-card-hover w-full sm:max-w-lg max-h-[90vh] relative overflow-hidden flex flex-col sm:mx-4"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Mobile drag handle */}
+        <div
+          className="flex justify-center pt-2.5 pb-1 sm:hidden cursor-pointer"
+          onClick={onClose}
+        >
+          <div className="w-10 h-1 rounded-full bg-border-color/50" />
+        </div>
+
         {/* Header */}
         <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-border-color/40 shrink-0">
           <div className="flex items-center gap-2 min-w-0">
@@ -86,9 +94,9 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-text-secondary/50 hover:text-text-secondary hover:bg-surface-alt transition-colors shrink-0"
+            className="p-2 rounded-lg text-text-secondary/50 hover:text-text-secondary hover:bg-surface-alt transition-colors shrink-0"
           >
-            <X size={16} />
+            <X size={18} />
           </button>
         </div>
 

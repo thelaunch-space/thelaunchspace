@@ -81,6 +81,14 @@ export default function PostBriefModal({ task, open, onClose }: PostBriefModalPr
         className="bg-surface border border-border-color/60 rounded-t-2xl sm:rounded-2xl shadow-card-hover w-full sm:max-w-[1100px] max-h-[95vh] sm:max-h-[90vh] relative animate-scaleIn overflow-hidden flex flex-col sm:mx-4"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Mobile drag handle */}
+        <div
+          className="flex justify-center pt-2.5 pb-1 sm:hidden cursor-pointer"
+          onClick={onClose}
+        >
+          <div className="w-10 h-1 rounded-full bg-border-color/50" />
+        </div>
+
         {/* Header */}
         <div className="flex items-center justify-between gap-3 px-4 sm:px-6 py-3 sm:py-4 border-b border-border-color/40 shrink-0">
           <div className="flex flex-col gap-0.5 min-w-0">
@@ -98,7 +106,7 @@ export default function PostBriefModal({ task, open, onClose }: PostBriefModalPr
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-text-secondary hover:text-text-primary transition-colors shrink-0"
+            className="p-2 rounded-xl text-text-secondary hover:text-text-primary hover:bg-surface-alt transition-colors shrink-0"
             aria-label="Close"
           >
             <X size={20} />
