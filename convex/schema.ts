@@ -201,6 +201,12 @@ export default defineSchema({
     // Phase 2 fields — full draft (draft_ready)
     draftText: v.optional(v.string()),
     krishnaFeedback: v.optional(v.string()),
+    // Legacy fields — kept optional for backward compat with pre-2026-03 documents
+    icpPass: v.optional(v.boolean()),
+    source: v.optional(v.string()),
+    hookStrategy: v.optional(v.string()),
+    ctaType: v.optional(v.string()),
+    icpFailReason: v.optional(v.string()),
     postedDate: v.optional(v.string()),
     linkedinUrl: v.optional(v.string()),
     status: v.string(),                // "pending_review" | "needs_revision" | "approved" | "dropped" | "draft_ready" | "posted" | "skipped"
