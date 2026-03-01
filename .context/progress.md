@@ -1,6 +1,6 @@
 # Progress — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-28 (Shakti Phase 2 complete — VPS setup, 4 crons, 3 clients + 16 projects seeded)
+Last updated: 2026-03-01 (Kanban improvements: task detail modal, backlog creation, blog PR preview link)
 
 ## Completed
 - [x] Project scaffolding (originally Vite + React 18, later migrated to Next.js 14)
@@ -207,6 +207,10 @@ Last updated: 2026-02-28 (Shakti Phase 2 complete — VPS setup, 4 crons, 3 clie
 - [x] **Blog enrichment batch (Feb 28)** — 6 blogs enriched; 1 new blog added (Why Your Landing Page Gets Zero Signups). Total: 22 posts. (2026-02-28)
 - [x] **Design system Shakti avatar prompt** — Prompt 7 of 8 + team hero Prompt 8 of 8 (7 characters, camera spec, DO NOT list). (2026-02-28)
 - [x] **Slug, anchor & pricing overhaul (2026-02-27)** — Route renamed `/hire-your-24x7-team` → `/your-ai-team`. Permanent redirect added. Anchor `#lead-capture` → `#contact` in LeadCaptureSection, PitchPage (2 instances). NavBar label "Hire Your 24/7 Team" → "Your AI Team", all hrefs updated. AnnouncementRibbon, WaitlistCTA, PreviewGate, sitemap all updated. Pricing tiers renamed: "Proof of Concept" → "DIY Kickstart" ($299 one-time), "Growth Partnership" → "Founder's Partnership" ($1,500/mo, first month $750). Geo pricing updated (India: ₹24,999 / ₹1,20,000). `pocOriginalPrice`/`growthOriginalPrice` removed (no strikethrough). `pocLaunchLabel`/`growthLaunchLabel` added to `GeoPricing` interface. `getPriceDisplay` no longer appends "/mo". LeadCaptureSection copy updated ("One-time setup. You own the system.").
+
+- [x] **Kanban: Blog PR preview link** — `prUrl: v.optional(v.string())` added to `blogs` Convex table. `blogs.ingest` accepts and stores it. `workboard.ts` includes `prUrl` in blog card `meta`. Clicking a `pr_created` blog card title opens `meta.prUrl` (Netlify deploy preview) in new tab; falls back to `meta.url` for published blogs. (2026-03-01)
+- [x] **Kanban: Task Detail Modal** — New `TaskDetailModal.tsx` component. Clicking a Shakti task (`type: "task"`) or manual task (`type: "manual"`) card title opens a modal. Shows client/project/type/priority/deadline read-only for task type; editable title + description for manual. Editable notes/description textarea saves via `manualTasks.update` (existing) or new `shaktiTasks.update` public mutation. (2026-03-01)
+- [x] **Kanban: Backlog "+" creation button** — `WorkBoardColumn.tsx` now shows "+" on both `todo` and `backlog` columns. `AddTaskForm.tsx` accepts `targetColumn?: "backlog" | "todo"` prop and uses it as the `status` when creating via `manualTasks.create` or `shaktiTasks.create`. `manualTasks.create` now accepts optional `status` param (defaults to `"todo"`). `workboard.ts` `mapManualStatus` now maps `"backlog"` → backlog column. (2026-03-01)
 
 ## In Progress
 - End-to-end brief→blog flow verification (Vyasa picking up brief from Convex, pushing pr_created status back)

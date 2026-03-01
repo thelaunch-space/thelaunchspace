@@ -120,23 +120,36 @@ pending_review → [krishna approves] brief_ready → [vyasa picks up]
 
 ### Valmiki — LinkedIn Growth Engine
 
-**What he does:**
-- **7 PM IST daily:** Finds oldest Published blog not yet extracted, reads it, extracts 3-5 named insights, drafts 1-2 LinkedIn posts for Krishna
-- **Saturday 10 AM:** Weekly performance review (after Krishna shares metrics)
-- Every insight gets a 2-5 word named label: "The 3-Flow Wall", "The $30K Agency Trap"
-- Runs **Feedback-First Protocol** at every cron: checks for `needs_revision` LinkedIn posts before new extraction
+**What he does (2-phase post-brief workflow as of 2026-03-01):**
 
-**Content math:** 18+ published blogs = 54-90 potential posts = 11-22 weeks of content at 4-5 posts/week
+**Phase 1 — Post-Brief Extraction (7 PM IST daily)**
+- Finds oldest Published blog not yet extracted, reads it
+- Extracts 2-3 bookmark-worthy angles
+- Creates one "post-brief" per angle with `insightText`, `rationale`, `hookOptions` (3-4), `ctaOptions` (3-4)
+- Pushes with `status: "pending_review"` → lands in Kanban "To Do"
+- Every insight gets a 2-5 word named label: "The 3-Flow Wall", "The $30K Agency Trap"
+
+**Phase 2 — Full Draft Writing**
+- After Krishna approves a post-brief (`status: "approved"`), Valmiki picks it up
+- Reads the approved brief fields, writes full LinkedIn post
+- Pushes back with `draftText` + `status: "draft_ready"` → returns to Kanban "To Do"
+
+**Saturday 10 AM:** Weekly performance review (after Krishna shares metrics)
+
+**Runs Feedback-First Protocol** at every cron: checks `needs_revision` posts before new extraction
+
+**Content math:** 18+ published blogs = 54-90 potential posts = 11-22 weeks of content
 
 **Convex pushes:**
-- `/push/linkedin-posts` — after each extraction, upsert by `insightName + sourceBlogSlug`
-  - **CRITICAL:** Never pass `krishnaFeedback: null` — omit the field entirely when revising
-  - On revision: push with `status: "draft_ready"` and omit `krishnaFeedback`
+- `/push/linkedin-posts` — upsert by `insightName + sourceBlogSlug`
+  - **CRITICAL:** Never pass `krishnaFeedback: null` — omit the field entirely
+  - Phase 2 push: include `draftText` + `status: "draft_ready"`, omit `krishnaFeedback`
 
 **Reads from Convex:**
-- `/query/linkedin-posts` — filters client-side for `status === "needs_revision"` AND `krishnaFeedback` not null
+- `/query/linkedin-posts` — includes `insightText`, `rationale`, `hookOptions`, `ctaOptions`, `draftText`, `krishnaFeedback`
+- Filters for `status === "approved"` (Phase 2 work) and `status === "needs_revision"` (revisions)
 
-**LinkedIn post status values:** `draft_ready` → `needs_revision` | `approved` → `posted` | `skipped`
+**LinkedIn post status values:** `pending_review` → `approved` | `needs_revision` | `dropped` → `draft_ready` → `posted` | `skipped`
 
 **What Valmiki does NOT do:** Post directly to LinkedIn, mention source blog in posts, write X/Twitter posts
 
@@ -199,13 +212,20 @@ Vibhishana revises              status → brief_ready
                                     Krishna reviews + merges PR
                                         → status → "published"
                                             ↓
-                                    Valmiki reads published blog (7 PM IST)
-                                        → extracts 3-5 named insights
-                                        → drafts 1-2 LinkedIn posts
-                                        → pushes to /push/linkedin-posts
+                                    Valmiki reads published blog (7 PM IST) [Phase 1]
+                                        → extracts 2-3 bookmark-worthy angles
+                                        → pushes post-briefs with insightText/rationale/hookOptions/ctaOptions
+                                        → status: "pending_review" → lands in Kanban To Do
                                             ↓
-                                    Krishna picks best draft
-                                        → posts manually to LinkedIn (8:30 AM next day)
+                                    Krishna reviews post-briefs in Kanban
+                                        → Approve → status: "approved"
+                                        → Drop / Needs Revision
+                                            ↓
+                                    Valmiki picks up approved brief [Phase 2]
+                                        → writes full LinkedIn post
+                                        → pushes draftText + status: "draft_ready"
+                                            ↓
+                                    Krishna reviews draft → Mark Posted (8:30 AM)
 ```
 
 ---
@@ -218,8 +238,9 @@ At the start of EVERY cron run, agents check for feedback items BEFORE doing any
 - MINOR → update in place (same slug), append to `revisionHistory`, push `status: pending_review`
 - MAJOR → mark old brief `dropped`, create new brief with new slug
 
-**Valmiki:** `GET /query/linkedin-posts` → filter `status === "needs_revision"` AND `krishnaFeedback` not null:
-- Revise the draft → push with `status: "draft_ready"` (NEVER include `krishnaFeedback: null` — omit the field)
+**Valmiki:** `GET /query/linkedin-posts` → check two cases:
+1. `status === "needs_revision"` AND `krishnaFeedback` not null → revise → push `status: "draft_ready"` (NEVER include `krishnaFeedback: null`)
+2. `status === "approved"` → write full draft → push `draftText` + `status: "draft_ready"`
 
 **Why:** Krishna leaves feedback directly in the Launch Control Kanban. Agents pick it up on their next scheduled run. No Slack copy-pasting required.
 

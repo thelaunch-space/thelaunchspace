@@ -1,8 +1,9 @@
 # Todo — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-28 (Shakti Phase 2 complete — VPS, crons, seed data)
+Last updated: 2026-03-01 (Kanban improvements shipped — Vyasa prUrl config pending)
 
 ## Priority: High
+- [ ] **Vyasa agent config: send `prUrl` in `/push/blogs`** — Convex schema + frontend now supports `prUrl` (Netlify deploy preview URL). Vyasa's `convex-push-blog.SKILL.md` needs updating to extract the Netlify deploy preview URL from the GitHub PR after creation and include it as `prUrl` in the `/push/blogs` payload. Until this is done, blog PR cards won't have a preview URL to click. Separate agent config change — coordinate with Partha.
 - [ ] **Production blog cleanup** — 4 junk/duplicate blog entries still in production Convex (`final-test-blog-1772095578`, `canonical-test-2026-02-26`, and pr_created duplicates of `ai-generated-code-deployment-reality` + `why-mvp-costs-too-much-validation-first`). Can drop them directly via Kanban dropdown now that "Drop" option exists. Or run `migrations:dropJunkBlogs` against prod with deploy key.
 - [ ] **Fix `/admin` sign-up flow** — Currently, Clerk's `<SignIn>` component at `/admin` still shows a "Sign up" link/option. This is wrong: (1) `/admin` should be sign-in ONLY for `krishna@thelaunch.space` — no sign-up. (2) If someone does sign up (e.g., finds `/admin`), they should NOT see the full admin dashboard. Admin view (Documents, Meetings tabs, full data) must be gated to Krishna's account only, not any authenticated user. Need to either: disable Clerk sign-up entirely, or add an admin email check in the dashboard that shows a "request access" message for non-Krishna accounts.
 - [ ] **Verify Daily Timeline times** — hardcoded in `lib/launch-control-types.ts`. Ask Parthasarathi to confirm they match actual VPS cron jobs.

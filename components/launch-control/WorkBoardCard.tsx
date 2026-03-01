@@ -8,6 +8,7 @@ import type { Id } from "@/convex/_generated/dataModel";
 import type { WorkBoardTask, KanbanColumn } from "@/lib/launch-control-types";
 import { CARD_BADGE_CONFIG, KANBAN_COLUMNS, OWNER_TAG_CONFIG } from "@/lib/launch-control-types";
 import BriefReaderModal from "./BriefReaderModal";
+import PostBriefModal from "./PostBriefModal";
 import TaskDetailModal from "./TaskDetailModal";
 
 // Slack channel for each agent — shown as reminder when feedback is sent
@@ -40,11 +41,11 @@ function columnToStatus(column: KanbanColumn, type: string): string {
       if (column === "done") return "published";
       return "writing";
     case "linkedin":
-      if (column === "todo") return "draft_ready";
+      if (column === "todo") return "pending_review";
       if (column === "blocked") return "needs_revision";
       if (column === "in_progress") return "approved";
       if (column === "done") return "posted";
-      return "draft_ready";
+      return "pending_review";
     case "booking":
       if (column === "todo") return "new";
       if (column === "in_progress") return "contacted";
@@ -86,6 +87,7 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPos, setMenuPos] = useState<{ top: number; right: number } | null>(null);
   const [briefModalOpen, setBriefModalOpen] = useState(false);
+  const [postBriefModalOpen, setPostBriefModalOpen] = useState(false);
   const [taskDetailOpen, setTaskDetailOpen] = useState(false);
 
   // Status dropdown state (for brief / blog / linkedin)
@@ -186,18 +188,17 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
       ];
     }
     if (type === "linkedin") {
-      if (status === "draft_ready") return [
+      if (status === "pending_review") return [
         { value: "approved", label: "Approve" },
         { value: "needs_revision", label: "Needs Revision" },
-        { value: "skipped", label: "Skip" },
-      ];
-      if (status === "approved") return [
-        { value: "posted", label: "Mark Posted" },
-        { value: "needs_revision", label: "Needs Revision" },
-        { value: "skipped", label: "Skip" },
+        { value: "dropped", label: "Drop" },
       ];
       if (status === "needs_revision") return [
         { value: "approved", label: "Approve" },
+        { value: "dropped", label: "Drop" },
+      ];
+      if (status === "draft_ready") return [
+        { value: "posted", label: "Mark Posted" },
         { value: "skipped", label: "Skip" },
       ];
     }
@@ -213,11 +214,22 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
     if (task.type === "brief") {
       setBriefModalOpen(true);
     } else if (task.type === "blog") {
-      // For PR cards: open preview URL; for published: open live URL
-      const target = task.status === "pr_created" && task.meta.prUrl
-        ? (task.meta.prUrl as string)
-        : (task.meta.url as string | null);
-      if (target) window.open(target, "_blank", "noopener,noreferrer");
+      if (task.status === "pr_created" && task.meta.prUrl) {
+        const prUrl = task.meta.prUrl as string;
+        const prNumber = prUrl.match(/\/pull\/(\d+)/)?.[1];
+        const topic = task.meta.topic as string | null;
+        const slug = task.meta.slug as string;
+        // Construct Netlify deploy preview URL if we have PR number + topic slug
+        const deployPreviewUrl = prNumber && topic
+          ? `https://deploy-preview-${prNumber}--thelaunchspace.netlify.app/blogs/${topic}/${slug}`
+          : prUrl; // fallback: open GitHub PR URL
+        window.open(deployPreviewUrl, "_blank", "noopener,noreferrer");
+      } else {
+        const url = task.meta.url as string | null;
+        if (url) window.open(url, "_blank", "noopener,noreferrer");
+      }
+    } else if (task.type === "linkedin") {
+      setPostBriefModalOpen(true);
     } else if (task.type === "task" || task.type === "manual") {
       setTaskDetailOpen(true);
     }
@@ -435,6 +447,22 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
   const meta = renderMeta();
   const usesDropdown = task.type === "brief" || task.type === "blog" || task.type === "linkedin";
 
+  // LinkedIn phase sub-badge — inferred from status + presence of draftText
+  const linkedinSubBadge: { label: string; color: string } | null = (() => {
+    if (task.type !== "linkedin") return null;
+    const hasDraft = !!task.meta.draftText;
+    switch (task.status) {
+      case "pending_review":  return { label: "Post-Brief",   color: "text-amber-600" };
+      case "needs_revision":  return { label: "Needs Revision", color: "text-red-500" };
+      case "approved":        return { label: "Writing…",     color: "text-blue-500" };
+      case "draft_ready":     return { label: hasDraft ? "Post-Draft" : "Post-Brief", color: "text-emerald-600" };
+      case "posted":          return { label: "Posted",       color: "text-emerald-500" };
+      case "skipped":         return { label: "Skipped",      color: "text-text-secondary/50" };
+      case "dropped":         return { label: "Dropped",      color: "text-text-secondary/50" };
+      default:                return null;
+    }
+  })();
+
   return (
     <>
       <div className="bg-surface border border-border-color/30 rounded-xl p-3 shadow-sm hover:shadow-card hover:border-border-color/60 transition-all cursor-default">
@@ -444,6 +472,11 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
             <span className={`shrink-0 text-[10px] font-medium px-1.5 py-0.5 rounded-full border ${badge.color} ${badge.bg}`}>
               {badge.label}
             </span>
+            {linkedinSubBadge && (
+              <span className={`shrink-0 text-[9px] font-medium ${linkedinSubBadge.color}`}>
+                {linkedinSubBadge.label}
+              </span>
+            )}
             {task.type === "brief" && revisionHistory.length > 0 && (
               <span className="text-[9px] font-mono text-text-secondary/50 bg-surface-alt px-1 py-0.5 rounded border border-border-color/20 shrink-0">
                 v{revisionHistory.length + 1}
@@ -466,7 +499,7 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
         <button
           className="text-xs font-medium text-text-primary text-left line-clamp-2 leading-snug hover:text-accent-blue transition-colors w-full mb-1.5 disabled:cursor-default disabled:hover:text-text-primary"
           onClick={handleTitleClick}
-          disabled={task.type !== "brief" && task.type !== "blog" && task.type !== "task" && task.type !== "manual"}
+          disabled={task.type !== "brief" && task.type !== "blog" && task.type !== "task" && task.type !== "manual" && task.type !== "linkedin"}
           title={task.title}
         >
           {task.title}
@@ -566,6 +599,14 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
         <BriefReaderModal
           briefId={task.id as Id<"briefs">}
           onClose={() => setBriefModalOpen(false)}
+        />
+      )}
+
+      {task.type === "linkedin" && postBriefModalOpen && (
+        <PostBriefModal
+          task={task}
+          open={postBriefModalOpen}
+          onClose={() => setPostBriefModalOpen(false)}
         />
       )}
 
