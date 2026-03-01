@@ -120,7 +120,8 @@ Reference `.context/` files when needed:
 | architecture.md | Understanding component structure, data flow |
 | feedback-and-bugs.md | Logging bugs, design feedback, and issues from Krishna |
 | design-system-v2.md | Brand colors, typography, shadows, AI employee character designs, NBP avatar prompts |
-| hire-your-24x7-team.md | **START HERE** — Full brainstorm for `/hire-your-24x7-team` service pitch page. Pricing ($200 POC), 4-week timeline, Pokemon stat cards for agents, Launch Control hidden behind secondary CTA. |
+| your-ai-team.md | Reference doc for `/your-ai-team` pitch page. Pricing rationale, 4-week timeline, Pokemon stat cards, Launch Control CTA design intent. Feature is LIVE. |
+| agents.md | **Agent team context** — what each agent does, their Convex push/read patterns, the full blog pipeline, Feedback-First Protocol, daily schedule, and key rules. Load this when working on Launch Control, Kanban, or anything agent-related. |
 | launch-control/prd.md | LC architecture, schema, endpoints, decisions, build progress |
 | launch-control/frontend-spec.md | LC frontend layout, components, responsive design |
 | ideation/work-mode-kanban-spec.md | Planned Work Mode Kanban board feature spec |

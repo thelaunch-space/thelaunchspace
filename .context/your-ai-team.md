@@ -1,5 +1,7 @@
 # Hire Your 24x7 Team — Service Pitch Page
 
+> ⚠️ Note: URL changed from `/hire-your-24x7-team` → `/your-ai-team` (2026-02-27). Feature is LIVE. This doc is reference only.
+
 Status: BUILT AND LIVE — 14 components under `components/pitch/`, live Convex data, deployed to production
 Created: 2026-02-16
 Last updated: 2026-02-27 (v4 — slug renamed to /your-ai-team, anchor #contact, pricing overhauled)

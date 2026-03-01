@@ -85,13 +85,6 @@ Last updated: 2026-02-27
 **Context:** Some logos (especially dark ones) had visible sharp corners inside the rounded dock item containers.
 **Action:** Removed `p-1.5` padding from icon anchor (image now fills edge-to-edge). Added `overflow-hidden` so container clips image to rounded corners. Removed `rounded-[inherit]` from img since parent handles clipping.
 
-### BUG-003: AnnouncementRibbon said "Coming Soon" for live product (2026-02-16)
-**Status:** Fixed
-**Reported:** Context docs audit found that `AnnouncementRibbon.tsx` still said "Coming Soon — Launch Control" with a LinkedIn DM CTA, even though Launch Control is live in production with a NavBar link.
-**Root cause:** Ribbon content was never updated when Launch Control shipped.
-**Fix:** Changed "Coming Soon" to "Live Now", replaced LinkedIn DM link with internal `/launch-control` link. CTA now reads "Enter Launch Control" (desktop) / "View live" (mobile).
-**Files:** `components/AnnouncementRibbon.tsx`
-
 ## Resolved Bugs
 
 ### BUG-001: Logo flashes at full size during navigation (2026-02-14)
