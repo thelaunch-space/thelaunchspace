@@ -1,5 +1,7 @@
 # Krishna Goutham | thelaunch.space
 
+Last updated: 2026-03-01
+
 ## Quick Reference
 
 Solo founder of thelaunch.space, an AI-first execution studio converting founder ideas into shipped products in weeks. Former EdTech leader (9+ yrs at BYJU'S, AVP level, 300+ team). Non-developer who builds production software through prompting. Expert in Bolt.new, Supabase, prompt engineering.
@@ -142,7 +144,7 @@ Solo founder of thelaunch.space, an AI-first execution studio converting founder
 | Prompt engineering | Wrote Bolt.new curriculum, teaches others |
 | Prompt debugging | Reverse-engineers broken prompts systematically |
 | Bolt.new | Official curriculum author, extensive production use |
-| Vibe-coding | Core methodology, teaches non-devs |
+| Agentic engineering | Core methodology, teaches non-devs |
 | Product strategy | AVP at BYJU'S, 9+ years |
 | MVP methodology | Ships fast, iterates on feedback |
 | Curriculum design | Decade of experience |
@@ -232,7 +234,7 @@ Beacon House is our flagship client — an education consultancy focused on Ivy 
 | **DirectShelf** | D2C aggregator landing page for investor demo | 1-day turnaround |
 | **VitalyF** | Medical weight loss program — research, copy, design, build | End-to-end |
 | **Tripture Travel** | Growth/GTM strategy advisory | Grew Instagram 200 followers/week |
-| **LetsPOAI** | Landing page for Goa AI community | Invited to run vibe-coding session |
+| **LetsPOAI** | Landing page for Goa AI community | Invited to run agentic engineering / AI building session |
 
 ### Personal Projects (Pre-thelaunch.space / Retired)
 

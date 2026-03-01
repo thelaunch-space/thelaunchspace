@@ -1,7 +1,7 @@
 # Valmiki LinkedIn Pipeline — Launch Control Integration Spec
 
 > Created: 2026-02-28
-> Status: Ready to build — open this folder in Claude Code to implement
+> Status: SHIPPED — 2026-02-26 (`linkedinPosts` table live, `/push/linkedin-posts` endpoint deployed, Valmiki workflow active). This doc is reference only.
 
 ---
 
