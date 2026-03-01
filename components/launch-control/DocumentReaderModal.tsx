@@ -50,7 +50,7 @@ export default function DocumentReaderModal({ documentId, onClose }: DocumentRea
       onClick={onClose}
     >
       <div
-        className="bg-surface border border-border-color/60 rounded-t-2xl sm:rounded-2xl shadow-card-hover w-full sm:max-w-[1200px] max-h-[95dvh] sm:max-h-[90dvh] relative animate-scaleIn overflow-hidden flex flex-col sm:mx-4"
+        className="bg-surface border border-border-color/60 rounded-t-2xl sm:rounded-2xl shadow-card-hover w-full sm:max-w-[1200px] max-h-[80dvh] sm:max-h-[90dvh] relative animate-scaleIn overflow-hidden flex flex-col sm:mx-4"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Mobile drag handle */}
@@ -94,7 +94,7 @@ export default function DocumentReaderModal({ documentId, onClose }: DocumentRea
             <p className="text-sm text-text-secondary">Document not found.</p>
           </div>
         ) : (
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden">
             <div className="flex flex-col lg:flex-row">
               {/* Left: Markdown content */}
               <div className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0">
