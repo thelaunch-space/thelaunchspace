@@ -7,6 +7,7 @@ export const ingest = internalMutation({
     title: v.string(),
     slug: v.string(),
     url: v.optional(v.string()),
+    prUrl: v.optional(v.string()),
     keyword: v.string(),
     status: v.string(),
     agentName: v.string(),
@@ -26,6 +27,7 @@ export const ingest = internalMutation({
       await ctx.db.patch(existing._id, {
         title: args.title,
         url: args.url,
+        prUrl: args.prUrl,
         keyword: args.keyword,
         status: args.status,
         wordCount: args.wordCount,

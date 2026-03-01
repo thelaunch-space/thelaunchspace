@@ -8,6 +8,7 @@ import type { Id } from "@/convex/_generated/dataModel";
 import type { WorkBoardTask, KanbanColumn } from "@/lib/launch-control-types";
 import { CARD_BADGE_CONFIG, KANBAN_COLUMNS, OWNER_TAG_CONFIG } from "@/lib/launch-control-types";
 import BriefReaderModal from "./BriefReaderModal";
+import TaskDetailModal from "./TaskDetailModal";
 
 // Slack channel for each agent — shown as reminder when feedback is sent
 const AGENT_SLACK_CHANNEL: Record<string, string> = {
@@ -85,6 +86,7 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPos, setMenuPos] = useState<{ top: number; right: number } | null>(null);
   const [briefModalOpen, setBriefModalOpen] = useState(false);
+  const [taskDetailOpen, setTaskDetailOpen] = useState(false);
 
   // Status dropdown state (for brief / blog / linkedin)
   const [selectedStatus, setSelectedStatus] = useState<string>("");
@@ -210,8 +212,14 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
   function handleTitleClick() {
     if (task.type === "brief") {
       setBriefModalOpen(true);
-    } else if (task.type === "blog" && task.meta.url) {
-      window.open(task.meta.url as string, "_blank", "noopener,noreferrer");
+    } else if (task.type === "blog") {
+      // For PR cards: open preview URL; for published: open live URL
+      const target = task.status === "pr_created" && task.meta.prUrl
+        ? (task.meta.prUrl as string)
+        : (task.meta.url as string | null);
+      if (target) window.open(target, "_blank", "noopener,noreferrer");
+    } else if (task.type === "task" || task.type === "manual") {
+      setTaskDetailOpen(true);
     }
   }
 
@@ -458,7 +466,7 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
         <button
           className="text-xs font-medium text-text-primary text-left line-clamp-2 leading-snug hover:text-accent-blue transition-colors w-full mb-1.5 disabled:cursor-default disabled:hover:text-text-primary"
           onClick={handleTitleClick}
-          disabled={task.type !== "brief" && task.type !== "blog"}
+          disabled={task.type !== "brief" && task.type !== "blog" && task.type !== "task" && task.type !== "manual"}
           title={task.title}
         >
           {task.title}
@@ -558,6 +566,13 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
         <BriefReaderModal
           briefId={task.id as Id<"briefs">}
           onClose={() => setBriefModalOpen(false)}
+        />
+      )}
+
+      {taskDetailOpen && (task.type === "task" || task.type === "manual") && (
+        <TaskDetailModal
+          task={task}
+          onClose={() => setTaskDetailOpen(false)}
         />
       )}
     </>

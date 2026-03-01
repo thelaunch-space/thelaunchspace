@@ -97,6 +97,7 @@ export default defineSchema({
     title: v.string(),
     slug: v.string(),
     url: v.optional(v.string()),    // Published URL on thelaunch.space
+    prUrl: v.optional(v.string()),  // Netlify deploy preview URL (set when status = pr_created)
     keyword: v.string(),
     status: v.string(),             // "writing" | "pr_created" | "published"
     agentName: v.string(),

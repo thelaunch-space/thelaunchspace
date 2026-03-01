@@ -80,6 +80,7 @@ function mapClusterStatus(status: string): { column: WorkBoardTask["column"]; ow
 
 function mapManualStatus(status: string): { column: WorkBoardTask["column"]; owner: string | null } {
   switch (status) {
+    case "backlog":     return { column: "backlog", owner: null };
     case "todo":        return { column: "todo", owner: "Krishna" };
     case "in_progress": return { column: "in_progress", owner: "Krishna" };
     case "blocked":     return { column: "blocked", owner: "Krishna" };
@@ -153,6 +154,7 @@ export const getBoard = query({
         meta: {
           slug: blog.slug,
           url: blog.url ?? null,
+          prUrl: blog.prUrl ?? null,
           keyword: blog.keyword,
           briefId: blog.briefId ?? null,
         },

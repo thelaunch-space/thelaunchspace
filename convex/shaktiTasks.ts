@@ -63,6 +63,23 @@ export const updateStatus = internalMutation({
   },
 });
 
+// Public mutation — for Krishna to edit task details in the Kanban modal
+export const update = mutation({
+  args: {
+    id: v.id("tasks"),
+    description: v.optional(v.string()),
+    paceNotes: v.optional(v.string()),
+  },
+  handler: async (ctx, { id, ...patches }) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthorized");
+    const defined = Object.fromEntries(
+      Object.entries(patches).filter(([, v]) => v !== undefined)
+    );
+    await ctx.db.patch(id, { ...defined, updatedAt: new Date().toISOString() });
+  },
+});
+
 // Delete a task by ID (public — for admin panel cleanup)
 export const remove = mutation({
   args: { id: v.id("tasks") },

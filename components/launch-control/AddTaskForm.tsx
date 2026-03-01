@@ -6,6 +6,7 @@ import { api } from "@/convex/_generated/api";
 
 interface AddTaskFormProps {
   onClose: () => void;
+  targetColumn?: "backlog" | "todo";
 }
 
 type Mode = "quick" | "client";
@@ -17,7 +18,7 @@ const PRIORITY_OPTIONS = [
   { label: "Low", value: 1 },
 ];
 
-export default function AddTaskForm({ onClose }: AddTaskFormProps) {
+export default function AddTaskForm({ onClose, targetColumn = "todo" }: AddTaskFormProps) {
   const [mode, setMode] = useState<Mode>("quick");
 
   // Quick task state
@@ -51,7 +52,7 @@ export default function AddTaskForm({ onClose }: AddTaskFormProps) {
     if (!quickTitle.trim()) return;
     setSubmitting(true);
     try {
-      await createManual({ title: quickTitle.trim(), description: quickDesc.trim() || undefined });
+      await createManual({ title: quickTitle.trim(), description: quickDesc.trim() || undefined, status: targetColumn });
       onClose();
     } finally {
       setSubmitting(false);
@@ -69,7 +70,7 @@ export default function AddTaskForm({ onClose }: AddTaskFormProps) {
         title: title.trim(),
         taskType,
         priority,
-        status: "todo",
+        status: targetColumn,
         estimatedHours: estimatedHours ? parseFloat(estimatedHours) : undefined,
         deadline: deadline || undefined,
         description: description.trim() || undefined,

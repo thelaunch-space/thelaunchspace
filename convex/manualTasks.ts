@@ -6,8 +6,9 @@ export const create = mutation({
     title: v.string(),
     description: v.optional(v.string()),
     assignee: v.optional(v.string()),
+    status: v.optional(v.string()),
   },
-  handler: async (ctx, { title, description, assignee }) => {
+  handler: async (ctx, { title, description, assignee, status }) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Unauthorized");
 
@@ -16,7 +17,7 @@ export const create = mutation({
       title,
       description,
       assignee: assignee ?? "Krishna",
-      status: "todo",
+      status: status ?? "todo",
       createdAt: now,
       updatedAt: now,
     });

@@ -59,10 +59,14 @@ export default function WorkBoardColumn({ column, label, tasks, loading }: WorkB
             {tasks.length}
           </span>
         )}
-        {column === "todo" && !loading && (
+        {(column === "todo" || column === "backlog") && !loading && (
           <button
             onClick={() => setAddingTask(true)}
-            className="ml-auto p-1 rounded-lg text-amber-600/60 hover:text-amber-700 hover:bg-white/60 transition-colors"
+            className={`ml-auto p-1 rounded-lg transition-colors ${
+              column === "todo"
+                ? "text-amber-600/60 hover:text-amber-700 hover:bg-white/60"
+                : "text-text-secondary/50 hover:text-text-secondary hover:bg-white/60"
+            }`}
             aria-label="Add task"
           >
             <Plus size={14} />
@@ -77,7 +81,10 @@ export default function WorkBoardColumn({ column, label, tasks, loading }: WorkB
         <div className="flex-1 overflow-y-auto scrollbar-hide px-2 pb-2 space-y-2">
           {/* Inline add form at top of list */}
           {addingTask && (
-            <AddTaskForm onClose={() => setAddingTask(false)} />
+            <AddTaskForm
+              onClose={() => setAddingTask(false)}
+              targetColumn={column === "backlog" ? "backlog" : "todo"}
+            />
           )}
 
           {tasks.length === 0 && !addingTask ? (
