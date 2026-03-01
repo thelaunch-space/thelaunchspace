@@ -1,19 +1,20 @@
-import { internalMutation, internalQuery } from "./_generated/server";
+import { internalMutation, internalQuery, query } from "./_generated/server";
 import { v } from "convex/values";
 
-// Upsert a LinkedIn post draft (called from HTTP push route)
+// Upsert a LinkedIn post-brief or draft (called from HTTP push route)
 export const upsert = internalMutation({
   args: {
     insightName: v.string(),
-    draftText: v.string(),
     sourceBlogSlug: v.string(),
     sourceBlogTitle: v.optional(v.string()),
     insightNumber: v.number(),
-    source: v.string(),
-    icpPass: v.boolean(),
-    icpFailReason: v.optional(v.string()),
-    hookStrategy: v.optional(v.string()),
-    ctaType: v.optional(v.string()),
+    // Phase 1 — post-brief fields
+    insightText: v.optional(v.string()),
+    rationale: v.optional(v.string()),
+    hookOptions: v.optional(v.array(v.string())),
+    ctaOptions: v.optional(v.array(v.string())),
+    // Phase 2 — draft fields
+    draftText: v.optional(v.string()),
     krishnaFeedback: v.optional(v.string()),
     postedDate: v.optional(v.string()),
     linkedinUrl: v.optional(v.string()),
@@ -33,13 +34,14 @@ export const upsert = internalMutation({
 
     if (existing) {
       await ctx.db.patch(existing._id, {
-        draftText: args.draftText,
         status: args.status,
         updatedAt: now,
         ...(args.sourceBlogTitle !== undefined && { sourceBlogTitle: args.sourceBlogTitle }),
-        ...(args.icpFailReason !== undefined && { icpFailReason: args.icpFailReason }),
-        ...(args.hookStrategy !== undefined && { hookStrategy: args.hookStrategy }),
-        ...(args.ctaType !== undefined && { ctaType: args.ctaType }),
+        ...(args.insightText !== undefined && { insightText: args.insightText }),
+        ...(args.rationale !== undefined && { rationale: args.rationale }),
+        ...(args.hookOptions !== undefined && { hookOptions: args.hookOptions }),
+        ...(args.ctaOptions !== undefined && { ctaOptions: args.ctaOptions }),
+        ...(args.draftText !== undefined && { draftText: args.draftText }),
         ...(args.krishnaFeedback !== undefined && { krishnaFeedback: args.krishnaFeedback }),
         ...(args.postedDate !== undefined && { postedDate: args.postedDate }),
         ...(args.linkedinUrl !== undefined && { linkedinUrl: args.linkedinUrl }),
@@ -90,5 +92,16 @@ export const queryAll = internalQuery({
   handler: async (ctx) => {
     const results = await ctx.db.query("linkedinPosts").collect();
     return results.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+  },
+});
+
+// Public auth-gated query — returns all posts for the LinkedIn posts table
+export const listAll = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return [];
+    const results = await ctx.db.query("linkedinPosts").collect();
+    return results.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   },
 });

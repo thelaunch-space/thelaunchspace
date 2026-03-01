@@ -20,8 +20,9 @@ const BlogsTable = dynamic(() => import("./BlogsTable"));
 const BlogsPreview = dynamic(() => import("./BlogsPreview"));
 const MeetingsPanel = dynamic(() => import("./MeetingsPanel"));
 const DocumentsPanel = dynamic(() => import("./DocumentsPanel"));
+const LinkedinPostsTable = dynamic(() => import("./LinkedinPostsTable"));
 
-type Tab = "overview" | "blogs" | "communities" | "questions" | "briefs" | "strategy" | "documents" | "meetings";
+type Tab = "overview" | "blogs" | "communities" | "questions" | "briefs" | "strategy" | "linkedin" | "documents" | "meetings";
 
 const TAB_DESCRIPTIONS: Record<Tab, string> = {
   overview: "A summary of what the AI team produced this week",
@@ -30,6 +31,7 @@ const TAB_DESCRIPTIONS: Record<Tab, string> = {
   questions: "Customer questions Vibhishana, The Scout found across Reddit and forums",
   briefs: "Research docs Vibhishana, The Scout creates for Vyasa, The Writer to turn into blogs",
   strategy: "Topic clusters and tool opportunities mapped by Vidura, The Strategist",
+  linkedin: "LinkedIn post-briefs and full drafts extracted by Valmiki from published blogs",
   documents: "Research reports, strategy docs, and deliverables created by the AI team",
   meetings: "",
 };
@@ -41,6 +43,7 @@ const TABS: { label: string; value: Tab }[] = [
   { label: "Questions", value: "questions" },
   { label: "Briefs", value: "briefs" },
   { label: "Strategy", value: "strategy" },
+  { label: "LinkedIn", value: "linkedin" },
   { label: "Documents", value: "documents" },
   { label: "Meetings", value: "meetings" },
 ];
@@ -59,7 +62,7 @@ export default function CenterTabs({ weeklyStats, allTimeStats, blogPosts }: Cen
     <div className="lg:flex lg:flex-col lg:flex-1 lg:min-h-0">
       {/* Tab bar */}
       <div data-tour="tab-bar" className="sticky top-[68px] md:top-[46px] lg:static z-10 bg-background py-2 -my-2 flex items-center gap-1 mb-4 overflow-x-auto scrollbar-hide -mx-1 px-1 shrink-0">
-        {TABS.filter((t) => (t.value !== "meetings" && t.value !== "documents") || isSignedIn).map((tab) => (
+        {TABS.filter((t) => (t.value !== "meetings" && t.value !== "documents" && t.value !== "linkedin") || isSignedIn).map((tab) => (
           <button
             key={tab.value}
             onClick={() => setActiveTab(tab.value)}
@@ -115,6 +118,11 @@ export default function CenterTabs({ weeklyStats, allTimeStats, blogPosts }: Cen
           <div className="rounded-2xl border border-border-color/40 bg-surface overflow-hidden">
             {isSignedIn ? <StrategyPanel /> : <StrategyPreview />}
           </div>
+        </div>
+      )}
+      {activeTab === "linkedin" && isSignedIn && (
+        <div className="rounded-2xl border border-border-color/40 bg-surface overflow-hidden lg:flex lg:flex-col lg:flex-1 lg:min-h-0">
+          <LinkedinPostsTable />
         </div>
       )}
       {activeTab === "documents" && isSignedIn && (

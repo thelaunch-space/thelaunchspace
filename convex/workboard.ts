@@ -39,9 +39,11 @@ function mapBlogStatus(status: string): { column: WorkBoardTask["column"]; owner
 
 function mapLinkedinStatus(status: string): { column: WorkBoardTask["column"]; owner: string | null } {
   switch (status) {
+    case "pending_review":  return { column: "todo", owner: "Krishna" };
     case "draft_ready":     return { column: "todo", owner: "Krishna" };
     case "needs_revision":  return { column: "blocked", owner: "Valmiki" };
-    case "approved":        return { column: "in_progress", owner: "Krishna" };
+    case "approved":        return { column: "in_progress", owner: "Valmiki" };
+    case "dropped":         return { column: "done", owner: null };
     case "posted":          return { column: "done", owner: null };
     case "skipped":         return { column: "done", owner: null };
     default:                return { column: "backlog", owner: null };
@@ -119,6 +121,12 @@ export const getBoard = query({
         ctx.db.query("tasks").collect(),
       ]);
 
+    // Build briefId → category (topic slug) lookup — used to construct deploy preview URLs for blogs
+    const briefTopicMap = new Map(briefs.map((b) => [b._id as string, b.category ?? null]));
+
+    // Build slug → published URL lookup — used to surface the source blog URL on LinkedIn post cards
+    const blogUrlBySlug = new Map(blogs.filter((b) => b.url).map((b) => [b.slug, b.url!]));
+
     const tasks: WorkBoardTask[] = [];
 
     for (const brief of briefs) {
@@ -155,6 +163,7 @@ export const getBoard = query({
           slug: blog.slug,
           url: blog.url ?? null,
           prUrl: blog.prUrl ?? null,
+          topic: blog.briefId ? (briefTopicMap.get(blog.briefId) ?? null) : null,
           keyword: blog.keyword,
           briefId: blog.briefId ?? null,
         },
@@ -174,8 +183,13 @@ export const getBoard = query({
         meta: {
           sourceBlogSlug: post.sourceBlogSlug,
           sourceBlogTitle: post.sourceBlogTitle ?? null,
+          sourceBlogUrl: blogUrlBySlug.get(post.sourceBlogSlug) ?? null,
           insightNumber: post.insightNumber,
-          draftText: post.draftText,
+          insightText: post.insightText ?? null,
+          rationale: post.rationale ?? null,
+          hookOptions: post.hookOptions ?? null,
+          ctaOptions: post.ctaOptions ?? null,
+          draftText: post.draftText ?? null,
           krishnaFeedback: post.krishnaFeedback ?? null,
         },
       });

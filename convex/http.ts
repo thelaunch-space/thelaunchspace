@@ -534,6 +534,11 @@ http.route({
         sourceBlogSlug: p.sourceBlogSlug,
         insightNumber: p.insightNumber,
         status: p.status,
+        insightText: p.insightText ?? null,
+        rationale: p.rationale ?? null,
+        hookOptions: p.hookOptions ?? null,
+        ctaOptions: p.ctaOptions ?? null,
+        draftText: p.draftText ?? null,
         krishnaFeedback: p.krishnaFeedback ?? null,
         createdAt: p.createdAt,
       })));

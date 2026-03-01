@@ -187,22 +187,23 @@ export default defineSchema({
     .index("by_category", ["category"])
     .index("by_createdAt", ["createdAt"]),
 
-  // Valmiki's LinkedIn post drafts
+  // Valmiki's LinkedIn post-briefs and drafts (2-phase workflow)
   linkedinPosts: defineTable({
     insightName: v.string(),           // Dedup key (sourceBlogSlug + insightNumber)
-    draftText: v.string(),
     sourceBlogSlug: v.string(),
     sourceBlogTitle: v.optional(v.string()),
     insightNumber: v.number(),
-    source: v.string(),                // "blog" | "krishna-insight"
-    icpPass: v.boolean(),
-    icpFailReason: v.optional(v.string()),
-    hookStrategy: v.optional(v.string()),
-    ctaType: v.optional(v.string()),
+    // Phase 1 fields — post-brief (pending_review)
+    insightText: v.optional(v.string()),   // The extracted angle/insight
+    rationale: v.optional(v.string()),     // Why this angle resonates with ICP
+    hookOptions: v.optional(v.array(v.string())),  // 3-4 hook options
+    ctaOptions: v.optional(v.array(v.string())),   // 3-4 CTA options
+    // Phase 2 fields — full draft (draft_ready)
+    draftText: v.optional(v.string()),
     krishnaFeedback: v.optional(v.string()),
     postedDate: v.optional(v.string()),
     linkedinUrl: v.optional(v.string()),
-    status: v.string(),                // "draft_ready" | "needs_revision" | "approved" | "posted" | "skipped"
+    status: v.string(),                // "pending_review" | "needs_revision" | "approved" | "dropped" | "draft_ready" | "posted" | "skipped"
     agentName: v.string(),             // "Valmiki"
     createdAt: v.string(),
     updatedAt: v.optional(v.string()),

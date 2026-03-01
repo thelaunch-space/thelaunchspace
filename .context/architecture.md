@@ -1,6 +1,6 @@
 # Architecture — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-28 (13 Convex tables, Shakti Phase 0+1, 7 agents, 22 blogs, pricing corrected)
+Last updated: 2026-03-01 (Kanban improvements: TaskDetailModal, backlog creation, blog prUrl)
 
 ## Overview
 Next.js 14 App Router application. Server-side rendered for SEO/crawlability. Landing page content rendered as a client component for interactivity. Blog posts are static Server Components created by an AI agent via GitHub PRs. "Build Your AI Team" section showcases 7 AI agents with index + detail pages. Webhook proxy via API route (server-side, no secrets exposed to browser). Hosted on Netlify. Google Analytics (GA4) tracking via `next/script`. **Convex** real-time database for Launch Control dashboard (agent activity, questions, briefs, blogs, topic clusters, tool opportunities, pitch bookings). **Clerk** authentication for admin access. Entire app wrapped in ConvexProviderWithClerk + ClerkProvider. **Geo-detected pricing** — middleware sets `geo_region` cookie (IN/INTL) for localized cost savings display.
@@ -43,7 +43,7 @@ app/
 │   ├── ai-tools-non-technical-founders-mvp/
 │   ├── ai-generated-code-deployment-reality/
 │   ├── invoice-automation-small-business-ocr-custom/
-│   └── vibe-coding-scaling-wall/
+│   └── agentic engineering-scaling-wall/
 ├── build-your-ai-team/     # AI team showcase section (legacy — no navbar link, accessible via direct URL only. 301 redirect to /your-ai-team is still a TODO)
 │   ├── layout.tsx          # Section layout
 │   ├── page.tsx            # Agent index page (card grid)
@@ -123,10 +123,11 @@ components/
     ├── GuidedTour.tsx              # FTUE spotlight tour for first-time visitors (5 desktop / 4 mobile steps, localStorage tracking)
     ├── WaitlistCTA.tsx             # "Get Your AI Team" button → /your-ai-team#contact (no email gate). Hides when signed in.
     ├── WorkBoard.tsx               # Work Mode Kanban (5 columns + archive, full-viewport in work mode, hides agent sidebar)
-    ├── WorkBoardColumn.tsx         # Single kanban column with header (title, task count, color bar)
-    ├── WorkBoardCard.tsx           # Kanban task card — owner tag, health bar, status dropdown + feedback textarea, revisionHistory collapsible panel
+    ├── WorkBoardColumn.tsx         # Single kanban column with header (title, task count, color bar). "+" button on both todo AND backlog columns.
+    ├── WorkBoardCard.tsx           # Kanban task card — owner tag, health bar, status dropdown + feedback textarea, revisionHistory collapsible panel. Title click: brief→BriefReaderModal, blog→prUrl/url, task/manual→TaskDetailModal.
     ├── WorkBoardArchive.tsx        # Archive column — previous weeks grouped by collapsible week panes
-    └── AddManualTaskForm.tsx       # Form to create manual tasks in the Kanban (title, description, assignee)
+    ├── AddTaskForm.tsx             # Form to create manual or client tasks in Kanban. Accepts targetColumn ("todo"|"backlog") — creates task with correct status.
+    └── TaskDetailModal.tsx         # Task detail overlay for "task" and "manual" card types. Shows client/project/type/priority/deadline (read-only for tasks). Editable title (manual) + notes/description. Saves via manualTasks.update or shaktiTasks.update.
 lib/
 ├── agents.ts              # Agent data layer (7 agents, typed interfaces, structured for future DB migration). Includes Vidura + Shakti ("The Chief of Staff", indigo accent).
 ├── blog.ts                # Blog discovery utility (shared by sitemap.ts + blogs/page.tsx). Server-only (uses fs).
@@ -153,16 +154,16 @@ convex/
 ├── http.ts                 # HTTP Action router — canonical /push/* + /update/* + /query/* routes + legacy /ingest* aliases. Bearer token auth + CORS.
 ├── questions.ts            # ingestBatch (internal, upsert by URL) + listRecent (public) + listFullDetails (admin)
 ├── briefs.ts               # ingest (internal) + upsert (internal, dedup by slug) + updateStatus (internal) + listMetadata (public) + getFullBrief/getPublicBrief/listFull (admin)
-├── blogs.ts                # ingest (internal, upsert by slug) + updateEnrichment (internal) + listRecent (public) + enrichment fields
+├── blogs.ts                # ingest (internal, upsert by slug, accepts prUrl) + updateEnrichment (internal) + listRecent (public) + enrichment fields
 ├── agentActivity.ts        # ingest (internal, dedup by dedupKey) + agentStatuses/recentFeed (public) + fullLog (admin)
 ├── topicClusters.ts        # ingest (internal) + listRecent (public) — Vidura's SEO topic clusters
 ├── toolOpportunities.ts    # ingest (internal) + listRecent (public) — Vidura's interactive tool proposals
 ├── documents.ts            # upsert (internal, dedup by slug) + listMetadata (admin) + getDocument (admin) — agent research/strategy docs
 ├── linkedinPosts.ts        # ingest (internal, upsert by insightName+sourceBlogSlug) + listRecent/listFull + updateStatus — Valmiki's LinkedIn drafts
-├── manualTasks.ts          # CRUD (add, list, updateStatus) — Krishna-created tasks surfaced in Work Mode Kanban
+├── manualTasks.ts          # create (optional status param, defaults "todo") + update + remove — Krishna-created tasks surfaced in Work Mode Kanban
 ├── clients.ts              # upsert (internal, dedup by slug) — Shakti's client registry
 ├── projects.ts             # upsert (internal, dedup by slug) — Shakti's project registry
-├── shaktiTasks.ts          # upsert (internal, dedup by clientSlug+projectSlug+title) + updateStatus — Shakti's task backlog
+├── shaktiTasks.ts          # upsert (internal) + updateStatus (internal) + update (public, edits description/paceNotes) + create (public) + remove (public) — Shakti's task backlog
 ├── workboard.ts            # getBoard (8 card types: brief/blog/linkedin/booking/tool/cluster/manual/task), updateArtifactStatus — Work Mode Kanban queries
 ├── agentQueries.ts         # Shared query helpers — includes getAllClients, getAllProjects, getTasksByFilters for Shakti HTTP endpoints
 └── lib/
@@ -298,7 +299,7 @@ RootLayout (Server)
 |-------|---------|-----------|
 | `questions` | Vibhishana's Reddit scans | Batch via `/push/questions` (upsert by URL) |
 | `briefs` | Vibhishana's research briefs (with revisionHistory) | Single via `/push/briefs` (upsert by slug) |
-| `blogs` | Vyasa's published blog metadata (+enrichment tracking) | Single via `/push/blogs` (upsert by slug) |
+| `blogs` | Vyasa's published blog metadata (+enrichment tracking, +`prUrl` Netlify preview URL) | Single via `/push/blogs` (upsert by slug) |
 | `agentActivity` | All agent milestones (dedup by dedupKey) | Single via `/push/activity` |
 | `topicClusters` | Vidura's SEO topic clusters (pillar→cluster mapping) | Single via `/push/topic-clusters` |
 | `toolOpportunities` | Vidura's interactive tool proposals | Single via `/push/tool-opportunities` |
