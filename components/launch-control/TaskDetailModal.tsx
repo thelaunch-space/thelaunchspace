@@ -19,6 +19,7 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
   const updateTask = useMutation(api.shaktiTasks.update);
 
   const isManual = task.type === "manual";
+  const isTask = task.type === "task";
 
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState((task.meta.description as string | null) ?? "");
@@ -49,6 +50,7 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
       } else {
         await updateTask({
           id: task.id as Id<"tasks">,
+          title: title.trim() || undefined,
           description: description.trim() || undefined,
         });
       }
@@ -140,8 +142,8 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
             </div>
           )}
 
-          {/* Editable title (manual tasks only) */}
-          {isManual && (
+          {/* Editable title (manual and task types) */}
+          {(isManual || isTask) && (
             <div>
               <label className="text-[10px] text-text-secondary/60 uppercase tracking-wide font-medium block mb-1">
                 Title
@@ -152,16 +154,6 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
                 onChange={(e) => setTitle(e.target.value)}
                 className="w-full text-sm bg-surface-alt rounded-lg px-3 py-2 text-text-primary border border-border-color/40 focus:outline-none focus:border-accent-blue/50"
               />
-            </div>
-          )}
-
-          {/* Title display for client tasks */}
-          {!isManual && (
-            <div>
-              <label className="text-[10px] text-text-secondary/60 uppercase tracking-wide font-medium block mb-1">
-                Title
-              </label>
-              <p className="text-sm text-text-primary font-medium leading-snug">{task.title}</p>
             </div>
           )}
 

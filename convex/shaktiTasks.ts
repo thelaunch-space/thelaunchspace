@@ -67,6 +67,7 @@ export const updateStatus = internalMutation({
 export const update = mutation({
   args: {
     id: v.id("tasks"),
+    title: v.optional(v.string()),
     description: v.optional(v.string()),
     paceNotes: v.optional(v.string()),
   },

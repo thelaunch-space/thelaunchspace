@@ -111,6 +111,7 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
 
   const updateStatus = useMutation(api.workboard.updateArtifactStatus);
   const removeTask = useMutation(api.manualTasks.remove);
+  const removeShaktiTask = useMutation(api.shaktiTasks.remove);
 
   const badge = CARD_BADGE_CONFIG[task.type];
 
@@ -206,8 +207,11 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
   }
 
   async function handleDelete() {
-    if (task.type !== "manual") return;
-    await removeTask({ id: task.id as Id<"manualTasks"> });
+    if (task.type === "manual") {
+      await removeTask({ id: task.id as Id<"manualTasks"> });
+    } else if (task.type === "task") {
+      await removeShaktiTask({ id: task.id as Id<"tasks"> });
+    }
   }
 
   function handleTitleClick() {
@@ -564,7 +568,7 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
             ) : null
           )}
 
-          {task.type === "manual" && (
+          {(task.type === "manual" || task.type === "task") && (
             <>
               <div className="my-1 border-t border-border-color/40" />
               <button
