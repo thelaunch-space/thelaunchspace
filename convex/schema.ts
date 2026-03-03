@@ -198,6 +198,9 @@ export default defineSchema({
     rationale: v.optional(v.string()),     // Why this angle resonates with ICP
     hookOptions: v.optional(v.array(v.string())),  // 3-4 hook options
     ctaOptions: v.optional(v.array(v.string())),   // 3-4 CTA options
+    // Krishna's selections from hook/CTA options (set on approve)
+    selectedHook: v.optional(v.string()),
+    selectedCta: v.optional(v.string()),
     // Phase 2 fields — full draft (draft_ready)
     draftText: v.optional(v.string()),
     krishnaFeedback: v.optional(v.string()),

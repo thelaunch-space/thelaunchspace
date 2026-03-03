@@ -190,6 +190,8 @@ export const getBoard = query({
           hookOptions: post.hookOptions ?? null,
           ctaOptions: post.ctaOptions ?? null,
           draftText: post.draftText ?? null,
+          selectedHook: post.selectedHook ?? null,
+          selectedCta: post.selectedCta ?? null,
           krishnaFeedback: post.krishnaFeedback ?? null,
         },
       });
@@ -303,8 +305,10 @@ export const updateArtifactStatus = mutation({
     id: v.string(),
     newStatus: v.string(),
     feedback: v.optional(v.string()),
+    selectedHook: v.optional(v.string()),
+    selectedCta: v.optional(v.string()),
   },
-  handler: async (ctx, { type, id, newStatus, feedback }) => {
+  handler: async (ctx, { type, id, newStatus, feedback, selectedHook, selectedCta }) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Unauthorized");
 
@@ -326,6 +330,8 @@ export const updateArtifactStatus = mutation({
           status: newStatus,
           updatedAt: now,
           ...(feedback !== undefined && { krishnaFeedback: feedback }),
+          ...(selectedHook !== undefined && { selectedHook }),
+          ...(selectedCta !== undefined && { selectedCta }),
         });
         break;
       case "booking":

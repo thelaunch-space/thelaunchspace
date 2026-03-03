@@ -539,6 +539,8 @@ http.route({
         hookOptions: p.hookOptions ?? null,
         ctaOptions: p.ctaOptions ?? null,
         draftText: p.draftText ?? null,
+        selectedHook: p.selectedHook ?? null,
+        selectedCta: p.selectedCta ?? null,
         krishnaFeedback: p.krishnaFeedback ?? null,
         createdAt: p.createdAt,
       })));

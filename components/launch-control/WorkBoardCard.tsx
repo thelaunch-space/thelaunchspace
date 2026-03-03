@@ -96,6 +96,10 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
   const [confirming, setConfirming] = useState(false);
   const [revisionOpen, setRevisionOpen] = useState(false);
 
+  // Hook/CTA selection state (linkedin post-briefs only)
+  const [pickedHook, setPickedHook] = useState<string | null>(null);
+  const [pickedCta, setPickedCta] = useState<string | null>(null);
+
   type RevisionEntry = {
     version: number;
     title: string;
@@ -145,24 +149,34 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
     setMenuOpen(true);
   }
 
-  async function handleStatusChange(newStatus: string, feedbackText?: string) {
+  async function handleStatusChange(newStatus: string, feedbackText?: string, hookSelection?: string, ctaSelection?: string) {
     await updateStatus({
       type: task.type,
       id: task.id,
       newStatus,
       ...(feedbackText ? { feedback: feedbackText } : {}),
+      ...(hookSelection ? { selectedHook: hookSelection } : {}),
+      ...(ctaSelection ? { selectedCta: ctaSelection } : {}),
     });
   }
 
   async function handleConfirm() {
     const needsFeedback = selectedStatus === "needs_revision" || selectedStatus === "dropped" || selectedStatus === "skipped";
-    await handleStatusChange(selectedStatus, needsFeedback && feedback ? feedback : undefined);
+    const isLinkedinApprove = task.type === "linkedin" && selectedStatus === "approved";
+    await handleStatusChange(
+      selectedStatus,
+      needsFeedback && feedback ? feedback : undefined,
+      isLinkedinApprove && pickedHook ? pickedHook : undefined,
+      isLinkedinApprove && pickedCta ? pickedCta : undefined,
+    );
     // Open PR URL when publishing a blog
     if (task.type === "blog" && selectedStatus === "published" && task.meta.url) {
       window.open(task.meta.url as string, "_blank", "noopener,noreferrer");
     }
     setSelectedStatus("");
     setFeedback("");
+    setPickedHook(null);
+    setPickedCta(null);
     setConfirming(false);
   }
 
@@ -340,6 +354,14 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
     );
     const selectedLabel = options.find((o) => o.value === selectedStatus)?.label;
 
+    // When approving a linkedin post-brief, require hook + CTA selection
+    const isLinkedinApprove = confirming && task.type === "linkedin" && selectedStatus === "approved";
+    const hookOptions = task.meta.hookOptions as string[] | null;
+    const ctaOptions = task.meta.ctaOptions as string[] | null;
+    const hasHookOptions = isLinkedinApprove && hookOptions && hookOptions.length > 0;
+    const hasCtaOptions = isLinkedinApprove && ctaOptions && ctaOptions.length > 0;
+    const approveDisabled = isLinkedinApprove && (hasHookOptions || hasCtaOptions) && (!pickedHook || !pickedCta);
+
     return (
       <div className="mt-2 w-full">
         {!confirming ? (
@@ -361,6 +383,51 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
             <p className="text-[11px] text-text-secondary mb-1.5">
               → <span className="text-text-primary font-medium">{selectedLabel}</span>?
             </p>
+
+            {/* Hook selection pills (linkedin approve only) */}
+            {hasHookOptions && (
+              <div className="mb-2">
+                <p className="text-[10px] font-medium text-text-secondary/60 uppercase tracking-wider mb-1.5">Pick a hook</p>
+                <div className="flex flex-wrap gap-1">
+                  {hookOptions.map((hook, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setPickedHook(pickedHook === hook ? null : hook)}
+                      className={`text-[10px] leading-snug px-2 py-1 rounded-lg border transition-colors text-left ${
+                        pickedHook === hook
+                          ? "bg-accent-blue/10 text-accent-blue border-accent-blue/30 font-medium"
+                          : "bg-surface-alt text-text-secondary border-border-color/30 hover:border-border-color/60"
+                      }`}
+                    >
+                      {hook}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* CTA selection pills (linkedin approve only) */}
+            {hasCtaOptions && (
+              <div className="mb-2">
+                <p className="text-[10px] font-medium text-text-secondary/60 uppercase tracking-wider mb-1.5">Pick a CTA</p>
+                <div className="flex flex-wrap gap-1">
+                  {ctaOptions.map((cta, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setPickedCta(pickedCta === cta ? null : cta)}
+                      className={`text-[10px] leading-snug px-2 py-1 rounded-lg border transition-colors text-left ${
+                        pickedCta === cta
+                          ? "bg-emerald-500/10 text-emerald-700 border-emerald-500/30 font-medium"
+                          : "bg-surface-alt text-text-secondary border-border-color/30 hover:border-border-color/60"
+                      }`}
+                    >
+                      {cta}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {showFeedback && (
               <textarea
                 placeholder="Feedback (optional) — stored as audit trail..."
@@ -373,12 +440,17 @@ export default function WorkBoardCard({ task }: WorkBoardCardProps) {
             <div className="flex gap-2 mt-1.5">
               <button
                 onClick={handleConfirm}
-                className="bg-emerald-500 text-white text-[10px] font-medium px-2.5 py-1 rounded-md hover:bg-emerald-600 transition-colors"
+                disabled={!!approveDisabled}
+                className={`text-white text-[10px] font-medium px-2.5 py-1 rounded-md transition-colors ${
+                  approveDisabled
+                    ? "bg-emerald-500/40 cursor-not-allowed"
+                    : "bg-emerald-500 hover:bg-emerald-600"
+                }`}
               >
                 Confirm
               </button>
               <button
-                onClick={() => { setSelectedStatus(""); setFeedback(""); setConfirming(false); }}
+                onClick={() => { setSelectedStatus(""); setFeedback(""); setPickedHook(null); setPickedCta(null); setConfirming(false); }}
                 className="bg-surface-alt text-text-secondary text-[10px] px-2 py-1 rounded-md hover:text-text-primary transition-colors"
               >
                 Cancel
