@@ -467,7 +467,7 @@ export default function BlogPost() {
                 </tr>
                 <tr>
                   <td className="border border-border-color p-4 font-medium text-text-primary">Founder-Led Outreach</td>
-                  <td className="border border-border-color p-4">4-5% cold email response (10-15% with deep personalization); 53% conversion if <1 hour follow-up</td>
+                  <td className="border border-border-color p-4">4-5% cold email response (10-15% with deep personalization); 53% conversion if &lt;1 hour follow-up</td>
                   <td className="border border-border-color p-4">Days to weeks</td>
                   <td className="border border-border-color p-4">Pre-PMF, B2B, high-touch sales, initial customers</td>
                 </tr>
