@@ -1,0 +1,226 @@
+"use client";
+
+import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
+import { CHAT_AGENTS, AgentChatConfig, ChatConversation, ChatMessage } from "./types";
+import AgentTopNav from "./AgentTopNav";
+import ConversationSidebar from "./ConversationSidebar";
+import ChatWindow from "./ChatWindow";
+import ChatInput from "./ChatInput";
+import EmptyState from "./EmptyState";
+
+interface Props {
+  initialConversationId: string | null;
+}
+
+export default function AgentsPage({ initialConversationId }: Props) {
+  const router = useRouter();
+  const { userId, isSignedIn } = useAuth();
+
+  const [selectedAgent, setSelectedAgent] = useState<AgentChatConfig>(CHAT_AGENTS[0]);
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(initialConversationId);
+  const [streamingContent, setStreamingContent] = useState("");
+  const [isStreaming, setIsStreaming] = useState(false);
+
+  // Convex queries
+  const conversations = useQuery(
+    api.agentConversations.listConversations,
+    isSignedIn && userId
+      ? { agentId: selectedAgent.id, userId }
+      : "skip"
+  ) as ChatConversation[] | undefined;
+
+  const messages = useQuery(
+    api.agentMessages.listMessages,
+    activeConversationId
+      ? { conversationId: activeConversationId as Id<"agentConversations"> }
+      : "skip"
+  ) as ChatMessage[] | undefined;
+
+  // Convex mutations
+  const createConversation = useMutation(api.agentConversations.createConversation);
+  const addMessage = useMutation(api.agentMessages.addMessage);
+  const updateTitle = useMutation(api.agentConversations.updateConversationTitle);
+  const updateMeta = useMutation(api.agentConversations.updateConversationMeta);
+
+  const handleSelectAgent = useCallback((agent: AgentChatConfig) => {
+    setSelectedAgent(agent);
+    setActiveConversationId(null);
+    router.push("/agents");
+  }, [router]);
+
+  const handleSelectConversation = useCallback((id: string) => {
+    setActiveConversationId(id);
+    router.push(`/agents/${id}`);
+  }, [router]);
+
+  const handleNewChat = useCallback(async () => {
+    if (!userId) return;
+    const id = await createConversation({
+      agentId: selectedAgent.id,
+      agentName: selectedAgent.name,
+      userId,
+    });
+    setActiveConversationId(id);
+    router.push(`/agents/${id}`);
+  }, [userId, selectedAgent, createConversation, router]);
+
+  const handleSend = useCallback(async (text: string) => {
+    if (!userId || !activeConversationId || isStreaming) return;
+
+    const convId = activeConversationId as Id<"agentConversations">;
+
+    // Save user message to Convex
+    await addMessage({ conversationId: convId, role: "user", content: text });
+
+    // Auto-title from first message (first 60 chars)
+    const currentMessages = messages ?? [];
+    if (currentMessages.length === 0) {
+      const title = text.slice(0, 60) + (text.length > 60 ? "..." : "");
+      await updateTitle({ conversationId: convId, title });
+    }
+
+    // Build messages array for API (last 40 messages + new user message)
+    const historyMessages = currentMessages.slice(-39).map((m) => ({
+      role: m.role,
+      content: m.content,
+    }));
+    const apiMessages = [...historyMessages, { role: "user", content: text }];
+
+    // Stream from proxy
+    setIsStreaming(true);
+    setStreamingContent("");
+
+    try {
+      const response = await fetch("/api/agent-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: apiMessages,
+          agentId: selectedAgent.id,
+          conversationId: activeConversationId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error("No response body");
+
+      const decoder = new TextDecoder();
+      let fullContent = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split("\n");
+
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue;
+          const data = line.slice(6).trim();
+          if (data === "[DONE]") break;
+
+          try {
+            const parsed = JSON.parse(data);
+            const delta = parsed?.choices?.[0]?.delta?.content;
+            if (delta) {
+              fullContent += delta;
+              setStreamingContent(fullContent);
+            }
+          } catch {
+            // Ignore malformed chunks
+          }
+        }
+      }
+
+      // Save complete response to Convex
+      if (fullContent) {
+        await addMessage({ conversationId: convId, role: "assistant", content: fullContent });
+        await updateMeta({
+          conversationId: convId,
+          lastMessageAt: new Date().toISOString(),
+          messageCount: (currentMessages.length + 2),
+        });
+      }
+    } catch (err) {
+      console.error("[AgentsPage] Stream error:", err);
+      // Save error as assistant message so it persists in the conversation
+      await addMessage({
+        conversationId: convId,
+        role: "assistant",
+        content: "Sorry, I couldn't reach the agent. Please try again.",
+      });
+    } finally {
+      setIsStreaming(false);
+      setStreamingContent("");
+    }
+  }, [userId, activeConversationId, isStreaming, messages, selectedAgent, addMessage, updateTitle, updateMeta]);
+
+  // Auth gate
+  if (!isSignedIn) {
+    return (
+      <div className="h-full flex items-center justify-center bg-[#F5F5F0]">
+        <div className="text-center space-y-3">
+          <p className="text-text-primary font-medium">Sign in to chat with your agents</p>
+          <a
+            href="/admin"
+            className="inline-flex items-center px-4 py-2 rounded-xl bg-accent-blue text-white text-sm font-medium hover:bg-accent-blue/90 transition-colors"
+          >
+            Sign in
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  const allMessages: ChatMessage[] = messages ?? [];
+
+  return (
+    <div className="h-full flex flex-col">
+      <AgentTopNav
+        agents={CHAT_AGENTS}
+        selectedAgent={selectedAgent}
+        onSelectAgent={handleSelectAgent}
+      />
+      <div className="flex-1 flex overflow-hidden">
+        <ConversationSidebar
+          conversations={conversations ?? []}
+          activeConversationId={activeConversationId}
+          selectedAgent={selectedAgent}
+          onSelectConversation={handleSelectConversation}
+          onNewChat={handleNewChat}
+        />
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {activeConversationId ? (
+            <>
+              <ChatWindow
+                messages={allMessages}
+                streamingContent={streamingContent}
+                isStreaming={isStreaming}
+                selectedAgent={selectedAgent}
+              />
+              <ChatInput
+                onSend={handleSend}
+                isStreaming={isStreaming}
+                agentName={selectedAgent.name}
+              />
+            </>
+          ) : (
+            <EmptyState
+              selectedAgent={selectedAgent}
+              onNewChat={handleNewChat}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

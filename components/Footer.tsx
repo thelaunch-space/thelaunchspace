@@ -6,8 +6,8 @@ import { usePathname } from "next/navigation";
 export default function Footer() {
   const pathname = usePathname();
 
-  // Hidden on Launch Control (same as NavBar)
-  if (pathname.startsWith("/launch-control")) return null;
+  // Hidden on Launch Control and Agents (same as NavBar)
+  if (pathname.startsWith("/launch-control") || pathname.startsWith("/agents")) return null;
 
   return (
     <footer className="border-t border-border-color">

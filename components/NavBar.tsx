@@ -11,6 +11,7 @@ export default function NavBar() {
   const isBlog = pathname.startsWith("/blogs");
   const isHireTeam = pathname.startsWith("/your-ai-team");
   const isLaunchControl = pathname.startsWith("/launch-control");
+  const isAgents = pathname.startsWith("/agents");
 
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -42,7 +43,7 @@ export default function NavBar() {
   }, [menuOpen]);
 
   // Launch Control has its own header — hide NavBar entirely
-  if (isLaunchControl) return null;
+  if (isLaunchControl || isAgents) return null;
 
   const showCTA = isBlog && scrolled;
 

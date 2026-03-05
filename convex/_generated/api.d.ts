@@ -9,6 +9,8 @@
  */
 
 import type * as agentActivity from "../agentActivity.js";
+import type * as agentConversations from "../agentConversations.js";
+import type * as agentMessages from "../agentMessages.js";
 import type * as agentQueries from "../agentQueries.js";
 import type * as blogs from "../blogs.js";
 import type * as briefs from "../briefs.js";
@@ -34,6 +36,8 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   agentActivity: typeof agentActivity;
+  agentConversations: typeof agentConversations;
+  agentMessages: typeof agentMessages;
   agentQueries: typeof agentQueries;
   blogs: typeof blogs;
   briefs: typeof briefs;

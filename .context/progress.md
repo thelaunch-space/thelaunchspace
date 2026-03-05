@@ -1,6 +1,6 @@
 # Progress — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-03-03
+Last updated: 2026-03-05 (session 2)
 
 ## Completed
 - [x] Project scaffolding (originally Vite + React 18, later migrated to Next.js 14)
@@ -216,6 +216,33 @@ Last updated: 2026-03-03
 - [x] **Blog category pages pre-rendered at build time** — `app/blogs/[topic]/page.tsx` now exports `generateStaticParams()` using `getBlogCategories()`. Added loading skeletons (`app/blogs/loading.tsx`, `app/blogs/[topic]/loading.tsx`, `app/your-ai-team/loading.tsx`). `lib/blog.ts` discovery results cached to avoid redundant fs scans. Fix for broken Netlify builds where dynamic routes weren't being pre-built. (2026-03-03)
 - [x] **New blogs: "dev-disappeared" + "feature-request-overwhelm"** — `app/blogs/founder-advice/dev-disappeared/page.tsx` + `app/blogs/founder-advice/feature-request-overwhelm/page.tsx`. Blog total: **24 published posts** (8 startup-mvps, 12 founder-advice, 4 ai-tools). (2026-03-03)
 - [x] **Kanban mobile: sticky dismiss button** — All 3 card modals (`BriefReaderModal`, `PostBriefModal`, `TaskDetailModal`) now render a `fixed bottom-3` "dismiss" pill (`sm:hidden`) at `z-60`. Always reachable on mobile even when modal sheet overflows the viewport. (2026-03-03)
+
+- [x] **Kanban: Blog PR preview link** — `prUrl: v.optional(v.string())` added to `blogs` Convex table. `blogs.ingest` accepts and stores it. `workboard.ts` includes `prUrl` in blog card `meta`. Clicking a `pr_created` blog card title opens `meta.prUrl` (Netlify deploy preview) in new tab; falls back to `meta.url` for published blogs. (2026-03-01)
+- [x] **Kanban: Task Detail Modal** — New `TaskDetailModal.tsx` component. (2026-03-01)
+- [x] **Kanban: Backlog "+" creation button** — Both `todo` and `backlog` columns have "+". (2026-03-01)
+- [x] **Kanban: Hook/CTA selection on LinkedIn approve** — pill pickers for `hookOptions` + `ctaOptions`. (2026-03-03)
+- [x] **Blog category pages pre-rendered at build time** — `generateStaticParams()` added to `/blogs/[topic]/page.tsx`. Loading skeletons added. (2026-03-03)
+- [x] **New blogs: "dev-disappeared" + "feature-request-overwhelm"** — Blog total: 24 posts. (2026-03-03)
+- [x] **Kanban mobile: sticky dismiss button** — Fixed-position dismiss pill on all 3 card modals. (2026-03-03)
+
+---
+
+## Agent Chat UI — Step 1 COMPLETE (2026-03-05)
+
+- [x] **Step 0 — Infrastructure** — VPS proxy running at port 3001, PM2-managed. Auth tested. `OPENCLAW_PROXY_URL` + `OPENCLAW_PROXY_SECRET` added to `.env.local` + Netlify.
+- [x] **Step 1 — Chat UI built** (2026-03-05) — Full `/agents` route with persistent Convex-backed conversation history:
+  - `convex/schema.ts` — 2 new tables: `agentConversations` + `agentMessages` (5 indexes each)
+  - `convex/agentConversations.ts` — createConversation, listConversations, updateConversationTitle, updateConversationMeta, getConversation
+  - `convex/agentMessages.ts` — addMessage, listMessages, getLastNMessages
+  - `app/api/agent-chat/route.ts` — streaming proxy to VPS (Clerk auth gate, SSE forwarding)
+  - `app/agents/layout.tsx` — own layout (no NavBar/Footer/AnnouncementRibbon)
+  - `app/agents/page.tsx` + `app/agents/[conversationId]/page.tsx` — routing
+  - `components/agents/` — 8 files: types.ts, AgentsPage.tsx, AgentTopNav.tsx, ConversationSidebar.tsx, ChatWindow.tsx, MessageBubble.tsx, ChatInput.tsx, EmptyState.tsx
+  - NavBar + Footer updated to hide on `/agents/*`
+
+**Session 2 (next):** Mobile sidebar (bottom sheet), conversation delete, rename, error state retry button, empty state Framer Motion entrance, `/agents` link in admin nav.
+
+---
 
 ## In Progress
 - End-to-end brief→blog flow verification (Vyasa picking up brief from Convex, pushing pr_created status back)

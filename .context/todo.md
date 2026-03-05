@@ -1,6 +1,83 @@
 # Todo — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-03-01 (Kanban improvements shipped — Vyasa prUrl config pending)
+Last updated: 2026-03-03
+
+## START HERE — Agent Chat UI Build (Step 1 is next)
+
+> Full plan: `../openclaw-config-global/.context/product-direction.md`
+> Goal: Replace Slack with a custom chat UI inside Launch Control. First for Krishna's own use, then as a deployable product for clients.
+> Slack stays active in parallel until UI is tested and trusted — no forced cutover.
+
+### What's already done (do NOT redo)
+
+**Step 0 — COMPLETE (Mar 5 2026)**
+- [x] OpenClaw chatCompletions endpoint enabled — `gateway.http.endpoints.chatCompletions.enabled: true` (Parthasarathi config patch). Returns 200 on `POST localhost:41473/v1/chat/completions`.
+- [x] Node.js v20 + PM2 installed on VPS host
+- [x] Proxy script running at `/opt/openclaw-proxy/openclaw-proxy.js` — port 3001, PM2-managed, auto-starts on reboot
+- [x] Proxy auth: `x-proxy-secret` header check. Secret stored as `PROXY_SECRET` env var in PM2.
+- [x] Tested end-to-end from Mac public IP — auth rejection (401) and pass-through (400 from OpenClaw) both working
+
+**How to call the proxy from Next.js (server-side only):**
+```
+POST http://72.62.226.191:3001/v1/chat/completions
+Headers:
+  Content-Type: application/json
+  x-proxy-secret: <PROXY_SECRET — ask Krishna, store in Netlify env vars>
+  x-openclaw-agent-id: <agent id e.g. "main", "vibhishana", "vyasa">
+Body: OpenAI-compatible { model: "openclaw:main", messages: [...] }
+```
+
+**Agent IDs to use:**
+| Agent | ID to pass in header |
+|-------|---------------------|
+| Parthasarathi | `main` |
+| Vibhishana | `vibhishana` |
+| Vyasa | `vyasa` |
+| Vidura | `vidura` |
+| Valmiki | `valmiki` |
+| Shakti | `shakti` |
+| Sanjaya | `sanjaya` |
+
+---
+
+### Step 1 — COMPLETE (2026-03-05)
+Full `/agents` chat UI built. Persistent Convex history, SSE streaming, 8 component files. See progress.md for full details.
+
+### Step 2 — Session 2 Polish (DO NEXT)
+- [ ] Mobile sidebar — collapses to bottom sheet on mobile (agent picker scrolls horizontally)
+- [ ] Conversation delete — swipe or hover button on sidebar items
+- [ ] Conversation rename — click title in sidebar to edit inline
+- [ ] Error state — if proxy fails, show inline error with retry button (currently saves as assistant message)
+- [ ] Empty state polish — Framer Motion entrance animation
+- [ ] Add `/agents` link to admin nav or HeaderBar in Launch Control
+
+---
+
+**Step 3 — Client deployments**
+- [ ] Separate chat module from SEO dashboard code
+- [ ] Document required env variables for a fresh fork
+- [ ] Make sure no Krishna-specific data or config is hardcoded
+
+---
+
+## START HERE — Keyword Workflow V2 (Parallel Track)
+
+> Full spec + build order: `../seo-mastery-openclaw/research/seo-strategy-v2-march-2026.md`
+> Partha prompt (ready to send after Convex is live): `../openclaw-config-global/prompts/keyword-workflow-v2-parthasarathi-prompt.md`
+
+**What this session needs to build (Convex side only — Partha handles VPS):**
+
+- [ ] **`keywordApprovals` Convex table** — add schema to `convex/schema.ts` (see V2 doc for exact field definitions)
+- [ ] **`convex/keywords.ts`** — new file with `insertKeywordApprovals` mutation, `updateKeywordStatus` mutation, `getKeywordsByStatus` query
+- [ ] **HTTP routes in `convex/http.ts`** — `POST /push/keyword-approvals` + `GET /query/keyword-approvals`
+- [ ] **Launch Control: Keyword Approvals column** — shows `pending_review` keywords, Krishna can Approve / Reject inline. Shows keyword, volume, CPC, type, cluster, top 5 pages.
+- [ ] **Deploy** — `npx convex dev --once` → test → merge to main
+
+**After Convex is live:** Replace `[CONVEX_HTTP_URL]` in the Partha prompt with `https://curious-iguana-738.convex.site`, then send.
+
+**Prerequisite:** Krishna purchases Keywords Everywhere API (~$100, keywordseverywhere.com) and has the API key ready to send Partha.
+
+---
 
 ## Priority: High
 - [ ] **Vyasa agent config: send `prUrl` in `/push/blogs`** — Convex schema + frontend now supports `prUrl` (Netlify deploy preview URL). Vyasa's `convex-push-blog.SKILL.md` needs updating to extract the Netlify deploy preview URL from the GitHub PR after creation and include it as `prUrl` in the `/push/blogs` payload. Until this is done, blog PR cards won't have a preview URL to click. Separate agent config change — coordinate with Partha.

@@ -297,4 +297,28 @@ export default defineSchema({
     .index("by_timestamp", ["timestamp"])
     .index("by_agentName_timestamp", ["agentName", "timestamp"])
     .index("by_dedupKey", ["dedupKey"]),
+
+  // Agent chat conversations — one per (userId, agentId, session)
+  agentConversations: defineTable({
+    agentId: v.string(),            // "main" | "vibhishana" | "vyasa" | "vidura" | "valmiki" | "shakti"
+    agentName: v.string(),          // Display name: "Parthasarathi" etc.
+    title: v.string(),              // Auto-set from first user message (first 60 chars)
+    userId: v.string(),             // Clerk userId — for multi-user isolation later
+    messageCount: v.number(),
+    lastMessageAt: v.string(),      // ISO timestamp
+    createdAt: v.string(),
+  })
+    .index("by_userId_agentId", ["userId", "agentId"])
+    .index("by_userId", ["userId"])
+    .index("by_lastMessageAt", ["lastMessageAt"]),
+
+  // Individual messages within a conversation
+  agentMessages: defineTable({
+    conversationId: v.id("agentConversations"),
+    role: v.string(),               // "user" | "assistant"
+    content: v.string(),
+    createdAt: v.string(),
+  })
+    .index("by_conversationId", ["conversationId"])
+    .index("by_conversationId_createdAt", ["conversationId", "createdAt"]),
 });
