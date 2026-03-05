@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useCallback, useEffect } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -18,7 +17,6 @@ interface Props {
 }
 
 export default function AgentsPage({ initialConversationId }: Props) {
-  const router = useRouter();
   const { userId, isSignedIn } = useAuth();
 
   const [selectedAgent, setSelectedAgent] = useState<AgentChatConfig>(CHAT_AGENTS[0]);
@@ -41,6 +39,24 @@ export default function AgentsPage({ initialConversationId }: Props) {
       : "skip"
   ) as ChatMessage[] | undefined;
 
+  const conversation = useQuery(
+    api.agentConversations.getConversation,
+    activeConversationId
+      ? { conversationId: activeConversationId as Id<"agentConversations"> }
+      : "skip"
+  );
+
+  // When loading a deep-linked conversation, sync selectedAgent from Convex data
+  useEffect(() => {
+    if (conversation?.agentId) {
+      const agent = CHAT_AGENTS.find((a) => a.id === conversation.agentId);
+      if (agent && agent.id !== selectedAgent.id) {
+        setSelectedAgent(agent);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversation?.agentId]);
+
   // Convex mutations
   const createConversation = useMutation(api.agentConversations.createConversation);
   const addMessage = useMutation(api.agentMessages.addMessage);
@@ -50,13 +66,11 @@ export default function AgentsPage({ initialConversationId }: Props) {
   const handleSelectAgent = useCallback((agent: AgentChatConfig) => {
     setSelectedAgent(agent);
     setActiveConversationId(null);
-    router.push("/agents");
-  }, [router]);
+  }, []);
 
   const handleSelectConversation = useCallback((id: string) => {
     setActiveConversationId(id);
-    router.push(`/agents/${id}`);
-  }, [router]);
+  }, []);
 
   const handleNewChat = useCallback(async () => {
     if (!userId) return;
@@ -66,8 +80,7 @@ export default function AgentsPage({ initialConversationId }: Props) {
       userId,
     });
     setActiveConversationId(id);
-    router.push(`/agents/${id}`);
-  }, [userId, selectedAgent, createConversation, router]);
+  }, [userId, selectedAgent, createConversation]);
 
   const handleSend = useCallback(async (text: string) => {
     if (!userId || !activeConversationId || isStreaming) return;

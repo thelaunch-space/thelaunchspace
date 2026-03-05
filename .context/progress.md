@@ -240,7 +240,11 @@ Last updated: 2026-03-05 (session 2)
   - `components/agents/` — 8 files: types.ts, AgentsPage.tsx, AgentTopNav.tsx, ConversationSidebar.tsx, ChatWindow.tsx, MessageBubble.tsx, ChatInput.tsx, EmptyState.tsx
   - NavBar + Footer updated to hide on `/agents/*`
 
-**Session 2 (next):** Mobile sidebar (bottom sheet), conversation delete, rename, error state retry button, empty state Framer Motion entrance, `/agents` link in admin nav.
+**Post-commit fixes (same session):**
+- Removed `auth()` from `app/api/agent-chat/route.ts` — Clerk's `auth()` server helper requires `clerkMiddleware()` in middleware.ts, which this app cannot use (breaks Netlify). Security: proxy secret is server-side only; page already gates via client-side `useAuth()`.
+- Fixed agent switching bug — `router.push` in `handleSelectAgent`/`handleNewChat`/`handleSelectConversation` caused Next.js to remount `AgentsPage` (different page file) and reset `selectedAgent` to Parthasarathi. Fix: removed all `router.push` calls, manage via pure React state. Added `getConversation` query + `useEffect` to sync agent from Convex on deep-link load.
+
+**Session 2 (next):** EmptyState larger portrait image, mobile sidebar (bottom sheet), conversation delete/rename, error retry button, Framer Motion entrance, `/agents` link in admin nav. Agent Tools Panel idea parked (see todo.md).
 
 ---
 

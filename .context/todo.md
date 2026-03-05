@@ -1,17 +1,16 @@
 # Todo — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-03-03
+Last updated: 2026-03-05
 
-## START HERE — Agent Chat UI Build (Step 1 is next)
+## START HERE — Agent Chat UI (Steps 0 + 1 COMPLETE)
 
-> Full plan: `../openclaw-config-global/.context/product-direction.md`
-> Goal: Replace Slack with a custom chat UI inside Launch Control. First for Krishna's own use, then as a deployable product for clients.
-> Slack stays active in parallel until UI is tested and trusted — no forced cutover.
+> Goal: Replace Slack with a custom chat UI. First for Krishna's own use, then as a deployable product for clients.
+> Slack stays active in parallel until UI is tested and trusted.
 
 ### What's already done (do NOT redo)
 
 **Step 0 — COMPLETE (Mar 5 2026)**
-- [x] OpenClaw chatCompletions endpoint enabled — `gateway.http.endpoints.chatCompletions.enabled: true` (Parthasarathi config patch). Returns 200 on `POST localhost:41473/v1/chat/completions`.
+- [x] OpenClaw chatCompletions endpoint enabled. VPS proxy at port 3001, PM2-managed.
 - [x] Node.js v20 + PM2 installed on VPS host
 - [x] Proxy script running at `/opt/openclaw-proxy/openclaw-proxy.js` — port 3001, PM2-managed, auto-starts on reboot
 - [x] Proxy auth: `x-proxy-secret` header check. Secret stored as `PROXY_SECRET` env var in PM2.
@@ -44,12 +43,16 @@ Body: OpenAI-compatible { model: "openclaw:main", messages: [...] }
 Full `/agents` chat UI built. Persistent Convex history, SSE streaming, 8 component files. See progress.md for full details.
 
 ### Step 2 — Session 2 Polish (DO NEXT)
+- [ ] **EmptyState: larger full agent image** — increase avatar in EmptyState from ~64px to 160px+ portrait image (agent images are full character portraits, not just headshots — use the space)
 - [ ] Mobile sidebar — collapses to bottom sheet on mobile (agent picker scrolls horizontally)
 - [ ] Conversation delete — swipe or hover button on sidebar items
 - [ ] Conversation rename — click title in sidebar to edit inline
-- [ ] Error state — if proxy fails, show inline error with retry button (currently saves as assistant message)
+- [ ] Error state — if proxy fails, show inline error with retry button (currently saves fallback as Convex message)
 - [ ] Empty state polish — Framer Motion entrance animation
 - [ ] Add `/agents` link to admin nav or HeaderBar in Launch Control
+
+**Parked idea — Agent Tools Panel (revisit later, non-trivial):**
+> Show a collapsible right panel per agent listing the tools OpenClaw provides (web search, Slack, file read, etc). Let Krishna toggle tools on/off per agent per conversation. Requires: knowing OpenClaw's tool list, passing tool config in the proxy request body, possible proxy/OpenClaw changes. Park until Agent Chat is more established.
 
 ---
 
