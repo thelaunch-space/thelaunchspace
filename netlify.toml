@@ -5,8 +5,13 @@
 # Convex CLI writes auth state to a local cache file during deployment,
 # which triggers Netlify's secrets scanner. This is a false positive —
 # the key never appears in client-side or publicly-served output.
+#
+# SECRETS_SCAN_OMIT_PATHS: .context/ is developer documentation only —
+# it references IPs, URLs, and API patterns for internal context but is
+# never compiled, bundled, or served to users.
 [build.environment]
   SECRETS_SCAN_OMIT_KEYS = "CONVEX_DEPLOY_KEY"
+  SECRETS_SCAN_OMIT_PATHS = ".context/"
 
 [context.production]
   command = "npx convex deploy --cmd 'npm run build'"
