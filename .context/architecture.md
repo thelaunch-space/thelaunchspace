@@ -1,6 +1,6 @@
 # Architecture — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-03-01 (Kanban improvements: TaskDetailModal, backlog creation, blog prUrl)
+Last updated: 2026-03-05 (Agent Chat UI: /agents route, agentConversations + agentMessages Convex tables, proxy API route, 8 components)
 
 ## Overview
 Next.js 14 App Router application. Server-side rendered for SEO/crawlability. Landing page content rendered as a client component for interactivity. Blog posts are static Server Components created by an AI agent via GitHub PRs. "Build Your AI Team" section showcases 7 AI agents with index + detail pages. Webhook proxy via API route (server-side, no secrets exposed to browser). Hosted on Netlify. Google Analytics (GA4) tracking via `next/script`. **Convex** real-time database for Launch Control dashboard (agent activity, questions, briefs, blogs, topic clusters, tool opportunities, pitch bookings). **Clerk** authentication for admin access. Entire app wrapped in ConvexProviderWithClerk + ClerkProvider. **Geo-detected pricing** — middleware sets `geo_region` cookie (IN/INTL) for localized cost savings display.
@@ -15,6 +15,10 @@ app/
 ├── robots.ts               # robots.txt (allows all, points to sitemap)
 ├── sitemap.ts              # sitemap.xml (uses lib/blog.ts to auto-discover posts)
 ├── api/lead/route.ts       # POST handler (proxies to Make.com webhook)
+├── api/agent-chat/route.ts # POST handler — Clerk auth gate, SSE streaming proxy to VPS proxy (port 3001)
+├── agents/layout.tsx       # /agents own layout (no NavBar, no Footer, no AnnouncementRibbon)
+├── agents/page.tsx         # Agent chat index — renders AgentsPage
+├── agents/[conversationId]/page.tsx # Deep-link to specific conversation
 ├── blogs/page.tsx          # Blog index page (server component, lists all posts by category)
 ├── blogs/[topic]/page.tsx  # Category index page (server component, filtered by topic)
 ├── blogs/[topic]/[title]/  # Dynamic blog route (fallback)
@@ -28,8 +32,10 @@ app/
 │   ├── hire-developer-vs-build-with-ai/
 │   ├── agency-vs-in-house-development/
 │   └── why-mvp-costs-too-much-validation-first/
-├── blogs/founder-advice/   # Blog topic folder (10 posts)
+├── blogs/founder-advice/   # Blog topic folder (12 posts)
 │   ├── validate-startup-idea-domain-expert/
+│   ├── validated-problem-wont-pay/
+│   ├── zero-signups-participation-shift/
 │   ├── post-mvp-doubt-should-you-keep-going/
 │   ├── crm-for-small-service-business/
 │   ├── why-founders-fail-distribution-getting-customers/
@@ -37,13 +43,13 @@ app/
 │   ├── when-to-stop-using-spreadsheets-for-leads/
 │   ├── solo-lawyer-case-management-decision/
 │   ├── landing-page-zero-signups-distribution/
-│   ├── when-to-stop-using-spreadsheets-for-leads/ (enriched)
-│   └── ... (10 posts total)
+│   ├── dev-disappeared/
+│   └── feature-request-overwhelm/
 ├── blogs/ai-tools/         # Blog topic folder (4 posts)
 │   ├── ai-tools-non-technical-founders-mvp/
 │   ├── ai-generated-code-deployment-reality/
 │   ├── invoice-automation-small-business-ocr-custom/
-│   └── agentic engineering-scaling-wall/
+│   └── vibe-coding-scaling-wall/
 ├── build-your-ai-team/     # AI team showcase section (legacy — no navbar link, accessible via direct URL only. 301 redirect to /your-ai-team is still a TODO)
 │   ├── layout.tsx          # Section layout
 │   ├── page.tsx            # Agent index page (card grid)
@@ -67,7 +73,7 @@ app/
 └── tools/[tool-slug]/      # Future tool routes (placeholder)
 middleware.ts               # Geo cookie only (sets geo_region=IN/INTL from x-country header). NO Clerk — auth is client-side only.
 components/
-├── NavBar.tsx              # "use client" — site-wide nav (hidden on /launch-control). Logo, Blog, "Your AI Team", socials, hamburger mobile, scroll CTA on blog pages. NO Launch Control link.
+├── NavBar.tsx              # "use client" — site-wide nav (hidden on /launch-control AND /agents/*). Logo, Blog, "Your AI Team", socials, hamburger mobile, scroll CTA on blog pages. NO Launch Control link.
 ├── LandingPage.tsx         # "use client" — main landing page (hero + services)
 ├── AgentCard.tsx           # "use client" — agent showcase card (highlight/standard/compact sizes)
 ├── AgentDetailPage.tsx     # "use client" — full agent detail view (KRAs, rhythm, proof points)
@@ -93,6 +99,15 @@ components/
 │   ├── TimeSlotPicker.tsx         # Inline time slot selector for booking calls
 │   ├── SecondaryCtaSection.tsx    # "See the proof" → /launch-control secondary CTA
 │   └── FooterTease.tsx            # "More workstreams coming" footer text
+├── agents/                 # 8 components for the Agent Chat UI (/agents route)
+│   ├── types.ts                # Shared TypeScript types (AgentId, Message, Conversation interfaces)
+│   ├── AgentsPage.tsx          # Root "use client" component — manages selected agent + conversation state (pure React state, no router.push)
+│   ├── AgentTopNav.tsx         # Top bar: agent selector pills (7 agents), new chat button, active agent label
+│   ├── ConversationSidebar.tsx # Left panel: conversation history list from Convex, click to load
+│   ├── ChatWindow.tsx          # Center: renders messages, handles streaming, auto-scroll
+│   ├── MessageBubble.tsx       # Individual message (user/assistant), timestamps, avatar
+│   ├── ChatInput.tsx           # Textarea + send button, Enter to send, Shift+Enter for newline
+│   └── EmptyState.tsx          # Shown when no conversation selected — agent portrait + welcome copy
 └── launch-control/         # 28 components for the Launch Control dashboard
     ├── LaunchControlDashboard.tsx  # Master orchestrator. CSS Grid 3-col. Top-level useQuery hooks
     ├── HeaderBar.tsx               # Sticky top bar: "Launch Control" title, stat pills, date, Clerk UserButton
@@ -149,7 +164,7 @@ public/
 └── ...                     # Static assets (logos, OG image, favicon)
 convex/
 ├── _generated/             # Auto-generated types + API references (do not edit)
-├── schema.ts               # 13 tables: questions, briefs, blogs, agentActivity, topicClusters, toolOpportunities, pitchBookings, documents, linkedinPosts, manualTasks, clients, projects, tasks (with indexes)
+├── schema.ts               # 15 tables: questions, briefs, blogs, agentActivity, topicClusters, toolOpportunities, pitchBookings, documents, linkedinPosts, manualTasks, clients, projects, tasks, agentConversations, agentMessages (with indexes)
 ├── auth.config.ts          # Clerk identity provider config for Convex
 ├── http.ts                 # HTTP Action router — canonical /push/* + /update/* + /query/* routes + legacy /ingest* aliases. Bearer token auth + CORS.
 ├── questions.ts            # ingestBatch (internal, upsert by URL) + listRecent (public) + listFullDetails (admin)
@@ -165,6 +180,8 @@ convex/
 ├── projects.ts             # upsert (internal, dedup by slug) — Shakti's project registry
 ├── shaktiTasks.ts          # upsert (internal) + updateStatus (internal) + update (public, edits description/paceNotes) + create (public) + remove (public) — Shakti's task backlog
 ├── workboard.ts            # getBoard (8 card types: brief/blog/linkedin/booking/tool/cluster/manual/task), updateArtifactStatus — Work Mode Kanban queries
+├── agentConversations.ts   # createConversation, listConversations, updateConversationTitle, updateConversationMeta, getConversation — Chat UI persistence
+├── agentMessages.ts        # addMessage, listMessages, getLastNMessages — Chat UI message history
 ├── agentQueries.ts         # Shared query helpers — includes getAllClients, getAllProjects, getTasksByFilters for Shakti HTTP endpoints
 └── lib/
     └── activityHelper.ts   # logActivityIfNew — shared dedup-aware activity logging helper
@@ -233,7 +250,7 @@ RootLayout (Server)
 ```
 
 ## NavBar
-- Rendered in `app/layout.tsx`, visible on ALL pages except `/launch-control`
+- Rendered in `app/layout.tsx`, visible on ALL pages except `/launch-control` and `/agents/*`
 - Left: Logo linked to `/` (h-11 mobile, h-13 desktop) — Right: "Blog" link, "Your AI Team" link (→ /your-ai-team), X icon, LinkedIn icon
 - **No "Launch Control" link** — LC is discoverable only via pitch page secondary CTA or direct URL
 - Active link indicators: subtle blue pill background (`bg-accent-blue/[0.07]`) on current page link, hover shows faint tint
@@ -294,7 +311,7 @@ RootLayout (Server)
 
 ## Convex Backend (Launch Control)
 
-### Database Tables (Convex) — 13 tables
+### Database Tables (Convex) — 15 tables
 | Table | Purpose | Ingestion |
 |-------|---------|-----------|
 | `questions` | Vibhishana's Reddit scans | Batch via `/push/questions` (upsert by URL) |
@@ -310,6 +327,8 @@ RootLayout (Server)
 | `clients` | Shakti's client registry (name, slug, type, status) | Single via `/push/clients` (upsert by slug) |
 | `projects` | Shakti's project registry (linked to clientSlug) | Single via `/push/projects` (upsert by slug) |
 | `tasks` | Shakti's task backlog (6 task types, priority, estimates) | Single via `/push/tasks`, status updates via `/update/task-status` |
+| `agentConversations` | Chat UI conversation sessions (agentId, title, messageCount, lastMessageAt) | Direct mutation via Chat UI |
+| `agentMessages` | Chat UI messages (conversationId, role, content, createdAt) | Direct mutation via Chat UI |
 
 ### HTTP Endpoints (canonical `/push/*` + `/update/*` + `/query/*`)
 Base URL: `https://curious-iguana-738.convex.site` (production deployment)

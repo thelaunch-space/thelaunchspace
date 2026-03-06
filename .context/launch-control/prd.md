@@ -2,7 +2,7 @@
 
 Status: LIVE IN PRODUCTION
 Created: 2026-02-14
-Last updated: 2026-02-28 (13 tables: clients + projects + tasks added for Shakti, 9 new HTTP endpoints)
+Last updated: 2026-03-06 (15 tables: agentConversations + agentMessages added for Chat UI. SSOT query endpoints added for agent migration.)
 URL: `thelaunch.space/launch-control`
 
 ---
@@ -74,7 +74,7 @@ Agent does work on VPS → curl POST to Convex HTTP Action → validates secret 
 
 ---
 
-## 4. Convex Schema (as deployed — 13 tables)
+## 4. Convex Schema (as deployed — 15 tables)
 
 **Production deployment:** `curious-iguana-738`
 **HTTP base URL:** `https://curious-iguana-738.convex.site`
@@ -229,27 +229,38 @@ Indexes: `by_agentName`, `by_timestamp`, `by_agentName_timestamp`, `by_dedupKey`
 
 Indexes: `by_slug`, `by_agentName`, `by_category`, `by_createdAt`
 
-### Table 9: `linkedinPosts` (Valmiki's LinkedIn drafts — LIVE as of 2026-02-26)
+### Table 9: `linkedinPosts` (Valmiki's LinkedIn drafts — LIVE as of 2026-02-26, metrics added 2026-03-06)
 
 | Field | Type | Required |
 |-------|------|----------|
 | `insightName` | string | yes | Dedup key with `sourceBlogSlug` |
-| `draftText` | string | yes | Full post draft |
+| `draftText` | string | optional | Full post draft (set in Phase 2) |
 | `sourceBlogSlug` | string | yes | Source blog |
 | `sourceBlogTitle` | string | optional | |
 | `insightNumber` | number | yes | Which insight from this blog (1,2,3…) |
-| `source` | string | yes | "blog" / "krishna-insight" |
-| `icpPass` | boolean | yes | Passed ICP filter? |
-| `icpFailReason` | string | optional | |
-| `hookStrategy` | string | optional | "loss-aversion" / "curiosity" / "authority" / "story" / "social-proof" |
-| `ctaType` | string | optional | "value-exchange" / "question" / "resource" / "follow" |
-| `krishnaFeedback` | string | optional | Krishna's review feedback (stored from Kanban). Agents read this on cron start. DO NOT pass null to clear — omit the field. It clears visually from Kanban once status leaves "blocked". |
+| `insightText` | string | optional | Extracted angle/insight (Phase 1) |
+| `rationale` | string | optional | Why this angle resonates with ICP (Phase 1) |
+| `hookOptions` | string[] | optional | 3-4 hook options (Phase 1) |
+| `ctaOptions` | string[] | optional | 3-4 CTA options (Phase 1) |
+| `selectedHook` | string | optional | Krishna's pick (set on approve) |
+| `selectedCta` | string | optional | Krishna's pick (set on approve) |
+| `source` | string | optional | "blog" / "krishna-insight" (legacy) |
+| `icpPass` | boolean | optional | Passed ICP filter? (legacy) |
+| `icpFailReason` | string | optional | (legacy) |
+| `hookStrategy` | string | optional | (legacy) |
+| `ctaType` | string | optional | (legacy) |
+| `krishnaFeedback` | string | optional | Krishna's review feedback (stored from Kanban). Agents read this on cron start. DO NOT pass null to clear — omit the field. |
 | `postedDate` | string | optional | |
 | `linkedinUrl` | string | optional | |
-| `status` | string | yes | "draft_ready" / "needs_revision" / "approved" / "posted" / "skipped" |
+| `status` | string | yes | "pending_review" / "needs_revision" / "approved" / "dropped" / "draft_ready" / "posted" / "skipped" |
 | `agentName` | string | yes | Always "Valmiki" |
 | `createdAt` | string | yes | |
 | `updatedAt` | string | optional | |
+| `impressions` | number | optional | Post-publish metric (added 2026-03-06) |
+| `comments` | number | optional | Post-publish metric (added 2026-03-06) |
+| `likes` | number | optional | Post-publish metric (added 2026-03-06) |
+| `goLiveDate` | string | optional | When Krishna posted (added 2026-03-06) |
+| `goLiveTime` | string | optional | Time posted (added 2026-03-06) |
 
 Indexes: `by_status`, `by_sourceBlogSlug`, `by_createdAt`
 
@@ -316,6 +327,31 @@ Indexes: `by_clientSlug`, `by_projectSlug`, `by_status`, `by_taskType`, `by_dead
 
 WorkBoard integration: `tasks` appear as `type: "task"` cards in the Work Mode Kanban alongside `manualTasks`. Same 5 columns. Orange/amber source badge to distinguish from manual tasks.
 
+### Table 14: `agentConversations` (Chat UI — LIVE as of 2026-03-05)
+
+| Field | Type | Required |
+|-------|------|----------|
+| `agentId` | string | yes | "main" / "vibhishana" / "vyasa" / "vidura" / "valmiki" / "shakti" |
+| `agentName` | string | yes | Display name |
+| `title` | string | yes | Auto-set from first user message (first 60 chars) |
+| `userId` | string | yes | Clerk userId |
+| `messageCount` | number | yes | |
+| `lastMessageAt` | string | yes | ISO timestamp |
+| `createdAt` | string | yes | |
+
+Indexes: `by_userId_agentId`, `by_userId`, `by_lastMessageAt`
+
+### Table 15: `agentMessages` (Chat UI messages — LIVE as of 2026-03-05)
+
+| Field | Type | Required |
+|-------|------|----------|
+| `conversationId` | id(agentConversations) | yes | Foreign key |
+| `role` | string | yes | "user" / "assistant" |
+| `content` | string | yes | Message text |
+| `createdAt` | string | yes | |
+
+Indexes: `by_conversationId`, `by_conversationId_createdAt`
+
 ---
 
 ## 5. HTTP Endpoints (canonical + legacy aliases)
@@ -335,23 +371,33 @@ WorkBoard integration: `tasks` appear as `type: "task"` cards in the Work Mode K
 | `/push/clients` | POST | Shakti | Upsert by slug |
 | `/push/projects` | POST | Shakti | Upsert by slug |
 | `/push/tasks` | POST | Shakti | Upsert by clientSlug+projectSlug+title |
-| `/update/brief-status` | POST | Any | Update brief status by slug |
-| `/update/blog-enrichment` | POST | Vyasa | Update enrichment metadata by slug |
-| `/update/task-status` | POST | Shakti | Update status, actualHours, paceNotes by task ID or title+projectSlug |
 
 **GET query endpoints** (agents read from these):
 
 | Endpoint | Method | Caller | Notes |
 |----------|--------|--------|-------|
+| `/query/blogs` | GET | Vyasa | `?needs_enrichment=true` (single next blog) / `?status=X` (filtered) / no params (all) |
+| `/query/questions` | GET | Vibhishana | `?summary=true` (counts by status) / `?limit=N` (recent questions, default 50) |
 | `/query/briefs?status=brief_ready` | GET | Vyasa | Full brief objects |
 | `/query/briefs?status=pending_review` | GET | Vibhishana | Count + slugs + titles |
 | `/query/briefs?status=needs_revision` | GET | Vibhishana | Full brief objects including `krishnaFeedback` |
+| `/query/briefs?summary=true` | GET | Vibhishana | Counts by all statuses (evening report) |
+| `/query/briefs?status=all` | GET | Any | Returns all briefs |
 | `/query/topic-clusters` | GET | Vidura | All clusters all statuses |
 | `/query/tool-opportunities` | GET | Vidura | All tools all statuses |
-| `/query/linkedin-posts` | GET | Valmiki | All posts — filter client-side for needs_revision + krishnaFeedback |
+| `/query/linkedin-posts` | GET | Valmiki | All posts, or `?status=X` for filtered. Includes metric fields. |
 | `/query/clients` | GET | Shakti | All clients |
 | `/query/projects?clientSlug=<optional>` | GET | Shakti | Projects, optionally filtered by clientSlug |
 | `/query/tasks?status=&clientSlug=&projectSlug=` | GET | Shakti | Tasks with flexible filtering (all params optional) |
+
+**POST update endpoints** (status + metadata changes):
+
+| Endpoint | Method | Caller | Notes |
+|----------|--------|--------|-------|
+| `/update/brief-status` | POST | Any | Update brief status by slug |
+| `/update/blog-enrichment` | POST | Vyasa | Update enrichment metadata by slug |
+| `/update/task-status` | POST | Shakti | Update status, actualHours, paceNotes |
+| `/update/linkedin-post-status` | POST | Any | Update LinkedIn post status by insightName+sourceBlogSlug (added 2026-03-06) |
 
 All require `Authorization: Bearer <AGENT_API_KEY>`. Legacy alias paths (`/ingestBrief`, `/upsertBrief`, etc.) remain permanently active. See `CONVEX-API-REFERENCE.md` for full alias list.
 
@@ -457,7 +503,7 @@ Key details:
 
 **All steps DONE (shipped Feb 15-18, 2026):**
 
-- [x] Convex backend — 13 tables, canonical /push/* + /update/* + /query/* HTTP routes + legacy aliases, Clerk auth, 20+ indexes
+- [x] Convex backend — 15 tables, canonical /push/* + /update/* + /query/* HTTP routes + legacy aliases, Clerk auth, 20+ indexes
 - [x] Agent skills — 4 SKILL.md files deployed on VPS, test pushes confirmed
 - [x] Frontend dashboard — 33+ components, 3-column layout, 8 tabs (6 public + 2 admin-only)
 - [x] All tabs open — no blur, full data for public visitors on all 6 non-admin tabs (as of 2026-02-25)
@@ -479,6 +525,9 @@ Key details:
 - [x] **Kanban feedback loop** (2026-02-26) — Status dropdown (Approve/Needs Revision/Drop/Publish/Skip) + confirm step + optional feedback textarea. `krishnaFeedback` stored in briefs + linkedinPosts. Blocked cards show Slack reminder.
 - [x] **Valmiki LinkedIn post pipeline** (2026-02-26) — `linkedinPosts` + `manualTasks` Convex tables. Valmiki pushes drafts via `/push/linkedin-posts`. Full spec at `.context/ideation/valmiki-linkedin-pipeline-lc-spec.md`.
 - [x] **Brief revision protocol** (2026-02-27) — Two-path: MINOR (same topic) = Vibhishana updates in place, appends `revisionHistory` snapshot. MAJOR (new topic) = old brief → dropped, new brief created.
+
+- [x] **SSOT Query Endpoints + Agent Migration** (2026-03-06) — 7 new internal queries, 5 new/extended HTTP routes, 5 linkedinPosts metric fields, all 4 agents migrated to Convex-first reads. Google Sheets = fallback only. Reference: `convex-ssot-schema-updates.md`.
+- [x] **Agent Chat UI** (2026-03-05) — `/agents` route with per-agent chat, SSE streaming via VPS proxy, persistent Convex history (`agentConversations` + `agentMessages` tables), 8 component files.
 
 **Still deferred:**
 - Two-way agent communication (send instructions back to agents) beyond the existing feedback field

@@ -153,9 +153,13 @@ Requires `.env.local` with:
 ```
 WEBHOOK_URL=https://hook.us2.make.com/...
 NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+NEXT_PUBLIC_CONVEX_URL=...
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=...
+CLERK_SECRET_KEY=...
+OPENCLAW_PROXY_URL=http://72.62.226.191:3001
+OPENCLAW_PROXY_SECRET=<secret>
 ```
-`WEBHOOK_URL` is server-only (no `NEXT_PUBLIC_` prefix). Never commit real webhook URLs.
-`NEXT_PUBLIC_GA_MEASUREMENT_ID` is client-side (GA4 gtag loaded via `next/script` in layout).
+Server-only vars (no `NEXT_PUBLIC_` prefix): `WEBHOOK_URL`, `CLERK_SECRET_KEY`, `OPENCLAW_PROXY_URL`, `OPENCLAW_PROXY_SECRET`. Never commit real values.
 
 ## Git
 - `main` — production (triggers Netlify deploy). **Never commit directly here during development.**

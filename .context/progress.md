@@ -1,6 +1,6 @@
 # Progress — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-03-05 (session 2)
+Last updated: 2026-03-06 (SSOT migration complete)
 
 ## Completed
 - [x] Project scaffolding (originally Vite + React 18, later migrated to Next.js 14)
@@ -244,7 +244,24 @@ Last updated: 2026-03-05 (session 2)
 - Removed `auth()` from `app/api/agent-chat/route.ts` — Clerk's `auth()` server helper requires `clerkMiddleware()` in middleware.ts, which this app cannot use (breaks Netlify). Security: proxy secret is server-side only; page already gates via client-side `useAuth()`.
 - Fixed agent switching bug — `router.push` in `handleSelectAgent`/`handleNewChat`/`handleSelectConversation` caused Next.js to remount `AgentsPage` (different page file) and reset `selectedAgent` to Parthasarathi. Fix: removed all `router.push` calls, manage via pure React state. Added `getConversation` query + `useEffect` to sync agent from Convex on deep-link load.
 
-**Session 2 (next):** EmptyState larger portrait image, mobile sidebar (bottom sheet), conversation delete/rename, error retry button, Framer Motion entrance, `/agents` link in admin nav. Agent Tools Panel idea parked (see todo.md).
+- [x] **Netlify secrets scan: `.context/` path exclusion** (2026-03-05) — `OPENCLAW_PROXY_URL` value (`http://72.62.226.191:3001`) appeared verbatim in `.context/todo.md` as developer documentation, triggering Netlify's secrets scanner. Fixed by adding `SECRETS_SCAN_OMIT_PATHS = ".context/"` to `[build.environment]` in `netlify.toml`. The `.context/` folder is never compiled or served — excluding it from path scanning is correct. Both `CONVEX_DEPLOY_KEY` (key suppression) and `.context/` (path suppression) now suppressed.
+
+**Session 3 fixes (2026-03-05):**
+- [x] **VPS proxy keepalive** — replaced `proxyRes.pipe(res)` with manual data/end/error handlers + `setInterval` keepalive (`: keepalive\n\n` SSE comment every 20s) to prevent idle connection closure during tool execution. Deployed via `scp` + `pm2 restart`. Short tool-calling operations now work.
+- [x] **Parthasarathi context overflow fix** — `agents.defaults.compaction.reserveTokensFloor` set to 4000 via OpenClaw config tool. Was hitting reset instead of compaction on large context loads.
+- [x] **Agent Hub ideation doc** — Full product vision at `.context/ideation/agent-hub.md`. Two-surface architecture (`/agents` = private command center, `/launch-control` = public demo), icon rail nav, 4 sections (Status/Chat/Files/Kanban), 5-phase build sequence, Convex free tier analysis.
+
+**Streaming update (2026-03-06) — BUG-008 NOT fully resolved:**
+The proxy keepalive fixed Shakti (she talks first, then does tool calls). Vibhishana still fails. Root cause identified: **Netlify function execution timeout**. Vibhishana queries Google Sheets for question data (no Convex `/query/questions` endpoint exists). Sheets reads take 20-40s. Netlify times out the function and closes the connection cleanly (EOF, not error) before his first token arrives. Browser `reader.read()` returns `done:true` with no content — nothing saved, chat silently resets, no error shown.
+
+Evidence: DevTools shows `: keepalive` at T=20s, then stream dies before T=40s. One keepalive, no second, no content.
+
+**Two fixes made to `app/api/agent-chat/route.ts` (staging, NOT deployed):**
+1. `export const maxDuration = 60;` — extends function timeout
+2. `"X-Accel-Buffering": "no"` response header — disables CDN buffering for SSE
+
+**Next step: deploy (merge staging → main) and test with Vibhishana.**
+If free plan still caps below 60s: add `/query/questions` Convex endpoint (fast lookup, eliminates the 20-40s silence entirely). See todo.md Step 2.
 
 ---
 
@@ -259,7 +276,9 @@ Last updated: 2026-03-05 (session 2)
 - **Question count mismatch** — Prod Convex has 771 unique questions, Google Sheet has 891. ~120 questions may not have been pushed to Convex, or have slightly different URLs. Needs investigation.
 
 ## Recent Changes (latest first)
-1. **Kanban mobile dismiss + blog pre-render + hook/CTA selection** — (2026-03-03) Mobile: sticky dismiss pill on all 3 card modals. Blog category pages now pre-rendered at build time (generateStaticParams). LinkedIn approve flow requires hook + CTA selection. 2 new blogs (dev-disappeared, feature-request-overwhelm). Blog total: 24 posts.
+1. **Convex SSOT Query Endpoints + Agent Migration** — (2026-03-06) Added 7 new `internalQuery` functions in `convex/agentQueries.ts` (`getAllBlogs`, `getNextBlogForEnrichment`, `getQuestionsSummary`, `getBriefsSummary`, `getLinkedinPostsByStatus`, `getRecentQuestions`, `getAllBriefs`). 2 new GET routes (`/query/blogs`, `/query/questions`), 2 extended GET routes (`/query/briefs` + `/query/linkedin-posts`), 1 new POST route (`/update/linkedin-post-status`). Added 5 optional metric fields to `linkedinPosts` schema (`impressions`, `comments`, `likes`, `goLiveDate`, `goLiveTime`). Extended `linkedinPosts.upsert` mutation to accept metric fields. CORS updated. All 4 agents migrated to Convex-first reads via Parthasarathi: Vyasa (enrichment reads), Valmiki (performance metrics + status filtering), Vibhishana (evening report summary), Parthasarathi (team overview). Google Sheets now fallback-only for all agents. Reference doc: `.context/launch-control/convex-ssot-schema-updates.md`. Convex tables: still 15 (agentConversations + agentMessages added in prior session).
+1. **Proxy keepalive + Parthasarathi fix + Agent Hub ideation** — (2026-03-05) VPS proxy keepalive (SSE comment every 20s) fixes short tool-calling silence. Parthasarathi context overflow fixed (`reserveTokensFloor = 4000`). Agent Hub ideation doc created at `.context/ideation/agent-hub.md`. Long-operation streaming (50+ sec) still open — see BUG-008.
+2. **Kanban mobile dismiss + blog pre-render + hook/CTA selection** — (2026-03-03) Mobile: sticky dismiss pill on all 3 card modals. Blog category pages now pre-rendered at build time (generateStaticParams). LinkedIn approve flow requires hook + CTA selection. 2 new blogs (dev-disappeared, feature-request-overwhelm). Blog total: 24 posts.
 2. **Shakti Phase 0 + 1 — COMPLETE** — `clients`, `projects`, `tasks` tables added to Convex schema (13 tables total). `convex/clients.ts`, `convex/projects.ts`, `convex/shaktiTasks.ts` created. 9 new HTTP endpoints: `/push/clients`, `/push/projects`, `/push/tasks`, `/update/task-status`, `/query/clients`, `/query/projects`, `/query/tasks`. WorkBoard `task` card type wired in `workboard.ts` (`getBoard` + `updateArtifactStatus`) and `WorkBoardCard.tsx` (client/project badges, task type badge, estimated hours, action buttons). (2026-02-28)
 2. **7th agent: Shakti** — "The Chief of Staff" added to `lib/agents.ts` (indigo accent #4F46E5, 6 task types, daily planning KRAs), `lib/pitch-data.ts` (Pace: 9, Intel: 8, active — Sanjaya remains only coming-soon), `lib/geo-savings.ts` ($800/mo INTL, ₹15K/mo IN for Task management). (2026-02-28)
 3. **Design system: Shakti avatar prompt** — `.context/design-system-v2.md` updated: Shakti Prompt 7 of 8 added (deep magenta glowing eyes, charcoal blazer over magenta silk kurta, 4 orbiting holographic task panels). All individual agent prompts renumbered 1 of 8 through 7 of 8. Team hero updated to Prompt 8 of 8 — now includes all 7 characters, full camera spec (24–35mm, 2.5:1 panoramic, chest-height, studio lighting), 14-item DO NOT list, and troubleshooting table. (2026-02-28)

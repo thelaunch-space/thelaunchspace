@@ -1,8 +1,46 @@
 # Feedback & Bugs — thelaunch.space
 
-Last updated: 2026-03-03
+Last updated: 2026-03-05
 
 ## Active Bugs
+
+### BUG-009: Parthasarathi context overflow — reserveTokensFloor too low (2026-03-05)
+**Status:** Fixed (2026-03-05)
+**Reported:** Parthasarathi stopped responding on Slack. Error in Docker logs: `⚠️ Context limit exceeded. reserveTokensFloor to 4000`. He had been helping Krishna explore the repo codebase (large context load), which pushed him past the compaction threshold. Instead of compacting cleanly, he hit the floor and reset.
+**Root cause:** `agents.defaults.compaction.reserveTokensFloor` was set too low. When context approached the limit, the reserved token buffer was too small to trigger compaction properly — conversation reset instead.
+**Fix:** Parthasarathi set `agents.defaults.compaction.reserveTokensFloor = 4000` via OpenClaw config tool from inside Docker. Confirmed working.
+**Note:** `/new` command in Slack does NOT start a new OpenClaw session — it's not available that way. OpenClaw UI (localhost:41473 inside VPS) is the only way to start fresh sessions.
+
+### BUG-008: Agent Chat — full response not reaching browser for long tool-calling operations (2026-03-05)
+**Status:** Partially fixed — Shakti works, Vibhishana still fails (2026-03-06)
+
+**Fix 1 — VPS proxy keepalive (2026-03-05, DEPLOYED):**
+Replaced `proxyRes.pipe(res)` in VPS proxy (`/opt/openclaw-proxy/openclaw-proxy.js`) with manual `data`/`end`/`error` handlers + `setInterval` sending SSE comment (`: keepalive\n\n`) every 20 seconds. Fixes idle connection drops at the proxy layer. Confirmed working for Shakti (~31s request with one 20s tool-call silence).
+
+**Root cause of remaining failure — Netlify function timeout:**
+Vibhishana queries Google Sheets for question data (confirmed from his `TOOLS.md` — there is NO `/query/questions` Convex HTTP endpoint, so he falls back to Sheets). His Sheets reads take 20-40+ seconds. During that time he sends ZERO tokens. The Netlify function execution timeout fires before his first token arrives.
+
+When Netlify times out, it closes the connection **cleanly** (EOF, not an error). Result: browser `reader.read()` returns `{ done: true }` (no exception thrown, `catch` never fires). `fullContent === ""` → nothing saved → `setIsStreaming(false)` → chat silently resets to idle. No error message, no response. Slack DOES get the response because OpenClaw on VPS finishes independently.
+
+**Why Shakti works but Vibhishana doesn't:**
+Shakti says "Let me check your work streams..." immediately (first token in ~2s) THEN does tool calls. First content arrives well within timeout. Vibhishana does all tool calls first (Sheets queries), sends nothing for 20-40s, then responds — by then the connection is dead.
+
+**DevTools evidence:**
+Chrome: `: keepalive` appears at ~T=20s (one keepalive fires), then stream dies before T=40s. This means the Netlify timeout is somewhere in the 20-40 second range. The keepalive IS reaching the browser but no content ever follows.
+
+**Fix 2 — Netlify timeout + CDN buffering (2026-03-06, IN CODE, NOT DEPLOYED):**
+Two changes to `app/api/agent-chat/route.ts`:
+1. `export const maxDuration = 60;` — tells Netlify to allow up to 60s execution
+2. `"X-Accel-Buffering": "no"` response header — disables Netlify CDN buffering for SSE
+
+**To deploy:** `git checkout main && git merge staging && git push`
+
+**Risk:** Netlify free plan may cap function execution below 60s regardless of `maxDuration`. If so, best remaining fix is:
+- Add `/query/questions` Convex HTTP endpoint (limit + filter params) → Vibhishana queries in 1-2s instead of 20-40s, eliminating the long silence entirely
+
+**Affected files:**
+- `app/api/agent-chat/route.ts` — maxDuration + X-Accel-Buffering (staging, not deployed)
+- `/opt/openclaw-proxy/openclaw-proxy.js` (VPS host, outside Docker) — keepalive (deployed)
 
 ### BUG-007: Kanban card modals cut off dismiss/close on mobile (2026-03-03)
 **Status:** Fixed (2026-03-03)

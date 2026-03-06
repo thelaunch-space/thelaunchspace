@@ -1,6 +1,6 @@
 # Todo — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-03-05
+Last updated: 2026-03-06
 
 ## START HERE — Agent Chat UI (Steps 0 + 1 COMPLETE)
 
@@ -42,7 +42,22 @@ Body: OpenAI-compatible { model: "openclaw:main", messages: [...] }
 ### Step 1 — COMPLETE (2026-03-05)
 Full `/agents` chat UI built. Persistent Convex history, SSE streaming, 8 component files. See progress.md for full details.
 
-### Step 2 — Session 2 Polish (DO NEXT)
+### Step 2 — Streaming Bug Fix (DO FIRST — NOT DEPLOYED YET)
+
+> Context: BUG-008 in feedback-and-bugs.md has full root cause analysis.
+
+- [ ] **Deploy `app/api/agent-chat/route.ts` changes to production** — two fixes are in code on `staging` but not on `main`:
+  1. `export const maxDuration = 60;` — extends Netlify function execution to 60s
+  2. `"X-Accel-Buffering": "no"` header — disables CDN buffering for SSE
+  Run: `git checkout main && git merge staging && git push`
+
+- [ ] **Test after deploy** — ask Vibhishana a question that requires a Google Sheets lookup (e.g. "what were the 3 most recent questions you logged?"). If his full response appears in the UI within 60s, the fix worked. If it still fails, the Netlify free plan is capping the timeout lower than 60s.
+
+- [x] **`/query/questions` Convex endpoint — DONE (2026-03-06)** — `GET /query/questions?summary=true` returns counts by status. `GET /query/questions?limit=N` returns recent questions. All agents migrated to Convex-first reads. Part of SSOT migration.
+
+---
+
+### Step 3 — Session 2 Polish (DO NEXT)
 - [ ] **EmptyState: larger full agent image** — increase avatar in EmptyState from ~64px to 160px+ portrait image (agent images are full character portraits, not just headshots — use the space)
 - [ ] Mobile sidebar — collapses to bottom sheet on mobile (agent picker scrolls horizontally)
 - [ ] Conversation delete — swipe or hover button on sidebar items

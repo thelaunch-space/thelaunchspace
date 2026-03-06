@@ -1,6 +1,6 @@
 # Integrations — thelaunch.space Landing Page + Blog
 
-Last updated: 2026-02-27
+Last updated: 2026-03-05
 
 ## Make.com Webhook (Active)
 - **Purpose:** Lead capture → CRM pipeline
@@ -59,8 +59,8 @@ Last updated: 2026-02-27
 - **HTTP Actions URL (prod):** `https://curious-iguana-738.convex.site`
 - **Env vars (`.env.local`):** `NEXT_PUBLIC_CONVEX_URL`, `CONVEX_DEPLOYMENT`, `NEXT_PUBLIC_CONVEX_SITE_URL`, `CONVEX_DEPLOY_KEY`
 - **Env vars (Convex Dashboard):** `AGENT_API_KEY` (shared secret for HTTP endpoint auth), `CLERK_ISSUER_URL` (Clerk identity provider)
-- **Schema:** 4 tables (questions, briefs, blogs, agentActivity) with 11 indexes
-- **HTTP Endpoints:** 4 POST routes (`/ingestQuestions`, `/ingestBrief`, `/ingestBlog`, `/ingestActivity`) — all require Bearer token auth
+- **Schema:** 15 tables — questions, briefs, blogs, agentActivity, topicClusters, toolOpportunities, pitchBookings, documents, linkedinPosts, manualTasks, clients, projects, tasks, agentConversations, agentMessages
+- **HTTP Endpoints:** Canonical `/push/*`, `/update/*`, `/query/*` routes. Legacy `/ingest*` aliases still active. All require Bearer token auth.
 - **Queries:** Public (no auth needed) for read-only dashboard data; Admin (Clerk auth required) for full brief content + activity logs
 - **Frontend wiring:** `app/ConvexClientProvider.tsx` wraps entire app in ClerkProvider + ConvexProviderWithClerk
 - **Build:** `npx convex deploy --cmd 'npm run build'` — pushes Convex functions before Next.js build
@@ -72,11 +72,11 @@ Last updated: 2026-02-27
 - **Instance (dev):** `famous-krill-26.clerk.accounts.dev`
 - **Instance (prod):** Production instance created with `thelaunch.space` domain, 5 CNAME records verified (clerk, accounts, clk._domainkey, clk2._domainkey, mail)
 - **Env vars (`.env.local`):** `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`
-- **Middleware:** `middleware.ts` at project root — permissive `clerkMiddleware()`, does NOT block any route
+- **Middleware:** `middleware.ts` — geo cookie ONLY. **No `clerkMiddleware()` — it was removed on 2026-02-25 because it broke Netlify edge functions.** Clerk auth is entirely client-side.
 - **Integration with Convex:** `ConvexProviderWithClerk` passes Clerk auth tokens to Convex for admin query validation
 - **Admin queries:** Check `ctx.auth.getUserIdentity()` in Convex — throw if not authenticated
-- **No route protection:** All existing pages work without login. Auth is only checked inside admin query functions.
-- **Waitlist gate (UI hack):** No public "Sign in" button. `WaitlistCTA.tsx` shows email input; only `krishna@thelaunch.space` reveals Clerk SignIn/SignUp. Other emails captured as leads via `/api/lead`. This avoids Clerk Pro ($25/mo) allowlist requirement.
+- **No route protection:** All pages work without login. Auth enforced at Convex function level + client-side `useAuth()` for UI toggling.
+- **Login flow:** `/admin` page with Clerk `<SignIn>` (no sign-up). Secret URL — no site link. Redirects to `/launch-control` after sign-in.
 - **Dev vs Prod:** Dev and prod are separate Clerk instances with separate user databases. Dev uses `pk_test_`/`sk_test_` keys, prod uses `pk_live_`/`sk_live_` keys. Both instances active and deployed.
 
 ## Netlify Deploy Hook (Active)
@@ -88,6 +88,17 @@ Last updated: 2026-02-27
 - **Manual use:** `curl -X POST https://thelaunch.space/api/deploy-hook` — run after any deploy if stale cache is suspected
 - **Automation (Step 3 — optional):** Wire to Netlify deploy notification webhook (Site settings → Build & deploy → Deploy notifications → Add webhook → URL above → Event: "Deploy succeeded"). Not strictly required since `Netlify-CDN-Cache-Control: no-store` on `/*` prevents new HTML from being cached in Durable Cache.
 - **Full incident context:** `.context/netlify-caching-incident.md`
+
+## VPS Proxy — OpenClaw Chat (Active — 2026-03-05)
+- **Purpose:** Bridge between Netlify (cloud) and OpenClaw on the VPS — enables the Agent Chat UI
+- **Proxy location:** `/opt/openclaw-proxy/openclaw-proxy.js` on VPS, port 3001, PM2-managed (auto-restarts on crash/reboot)
+- **Flow:** `app/api/agent-chat/route.ts` (Netlify server) → `http://72.62.226.191:3001/v1/chat/completions` (proxy) → OpenClaw `localhost:41473` (VPS)
+- **Auth:** Two layers: (1) Clerk `useAuth()` on frontend gates page. (2) `x-proxy-secret` header on every proxy call (server-side only, never reaches browser).
+- **Agent selection:** `x-openclaw-agent-id` header. Values: `main` (Parthasarathi), `vibhishana`, `vyasa`, `vidura`, `valmiki`, `shakti`, `sanjaya`
+- **Protocol:** OpenAI-compatible. Stateless — caller sends full `messages` array each request. Frontend manages session history via Convex.
+- **Env vars (Netlify + `.env.local`):** `OPENCLAW_PROXY_URL=http://72.62.226.191:3001`, `OPENCLAW_PROXY_SECRET=<secret>` (both marked as secrets in Netlify)
+- **Setup script:** `openclaw-config-global/scripts/setup-proxy.sh`
+- **Slack parallel:** Slack stays active alongside chat UI until Krishna is confident. No forced cutover.
 
 ## GitHub (Active)
 - **Repo:** `thelaunch-space/thelaunch-space-tweet-sized-landing-page`

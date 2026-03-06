@@ -1,9 +1,11 @@
 # Agent Team Context — thelaunch.space
 
-Last updated: 2026-03-01
+Last updated: 2026-03-06
 Source of truth: `openclaw-config-global/my-openclaw-agent-setup-v2/` (READ-ONLY VPS mirror)
 
 This doc captures the current agent team — what each agent does, what it pushes to Convex, and what that means for Launch Control. Load this file when working on Launch Control features, Kanban interactions, or anything agent-related.
+
+**SSOT Migration (2026-03-06):** All agents now use Convex as primary data source for reads. Google Sheets is fallback-only. Helper scripts (`vyasa-sheets-helper.js`, `valmiki-sheets-helper.js`, `vibhishana-sheets-helper.js`) try Convex first, fall back to Sheets on failure. New query endpoints: `/query/blogs`, `/query/questions`, `/query/briefs?summary=true`, `/query/linkedin-posts?status=X`. Full reference: `.context/launch-control/convex-ssot-schema-updates.md`.
 
 ---
 
@@ -58,6 +60,8 @@ This doc captures the current agent team — what each agent does, what it pushe
 **Reads from Convex:**
 - `/query/briefs?status=needs_revision` — feedback items to process first
 - `/query/briefs?status=pending_review` — queue depth check before adding more
+- `/query/briefs?summary=true` — counts by status (evening report)
+- `/query/questions?summary=true` — counts by status (evening report)
 
 **Brief status flow:**
 ```
@@ -91,6 +95,8 @@ pending_review → [krishna approves] brief_ready → [vyasa picks up]
 
 **Reads from Convex:**
 - `/query/briefs?status=brief_ready` — picks up approved briefs
+- `/query/blogs?needs_enrichment=true` — next blog to enrich (nulls-first, then oldest enrichment date)
+- `/query/blogs?status=published` — list of all published blogs
 
 **Blog status values:** `writing` → `pr_created` → `published` | `dropped`
 
@@ -144,10 +150,12 @@ pending_review → [krishna approves] brief_ready → [vyasa picks up]
 - `/push/linkedin-posts` — upsert by `insightName + sourceBlogSlug`
   - **CRITICAL:** Never pass `krishnaFeedback: null` — omit the field entirely
   - Phase 2 push: include `draftText` + `status: "draft_ready"`, omit `krishnaFeedback`
+  - Performance metrics: include `impressions`, `comments`, `likes`, `goLiveDate`, `goLiveTime` (added 2026-03-06)
 
 **Reads from Convex:**
-- `/query/linkedin-posts` — includes `insightText`, `rationale`, `hookOptions`, `ctaOptions`, `draftText`, `krishnaFeedback`
-- Filters for `status === "approved"` (Phase 2 work) and `status === "needs_revision"` (revisions)
+- `/query/linkedin-posts` — all posts (includes metric fields)
+- `/query/linkedin-posts?status=needs_revision` — posts needing revision
+- `/query/linkedin-posts?status=approved` — posts ready for Phase 2 drafting
 
 **LinkedIn post status values:** `pending_review` → `approved` | `needs_revision` | `dropped` → `draft_ready` → `posted` | `skipped`
 
@@ -291,6 +299,8 @@ At the start of EVERY cron run, agents check for feedback items BEFORE doing any
 | `clients` | Shakti | Client registry (beacon-house, edutechplus, thelaunch-space) |
 | `projects` | Shakti | Project registry (linked to clients) |
 | `tasks` | Shakti | Task backlog with pace model |
+| `agentConversations` | Chat UI | Per-agent chat sessions (userId + agentId) |
+| `agentMessages` | Chat UI | Individual messages within conversations |
 
 ---
 
