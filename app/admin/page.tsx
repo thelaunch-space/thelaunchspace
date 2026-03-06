@@ -35,6 +35,11 @@ export default function AdminPage() {
       <SignIn
         routing="hash"
         afterSignInUrl="/launch-control"
+        appearance={{
+          elements: {
+            footer: { display: "none" },
+          },
+        }}
       />
     </div>
   );
