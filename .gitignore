@@ -25,6 +25,11 @@ dist-ssr
 # Claude Code local settings (contains deploy keys)
 .claude/
 
+# AI context docs — local-only developer/Claude Code context
+# Not application code. Contains IPs, keys references, and internal notes.
+CLAUDE.md
+.context/
+
 # Next.js
 .next/
 out/
