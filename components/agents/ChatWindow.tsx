@@ -7,6 +7,7 @@ import MessageBubble from "./MessageBubble";
 interface Props {
   messages: ChatMessage[];
   streamingContent: string;
+  pendingContent: string;
   isStreaming: boolean;
   selectedAgent: AgentChatConfig;
 }
@@ -14,6 +15,7 @@ interface Props {
 export default function ChatWindow({
   messages,
   streamingContent,
+  pendingContent,
   isStreaming,
   selectedAgent,
 }: Props) {
@@ -45,20 +47,20 @@ export default function ChatWindow({
           ))
         )}
 
-        {/* Streaming message */}
-        {isStreaming && streamingContent && (
+        {/* Streaming message — or pending content while waiting for Convex subscription */}
+        {(isStreaming && streamingContent) || pendingContent ? (
           <MessageBubble
             message={{
               _id: "streaming",
               conversationId: "",
               role: "assistant",
-              content: streamingContent,
+              content: streamingContent || pendingContent,
               createdAt: new Date().toISOString(),
             }}
             agent={selectedAgent}
-            isStreaming
+            isStreaming={isStreaming}
           />
-        )}
+        ) : null}
 
         {/* Typing indicator when streaming but no content yet */}
         {isStreaming && !streamingContent && (

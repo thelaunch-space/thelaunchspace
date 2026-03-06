@@ -23,6 +23,7 @@ export default function AgentsPage({ initialConversationId }: Props) {
   const [activeConversationId, setActiveConversationId] = useState<string | null>(initialConversationId);
   const [streamingContent, setStreamingContent] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
+  const [pendingContent, setPendingContent] = useState("");
 
   // Convex queries
   const conversations = useQuery(
@@ -45,6 +46,16 @@ export default function AgentsPage({ initialConversationId }: Props) {
       ? { conversationId: activeConversationId as Id<"agentConversations"> }
       : "skip"
   );
+
+  // Clear pendingContent once the Convex subscription delivers the saved message
+  useEffect(() => {
+    if (pendingContent && messages?.length) {
+      const lastMsg = messages[messages.length - 1];
+      if (lastMsg?.role === "assistant") {
+        setPendingContent("");
+      }
+    }
+  }, [messages, pendingContent]);
 
   // When loading a deep-linked conversation, sync selectedAgent from Convex data
   useEffect(() => {
@@ -178,6 +189,10 @@ export default function AgentsPage({ initialConversationId }: Props) {
       // Save complete response to Convex
       dbg(`Saving ${fullContent.length} chars to Convex...`);
       if (fullContent) {
+        // Keep text visible as "pending" until Convex subscription delivers it
+        setPendingContent(fullContent);
+        setIsStreaming(false);
+        setStreamingContent("");
         await addMessage({ conversationId: convId, role: "assistant", content: fullContent });
         await updateMeta({
           conversationId: convId,
@@ -187,17 +202,21 @@ export default function AgentsPage({ initialConversationId }: Props) {
         dbg(`Saved OK`);
       } else {
         dbg(`WARNING: empty fullContent, nothing saved`);
+        setIsStreaming(false);
+        setStreamingContent("");
       }
     } catch (err) {
       dbg(`CATCH: ${err}`);
       console.error("[AgentsPage] Stream error:", err);
-      await addMessage({
-        conversationId: convId,
-        role: "assistant",
-        content: "Sorry, I couldn't reach the agent. Please try again.",
-      });
-    } finally {
-      dbg(`FINALLY: clearing streaming state`);
+      try {
+        await addMessage({
+          conversationId: convId,
+          role: "assistant",
+          content: "Sorry, I couldn't reach the agent. Please try again.",
+        });
+      } catch (saveErr) {
+        dbg(`CATCH save also failed: ${saveErr}`);
+      }
       setIsStreaming(false);
       setStreamingContent("");
     }
@@ -243,6 +262,7 @@ export default function AgentsPage({ initialConversationId }: Props) {
               <ChatWindow
                 messages={allMessages}
                 streamingContent={streamingContent}
+                pendingContent={pendingContent}
                 isStreaming={isStreaming}
                 selectedAgent={selectedAgent}
               />
