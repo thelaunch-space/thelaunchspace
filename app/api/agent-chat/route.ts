@@ -29,10 +29,12 @@ export async function POST(request: Request) {
     );
   }
 
-  // Fire-and-forget: send to VPS proxy, don't await the response.
-  // The proxy will collect the full agent response and push it to Convex directly.
+  // Fire-and-forget: the proxy returns 200 immediately in this mode,
+  // then continues collecting the full agent response in the background.
+  // We MUST await the fetch — Netlify kills the process after response,
+  // so an un-awaited fetch never actually sends.
   try {
-    fetch(`${proxyUrl}/v1/chat/completions`, {
+    const proxyRes = await fetch(`${proxyUrl}/v1/chat/completions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -47,10 +49,15 @@ export async function POST(request: Request) {
         stream: true,
         user: conversationId,
       }),
-    }).catch((err) => {
-      // Log but don't throw — the proxy will push an error message to Convex if it fails
-      console.error("[agent-chat] Fire-and-forget proxy call failed:", err);
     });
+
+    if (!proxyRes.ok) {
+      console.error("[agent-chat] Proxy returned:", proxyRes.status);
+      return NextResponse.json(
+        { error: `Proxy returned ${proxyRes.status}` },
+        { status: proxyRes.status }
+      );
+    }
   } catch (err) {
     console.error("[agent-chat] Proxy connection failed:", err);
     return NextResponse.json(
