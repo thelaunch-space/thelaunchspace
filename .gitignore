@@ -30,6 +30,10 @@ dist-ssr
 CLAUDE.md
 .context/
 
+# VPS proxy scripts (contain secrets)
+docs/openclaw-proxy-v2.js
+docs/vps-proxy-fire-and-forget-patch.js
+
 # Next.js
 .next/
 out/
