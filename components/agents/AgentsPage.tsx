@@ -160,7 +160,7 @@ export default function AgentsPage({ initialConversationId }: Props) {
   // Auth gate
   if (!isSignedIn) {
     return (
-      <div className="h-full flex items-center justify-center bg-[#F5F5F0]">
+      <div className="h-full flex items-center justify-center bg-white">
         <div className="text-center space-y-3">
           <p className="text-text-primary font-medium">Sign in to chat with your agents</p>
           <a
@@ -187,11 +187,10 @@ export default function AgentsPage({ initialConversationId }: Props) {
         <ConversationSidebar
           conversations={conversations ?? []}
           activeConversationId={activeConversationId}
-          selectedAgent={selectedAgent}
           onSelectConversation={handleSelectConversation}
           onNewChat={handleNewChat}
         />
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-hidden bg-white">
           {activeConversationId ? (
             <>
               <ChatWindow

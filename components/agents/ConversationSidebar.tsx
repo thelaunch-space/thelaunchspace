@@ -2,12 +2,11 @@
 
 import { useMemo } from "react";
 import { Plus, MessageSquare } from "lucide-react";
-import { AgentChatConfig, ChatConversation } from "./types";
+import { ChatConversation } from "./types";
 
 interface Props {
   conversations: ChatConversation[];
   activeConversationId: string | null;
-  selectedAgent: AgentChatConfig;
   onSelectConversation: (id: string) => void;
   onNewChat: () => void;
 }
@@ -39,7 +38,6 @@ function groupByDate(conversations: ChatConversation[]) {
 export default function ConversationSidebar({
   conversations,
   activeConversationId,
-  selectedAgent,
   onSelectConversation,
   onNewChat,
 }: Props) {
@@ -48,7 +46,7 @@ export default function ConversationSidebar({
   return (
     <div className="w-64 shrink-0 h-full flex flex-col border-r border-border-color/60 bg-surface/50 hidden md:flex">
       {/* Header */}
-      <div className="p-3 border-b border-border-color/40">
+      <div className="p-3 pb-2">
         <button
           onClick={onNewChat}
           className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-black/[0.04] transition-colors"
@@ -92,19 +90,6 @@ export default function ConversationSidebar({
         )}
       </div>
 
-      {/* Agent context footer */}
-      <div
-        className="p-3 border-t border-border-color/40 flex items-center gap-2"
-        style={{ borderTopColor: `${selectedAgent.accentHex}20` }}
-      >
-        <div
-          className="w-2 h-2 rounded-full shrink-0"
-          style={{ backgroundColor: selectedAgent.accentHex }}
-        />
-        <span className="text-xs text-text-secondary truncate">
-          {selectedAgent.name}
-        </span>
-      </div>
     </div>
   );
 }
