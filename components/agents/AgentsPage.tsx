@@ -107,8 +107,11 @@ export default function AgentsPage({ initialConversationId }: Props) {
     // Stream from proxy
     setIsStreaming(true);
     setStreamingContent("");
+    const streamStart = Date.now();
+    const dbg = (msg: string) => console.log(`[STREAM T+${((Date.now() - streamStart) / 1000).toFixed(1)}s] ${msg}`);
 
     try {
+      dbg(`Fetching /api/agent-chat agent=${selectedAgent.id}`);
       const response = await fetch("/api/agent-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -119,6 +122,7 @@ export default function AgentsPage({ initialConversationId }: Props) {
         }),
       });
 
+      dbg(`Response status=${response.status}`);
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
       }
@@ -128,33 +132,51 @@ export default function AgentsPage({ initialConversationId }: Props) {
 
       const decoder = new TextDecoder();
       let fullContent = "";
+      let chunkCount = 0;
+      let dataEventCount = 0;
 
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
+        if (done) {
+          dbg(`reader done=true. chunks=${chunkCount} events=${dataEventCount} len=${fullContent.length}`);
+          break;
+        }
 
+        chunkCount++;
         const chunk = decoder.decode(value, { stream: true });
         const lines = chunk.split("\n");
 
         for (const line of lines) {
+          if (line.startsWith(": ")) {
+            dbg(`keepalive`);
+            continue;
+          }
           if (!line.startsWith("data: ")) continue;
           const data = line.slice(6).trim();
-          if (data === "[DONE]") break;
+          if (data === "[DONE]") {
+            dbg(`[DONE] received. len=${fullContent.length}`);
+            break;
+          }
 
           try {
             const parsed = JSON.parse(data);
             const delta = parsed?.choices?.[0]?.delta?.content;
             if (delta) {
+              dataEventCount++;
               fullContent += delta;
               setStreamingContent(fullContent);
+              if (dataEventCount <= 3 || dataEventCount % 20 === 0) {
+                dbg(`delta #${dataEventCount}: "${delta.slice(0, 40)}" (total=${fullContent.length})`);
+              }
             }
           } catch {
-            // Ignore malformed chunks
+            dbg(`parse fail: "${data.slice(0, 60)}"`);
           }
         }
       }
 
       // Save complete response to Convex
+      dbg(`Saving ${fullContent.length} chars to Convex...`);
       if (fullContent) {
         await addMessage({ conversationId: convId, role: "assistant", content: fullContent });
         await updateMeta({
@@ -162,16 +184,20 @@ export default function AgentsPage({ initialConversationId }: Props) {
           lastMessageAt: new Date().toISOString(),
           messageCount: (currentMessages.length + 2),
         });
+        dbg(`Saved OK`);
+      } else {
+        dbg(`WARNING: empty fullContent, nothing saved`);
       }
     } catch (err) {
+      dbg(`CATCH: ${err}`);
       console.error("[AgentsPage] Stream error:", err);
-      // Save error as assistant message so it persists in the conversation
       await addMessage({
         conversationId: convId,
         role: "assistant",
         content: "Sorry, I couldn't reach the agent. Please try again.",
       });
     } finally {
+      dbg(`FINALLY: clearing streaming state`);
       setIsStreaming(false);
       setStreamingContent("");
     }

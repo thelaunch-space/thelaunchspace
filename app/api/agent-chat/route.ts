@@ -70,7 +70,25 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Empty proxy response" }, { status: 502 });
   }
 
-  return new Response(stream, {
+  // [DEBUG] Wrap stream to log what flows through the Netlify function
+  const startTime = Date.now();
+  console.log(`[agent-chat DEBUG] Stream started for agent=${agentId} conv=${conversationId}`);
+
+  const debugStream = stream.pipeThrough(new TransformStream({
+    transform(chunk, controller) {
+      const text = new TextDecoder().decode(chunk);
+      const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+      const preview = text.slice(0, 120).replace(/\n/g, "\\n");
+      console.log(`[agent-chat DEBUG] T+${elapsed}s chunk (${chunk.byteLength}B): ${preview}`);
+      controller.enqueue(chunk);
+    },
+    flush() {
+      const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+      console.log(`[agent-chat DEBUG] T+${elapsed}s stream ended (flush)`);
+    },
+  }));
+
+  return new Response(debugStream, {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
