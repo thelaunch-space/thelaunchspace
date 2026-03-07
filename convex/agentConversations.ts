@@ -73,3 +73,65 @@ export const getConversation = query({
     return await ctx.db.get(args.conversationId);
   },
 });
+
+// Returns recent cron_update messages across all agents (or filtered by agentId)
+// Used by Ops Feed UI
+export const listCronUpdates = query({
+  args: {
+    agentId: v.optional(v.string()),
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const systemUserId = "system_cron";
+    const maxItems = args.limit ?? 100;
+
+    // Get all cron_log conversations
+    let conversations;
+    if (args.agentId) {
+      const conv = await ctx.db
+        .query("agentConversations")
+        .withIndex("by_userId_agentId", (q) =>
+          q.eq("userId", systemUserId).eq("agentId", args.agentId!)
+        )
+        .filter((q) => q.eq(q.field("type"), "cron_log"))
+        .collect();
+      conversations = conv;
+    } else {
+      conversations = await ctx.db
+        .query("agentConversations")
+        .withIndex("by_userId", (q) => q.eq("userId", systemUserId))
+        .filter((q) => q.eq(q.field("type"), "cron_log"))
+        .collect();
+    }
+
+    if (conversations.length === 0) return [];
+
+    // Collect messages from all cron_log conversations
+    const allMessages = [];
+    for (const conv of conversations) {
+      const messages = await ctx.db
+        .query("agentMessages")
+        .withIndex("by_conversationId_createdAt", (q) =>
+          q.eq("conversationId", conv._id)
+        )
+        .order("desc")
+        .take(maxItems);
+
+      for (const msg of messages) {
+        allMessages.push({
+          ...msg,
+          agentId: conv.agentId,
+          agentName: conv.agentName,
+          conversationId: conv._id,
+        });
+      }
+    }
+
+    // Sort by createdAt desc and limit
+    allMessages.sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+
+    return allMessages.slice(0, maxItems);
+  },
+});

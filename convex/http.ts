@@ -959,6 +959,54 @@ http.route({
 });
 
 // ---------------------------------------------------------------------------
+// Dynamic cron schedule + cron updates (Ops Feed)
+// ---------------------------------------------------------------------------
+
+http.route({
+  path: "/push/cron-schedule",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    if (!validateAuth(request)) {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
+    try {
+      const body = await request.json();
+      const items = Array.isArray(body) ? body : body.items ?? [body];
+      const result = await ctx.runMutation(internal.cronSchedule.upsertBatch, { items });
+      return jsonResponse({ success: true, ...result });
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
+  }),
+});
+
+http.route({
+  path: "/push/cron-update",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    if (!validateAuth(request)) {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
+    try {
+      const body = await request.json();
+      const { agentId, agentName, jobName, content } = body;
+      if (!agentId || !agentName || !jobName || !content) {
+        return jsonResponse({ error: "Missing agentId, agentName, jobName, or content" }, 400);
+      }
+      const result = await ctx.runMutation(internal.agentMessages.insertFromCronUpdate, {
+        agentId,
+        agentName,
+        jobName,
+        content,
+      });
+      return jsonResponse({ success: true, ...result });
+    } catch (error: unknown) {
+      return errorResponse(error);
+    }
+  }),
+});
+
+// ---------------------------------------------------------------------------
 // Agent Chat — fire-and-forget delivery from VPS proxy
 // ---------------------------------------------------------------------------
 
@@ -1007,6 +1055,8 @@ for (const path of [
   "/query/clients", "/query/projects", "/query/tasks",
   "/push/clients", "/push/projects", "/push/tasks",
   "/update/task-status", "/update/task", "/delete/task",
+  // Cron schedule + ops feed
+  "/push/cron-schedule", "/push/cron-update",
   // Agent chat
   "/push/agent-message",
 ]) {

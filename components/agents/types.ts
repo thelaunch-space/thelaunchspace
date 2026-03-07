@@ -74,3 +74,15 @@ export const CHAT_AGENTS: AgentChatConfig[] = [
     avatarPath: "/agents/shakti.png",
   },
 ];
+
+export interface CronUpdateMessage {
+  _id: string;
+  conversationId: string;
+  role: string;
+  content: string;
+  createdAt: string;
+  jobName?: string;
+  messageType?: string;
+  agentId: string;
+  agentName: string;
+}

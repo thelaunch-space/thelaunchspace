@@ -11,6 +11,7 @@ import ConversationSidebar from "./ConversationSidebar";
 import ChatWindow from "./ChatWindow";
 import ChatInput from "./ChatInput";
 import EmptyState from "./EmptyState";
+import OpsFeed from "./OpsFeed";
 
 interface Props {
   initialConversationId: string | null;
@@ -23,6 +24,7 @@ export default function AgentsPage({ initialConversationId }: Props) {
   const [activeConversationId, setActiveConversationId] = useState<string | null>(initialConversationId);
   const [isWaitingForAgent, setIsWaitingForAgent] = useState(false);
   const waitingSinceRef = useRef<number | null>(null);
+  const [mode, setMode] = useState<"chat" | "ops">("chat");
 
   // Convex queries
   const conversations = useQuery(
@@ -183,36 +185,69 @@ export default function AgentsPage({ initialConversationId }: Props) {
         selectedAgent={selectedAgent}
         onSelectAgent={handleSelectAgent}
       />
-      <div className="flex-1 flex overflow-hidden">
-        <ConversationSidebar
-          conversations={conversations ?? []}
-          activeConversationId={activeConversationId}
-          onSelectConversation={handleSelectConversation}
-          onNewChat={handleNewChat}
-        />
-        <div className="flex-1 flex flex-col overflow-hidden bg-white">
-          {activeConversationId ? (
-            <>
-              <ChatWindow
-                messages={allMessages}
-                isWaitingForAgent={isWaitingForAgent}
-                waitingSince={waitingSinceRef.current}
-                selectedAgent={selectedAgent}
-              />
-              <ChatInput
-                onSend={handleSend}
-                isStreaming={isWaitingForAgent}
-                agentName={selectedAgent.name}
-              />
-            </>
-          ) : (
-            <EmptyState
-              selectedAgent={selectedAgent}
-              onNewChat={handleNewChat}
-            />
-          )}
-        </div>
+
+      {/* Mode toggle: Chat / Ops Feed */}
+      <div className="shrink-0 flex items-center gap-1 px-4 py-2 bg-white">
+        <button
+          onClick={() => setMode("chat")}
+          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+            mode === "chat"
+              ? "bg-gray-900 text-white"
+              : "text-text-secondary hover:text-text-primary hover:bg-black/[0.04]"
+          }`}
+        >
+          Chat
+        </button>
+        <button
+          onClick={() => setMode("ops")}
+          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 ${
+            mode === "ops"
+              ? "bg-gray-900 text-white"
+              : "text-text-secondary hover:text-text-primary hover:bg-black/[0.04]"
+          }`}
+        >
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+          </span>
+          Ops Feed
+        </button>
       </div>
+
+      {mode === "chat" ? (
+        <div className="flex-1 flex overflow-hidden">
+          <ConversationSidebar
+            conversations={conversations ?? []}
+            activeConversationId={activeConversationId}
+            onSelectConversation={handleSelectConversation}
+            onNewChat={handleNewChat}
+          />
+          <div className="flex-1 flex flex-col overflow-hidden bg-white">
+            {activeConversationId ? (
+              <>
+                <ChatWindow
+                  messages={allMessages}
+                  isWaitingForAgent={isWaitingForAgent}
+                  waitingSince={waitingSinceRef.current}
+                  selectedAgent={selectedAgent}
+                />
+                <ChatInput
+                  onSend={handleSend}
+                  isStreaming={isWaitingForAgent}
+                  agentName={selectedAgent.name}
+                />
+              </>
+            ) : (
+              <EmptyState
+                selectedAgent={selectedAgent}
+                onNewChat={handleNewChat}
+              />
+            )}
+          </div>
+        </div>
+      ) : (
+        <OpsFeed selectedAgent={selectedAgent} />
+      )}
     </div>
   );
 }

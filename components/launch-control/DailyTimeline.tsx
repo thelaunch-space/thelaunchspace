@@ -2,7 +2,8 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { DAILY_SCHEDULE } from "@/lib/launch-control-types";
+import { DAILY_SCHEDULE_FALLBACK } from "@/lib/launch-control-types";
+import type { AgentScheduleItem } from "@/lib/launch-control-types";
 import { agents } from "@/lib/agents";
 import TimelineItem from "./TimelineItem";
 
@@ -37,6 +38,19 @@ export default function DailyTimeline() {
     day: "numeric",
   });
 
+  // Dynamic schedule from Convex (already deployed)
+  const cronSchedule = useQuery(api.cronSchedule.todaySchedule);
+
+  const schedule: AgentScheduleItem[] =
+    cronSchedule && cronSchedule.length > 0
+      ? cronSchedule.map((item) => ({
+          time: item.displayTime,
+          label: item.label,
+          agentId: item.agentId,
+          action: item.action,
+        }))
+      : DAILY_SCHEDULE_FALLBACK;
+
   const parthaToday = useQuery(api.agentActivity.agentTodayActivity, { agentName: "Parthasarathi" });
   const vibhishanaToday = useQuery(api.agentActivity.agentTodayActivity, { agentName: "Vibhishana" });
   const vyasaToday = useQuery(api.agentActivity.agentTodayActivity, { agentName: "Vyasa" });
@@ -66,7 +80,7 @@ export default function DailyTimeline() {
         <div className="absolute left-[7px] top-2 bottom-2 w-px bg-border-color/60" />
 
         <div className="space-y-0">
-          {DAILY_SCHEDULE.map((item, i) => {
+          {schedule.map((item, i) => {
             const scheduleHour = parseScheduleHour(item.time);
             const hasCompleted = allTodayActions.includes(item.action);
             const isActive = !hasCompleted && Math.abs(currentISTHour - scheduleHour) < 0.5;

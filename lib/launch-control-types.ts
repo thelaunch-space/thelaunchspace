@@ -35,8 +35,21 @@ export type AdminTab = "overview" | "communities" | "questions" | "briefs" | "st
 
 export type FeedFilter = "all" | "tasks" | "milestones";
 
-// Hardcoded daily schedule (IST times)
-export const DAILY_SCHEDULE: AgentScheduleItem[] = [
+export interface CronScheduleItem {
+  agentName: string;
+  agentId: string;
+  jobName: string;
+  label: string;
+  timeIST: string;
+  displayTime: string;
+  action: string;
+  dayOfWeek?: string;
+  enabled: boolean;
+  updatedAt: string;
+}
+
+// Hardcoded daily schedule fallback (IST times)
+export const DAILY_SCHEDULE_FALLBACK: AgentScheduleItem[] = [
   // Morning block
   { time: "8:00 AM", label: "Health check & pipeline review", agentId: "parthasarathi", action: "health_check" },
   { time: "9:00 AM", label: "Reddit & community scan", agentId: "vibhishana", action: "scan_complete" },

@@ -313,6 +313,7 @@ export default defineSchema({
     messageCount: v.number(),
     lastMessageAt: v.string(),      // ISO timestamp
     createdAt: v.string(),
+    type: v.optional(v.string()),   // "chat" (default) | "cron_log"
   })
     .index("by_userId_agentId", ["userId", "agentId"])
     .index("by_userId", ["userId"])
@@ -324,7 +325,25 @@ export default defineSchema({
     role: v.string(),               // "user" | "assistant"
     content: v.string(),
     createdAt: v.string(),
+    jobName: v.optional(v.string()),
+    messageType: v.optional(v.string()),  // "chat" (default) | "cron_update"
   })
     .index("by_conversationId", ["conversationId"])
     .index("by_conversationId_createdAt", ["conversationId", "createdAt"]),
+
+  // Dynamic cron schedule — Parthasarathi pushes schedule changes
+  cronSchedule: defineTable({
+    agentName: v.string(),
+    agentId: v.string(),
+    jobName: v.string(),
+    label: v.string(),
+    timeIST: v.string(),            // "09:00" (24h, sortable)
+    displayTime: v.string(),        // "9:00 AM"
+    action: v.string(),             // matches agentActivity action field
+    dayOfWeek: v.optional(v.string()), // "daily" | "monday" | "saturday" etc.
+    enabled: v.boolean(),
+    updatedAt: v.string(),
+  })
+    .index("by_agentId_jobName", ["agentId", "jobName"])
+    .index("by_timeIST", ["timeIST"]),
 });

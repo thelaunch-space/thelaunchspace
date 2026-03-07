@@ -15,6 +15,7 @@ import type * as agentQueries from "../agentQueries.js";
 import type * as blogs from "../blogs.js";
 import type * as briefs from "../briefs.js";
 import type * as clients from "../clients.js";
+import type * as cronSchedule from "../cronSchedule.js";
 import type * as documents from "../documents.js";
 import type * as http from "../http.js";
 import type * as lib_activityHelper from "../lib/activityHelper.js";
@@ -42,6 +43,7 @@ declare const fullApi: ApiFromModules<{
   blogs: typeof blogs;
   briefs: typeof briefs;
   clients: typeof clients;
+  cronSchedule: typeof cronSchedule;
   documents: typeof documents;
   http: typeof http;
   "lib/activityHelper": typeof lib_activityHelper;
