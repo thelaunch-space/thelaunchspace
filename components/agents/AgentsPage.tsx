@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import { Menu, Plus, X } from "lucide-react";
 import { useAuth } from "@clerk/nextjs";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -25,6 +26,7 @@ export default function AgentsPage({ initialConversationId }: Props) {
   const [isWaitingForAgent, setIsWaitingForAgent] = useState(false);
   const waitingSinceRef = useRef<number | null>(null);
   const [mode, setMode] = useState<"chat" | "ops">("chat");
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   // Convex queries
   const conversations = useQuery(
@@ -83,6 +85,7 @@ export default function AgentsPage({ initialConversationId }: Props) {
 
   const handleSelectConversation = useCallback((id: string) => {
     setActiveConversationId(id);
+    setMobileSidebarOpen(false);
   }, []);
 
   const handleNewChat = useCallback(async () => {
@@ -93,6 +96,7 @@ export default function AgentsPage({ initialConversationId }: Props) {
       userId,
     });
     setActiveConversationId(id);
+    setMobileSidebarOpen(false);
   }, [userId, selectedAgent, createConversation]);
 
   const handleSend = useCallback(async (text: string) => {
@@ -215,13 +219,59 @@ export default function AgentsPage({ initialConversationId }: Props) {
       </div>
 
       {mode === "chat" ? (
-        <div className="flex-1 flex overflow-hidden">
-          <ConversationSidebar
-            conversations={conversations ?? []}
-            activeConversationId={activeConversationId}
-            onSelectConversation={handleSelectConversation}
-            onNewChat={handleNewChat}
-          />
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {/* Mobile toolbar — hamburger + new chat */}
+          <div className="md:hidden shrink-0 flex items-center justify-between px-3 py-2 bg-white">
+            <button
+              onClick={() => setMobileSidebarOpen(true)}
+              className="p-2 rounded-lg hover:bg-black/[0.04] transition-colors"
+            >
+              <Menu size={20} className="text-text-secondary" />
+            </button>
+            <button
+              onClick={handleNewChat}
+              className="p-2 rounded-lg hover:bg-black/[0.04] transition-colors"
+            >
+              <Plus size={20} className="text-text-secondary" />
+            </button>
+          </div>
+
+          <div className="flex-1 flex overflow-hidden relative">
+            {/* Mobile sidebar overlay */}
+            {mobileSidebarOpen && (
+              <div className="md:hidden absolute inset-0 z-30 flex">
+                <div className="w-72 h-full flex flex-col bg-white shadow-xl">
+                  <div className="flex items-center justify-between px-3 py-2">
+                    <span className="text-xs font-semibold text-text-secondary">Conversations</span>
+                    <button
+                      onClick={() => setMobileSidebarOpen(false)}
+                      className="p-2 rounded-lg hover:bg-black/[0.04] transition-colors"
+                    >
+                      <X size={18} className="text-text-secondary" />
+                    </button>
+                  </div>
+                  <ConversationSidebar
+                    conversations={conversations ?? []}
+                    activeConversationId={activeConversationId}
+                    onSelectConversation={handleSelectConversation}
+                    onNewChat={handleNewChat}
+                    mobile
+                  />
+                </div>
+                <div
+                  className="flex-1 bg-black/20"
+                  onClick={() => setMobileSidebarOpen(false)}
+                />
+              </div>
+            )}
+
+            {/* Desktop sidebar */}
+            <ConversationSidebar
+              conversations={conversations ?? []}
+              activeConversationId={activeConversationId}
+              onSelectConversation={handleSelectConversation}
+              onNewChat={handleNewChat}
+            />
           <div className="flex-1 flex flex-col overflow-hidden bg-white">
             {activeConversationId ? (
               <>
@@ -243,6 +293,7 @@ export default function AgentsPage({ initialConversationId }: Props) {
                 onNewChat={handleNewChat}
               />
             )}
+          </div>
           </div>
         </div>
       ) : (

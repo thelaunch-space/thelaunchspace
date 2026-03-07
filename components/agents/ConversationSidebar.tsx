@@ -9,6 +9,7 @@ interface Props {
   activeConversationId: string | null;
   onSelectConversation: (id: string) => void;
   onNewChat: () => void;
+  mobile?: boolean;
 }
 
 function groupByDate(conversations: ChatConversation[]) {
@@ -40,11 +41,12 @@ export default function ConversationSidebar({
   activeConversationId,
   onSelectConversation,
   onNewChat,
+  mobile,
 }: Props) {
   const groups = useMemo(() => groupByDate(conversations), [conversations]);
 
   return (
-    <div className="w-64 shrink-0 h-full flex flex-col border-r border-border-color/60 bg-surface/50 hidden md:flex">
+    <div className={`${mobile ? "w-full flex" : "w-64 hidden md:flex"} shrink-0 h-full flex-col ${mobile ? "" : "border-r border-border-color/60"} bg-surface/50`}>
       {/* Header */}
       <div className="p-3 pb-2">
         <button
