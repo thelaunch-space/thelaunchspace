@@ -6,7 +6,7 @@ export interface AgentChatConfig {
   name: string;        // "Parthasarathi"
   role: string;        // "Operations Orchestrator"
   accentHex: string;   // "#2563EB"
-  avatarPath: string;  // "/agents/parthasarathi.png"
+  avatarPath: string;  // "/agent-avatars/parthasarathi.png"
 }
 
 export interface ChatConversation {
@@ -36,42 +36,42 @@ export const CHAT_AGENTS: AgentChatConfig[] = [
     name: "Parthasarathi",
     role: "Operations Orchestrator",
     accentHex: "#6B9BF7",
-    avatarPath: "/agents/parthasarathi.png",
+    avatarPath: "/agent-avatars/parthasarathi.png",
   },
   {
     id: "vibhishana",
     name: "Vibhishana",
     role: "Research Intelligence Analyst",
     accentHex: "#5EDCB3",
-    avatarPath: "/agents/vibhishana.png",
+    avatarPath: "/agent-avatars/vibhishana.png",
   },
   {
     id: "vyasa",
     name: "Vyasa",
     role: "SEO Blog Writer",
     accentHex: "#A78BFA",
-    avatarPath: "/agents/vyasa.png",
+    avatarPath: "/agent-avatars/vyasa.png",
   },
   {
     id: "vidura",
     name: "Vidura",
     role: "SEO Intelligence Advisor",
     accentHex: "#5CC8E4",
-    avatarPath: "/agents/vidura.png",
+    avatarPath: "/agent-avatars/vidura.png",
   },
   {
     id: "valmiki",
     name: "Valmiki",
     role: "LinkedIn Growth Engine",
     accentHex: "#F98DA0",
-    avatarPath: "/agents/valmiki.png",
+    avatarPath: "/agent-avatars/valmiki.png",
   },
   {
     id: "shakti",
     name: "Shakti",
     role: "Personal AI Assistant",
     accentHex: "#8B83F0",
-    avatarPath: "/agents/shakti.png",
+    avatarPath: "/agent-avatars/shakti.png",
   },
 ];
 
