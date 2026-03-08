@@ -240,7 +240,7 @@ export default function AgentsPage({ initialConversationId }: Props) {
             {/* Mobile sidebar overlay */}
             {mobileSidebarOpen && (
               <div className="md:hidden absolute inset-0 z-30 flex">
-                <div className="w-72 h-full flex flex-col bg-white shadow-xl">
+                <div className="w-[85vw] max-w-sm h-full flex flex-col bg-white shadow-xl">
                   <div className="flex items-center justify-between px-3 py-2">
                     <span className="text-xs font-semibold text-text-secondary">Conversations</span>
                     <button

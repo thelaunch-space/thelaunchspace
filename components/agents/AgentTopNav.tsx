@@ -19,8 +19,8 @@ export default function AgentTopNav({ agents, selectedAgent, onSelectAgent }: Pr
         <img src="/logo.png" alt="thelaunch.space" className="h-8 w-auto" />
       </Link>
 
-      {/* Agent pills — scrollable on mobile */}
-      <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none px-2 flex-1 justify-center mx-4">
+      {/* Agent pills — avatar-only on mobile, avatar+name on desktop */}
+      <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto scrollbar-none px-1 sm:px-2 flex-1 justify-center mx-2 sm:mx-4">
         {agents.map((agent) => {
           const isActive = agent.id === selectedAgent.id;
           return (
@@ -28,7 +28,7 @@ export default function AgentTopNav({ agents, selectedAgent, onSelectAgent }: Pr
               key={agent.id}
               onClick={() => onSelectAgent(agent)}
               title={`${agent.name} — ${agent.role}`}
-              className={`group relative flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-150 shrink-0 ${
+              className={`group relative flex items-center gap-2 px-1.5 sm:px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-150 shrink-0 ${
                 isActive
                   ? "bg-surface shadow-sm border border-border-color/60"
                   : "hover:bg-black/[0.04] text-text-secondary"
@@ -36,7 +36,7 @@ export default function AgentTopNav({ agents, selectedAgent, onSelectAgent }: Pr
             >
               {/* Accent ring when active */}
               <div
-                className={`w-6 h-6 rounded-full overflow-hidden ring-2 transition-all ${
+                className={`w-7 h-7 sm:w-6 sm:h-6 rounded-full overflow-hidden ring-2 transition-all ${
                   isActive ? "ring-offset-1" : "ring-transparent"
                 }`}
                 style={isActive ? { "--tw-ring-color": agent.accentHex } as React.CSSProperties : undefined}
@@ -46,19 +46,19 @@ export default function AgentTopNav({ agents, selectedAgent, onSelectAgent }: Pr
                   alt={agent.name}
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    // Fallback to colored circle if avatar missing
                     (e.target as HTMLImageElement).style.display = "none";
                   }}
                 />
                 {/* Colored fallback behind image */}
                 <div
-                  className="w-full h-full rounded-full flex items-center justify-center text-white text-[10px] font-bold -mt-6"
+                  className="w-full h-full rounded-full flex items-center justify-center text-white text-[10px] font-bold -mt-7 sm:-mt-6"
                   style={{ backgroundColor: agent.accentHex }}
                 >
                   {agent.name[0]}
                 </div>
               </div>
-              <span className={isActive ? "text-text-primary" : "text-text-secondary"}>
+              {/* Name hidden on mobile, visible on sm+ */}
+              <span className={`hidden sm:inline ${isActive ? "text-text-primary" : "text-text-secondary"}`}>
                 {agent.name}
               </span>
               {/* Active accent dot */}
