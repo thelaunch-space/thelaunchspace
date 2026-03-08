@@ -157,46 +157,54 @@ export default function TimeSlotPicker({ onSelect, onBack, prefetchCache }: Time
           IST times shown with {userTimezone} equivalent
         </p>
 
-        {isLoading ? (
-          /* Skeleton loader */
-          <div className="grid grid-cols-2 gap-2">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className="flex flex-col items-center p-3 rounded-xl border border-border-color/20 animate-pulse"
-              >
-                <div className="h-4 w-20 bg-border-color/20 rounded" />
-                <div className="h-3 w-16 bg-border-color/10 rounded mt-1.5" />
-              </div>
-            ))}
-          </div>
-        ) : slots.length === 0 ? (
-          /* Empty state */
-          <div className="text-center py-6 text-sm text-text-secondary">
-            No available times on this day. Try another day or request a custom time below.
-          </div>
-        ) : (
-          /* Slot cards */
-          <div className="grid grid-cols-2 gap-2">
-            {slots.map((slot) => {
-              const local = istToLocal(selectedDate, slot);
-              return (
-                <button
-                  key={slot}
-                  onClick={() => onSelect(selectedDate, slot, false)}
-                  className="group flex flex-col items-center p-3 rounded-xl border border-border-color/40 hover:border-accent-blue hover:bg-accent-blue/5 transition-all text-left"
-                >
-                  <span className="text-sm font-semibold text-text-primary group-hover:text-accent-blue transition-colors">
-                    {formatISTTime(slot)} IST
-                  </span>
-                  <span className="text-[11px] text-text-secondary mt-0.5">
-                    {local.time}{local.dateDiffers ? ` (${local.localDate})` : ""}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        )}
+        <div className="relative">
+          {/* Loading overlay */}
+          {isLoading && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/60 rounded-xl">
+              <div className="w-5 h-5 border-2 border-accent-blue/30 border-t-accent-blue rounded-full animate-spin" />
+            </div>
+          )}
+
+          {slots.length === 0 && !isLoading ? (
+            /* Empty state */
+            <div className="text-center py-6 text-sm text-text-secondary">
+              No available times on this day. Try another day or request a custom time below.
+            </div>
+          ) : (
+            /* Slot cards */
+            <div className={`grid grid-cols-2 gap-2 transition-opacity duration-150 ${isLoading ? "opacity-40" : "opacity-100"}`}>
+              {(isLoading && slots.length === 0
+                ? ["", "", "", "", "", ""]
+                : slots
+              ).map((slot, i) => {
+                if (!slot) {
+                  return (
+                    <div key={i} className="flex flex-col items-center p-3 rounded-xl border border-border-color/20">
+                      <div className="h-4 w-20 bg-border-color/15 rounded" />
+                      <div className="h-3 w-16 bg-border-color/10 rounded mt-1.5" />
+                    </div>
+                  );
+                }
+                const local = istToLocal(selectedDate, slot);
+                return (
+                  <button
+                    key={slot}
+                    onClick={() => onSelect(selectedDate, slot, false)}
+                    disabled={isLoading}
+                    className="group flex flex-col items-center p-3 rounded-xl border border-border-color/40 hover:border-accent-blue hover:bg-accent-blue/5 transition-all text-left"
+                  >
+                    <span className="text-sm font-semibold text-text-primary group-hover:text-accent-blue transition-colors">
+                      {formatISTTime(slot)} IST
+                    </span>
+                    <span className="text-[11px] text-text-secondary mt-0.5">
+                      {local.time}{local.dateDiffers ? ` (${local.localDate})` : ""}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Expanded slots / "None of these work?" */}
