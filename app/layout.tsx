@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://thelaunch.space"),
   title: "thelaunch.space | AI Teams Trained on How You Work",
   description:
-    "We build AI agent teams trained on your process, your standards, your judgment — running around the clock. You stay in control.",
+    "We build AI agent teams trained on your process, your standards, your judgment. Running around the clock. You stay in control.",
   icons: {
     icon: "/favicon.png",
     apple: "/icon-192.png",
@@ -55,15 +55,15 @@ export const metadata: Metadata = {
   openGraph: {
     title: "thelaunch.space | AI Teams Trained on How You Work",
     description:
-      "We build AI agent teams trained on your process, your standards, your judgment — running around the clock. You stay in control.",
+      "We build AI agent teams trained on your process, your standards, your judgment. Running around the clock. You stay in control.",
     url: "https://thelaunch.space",
     siteName: "thelaunch.space",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image/og-image.png",
         width: 1200,
         height: 630,
-        alt: "AI teams trained on how you work — thelaunch.space",
+        alt: "Your AI team. Working right now. SEO, Content, Support, Operations.",
       },
     ],
     type: "website",
@@ -72,8 +72,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "thelaunch.space | AI Teams Trained on How You Work",
     description:
-      "We build AI agent teams trained on your process, your standards, your judgment — running around the clock. You stay in control.",
-    images: ["/og-image.png"],
+      "We build AI agent teams trained on your process, your standards, your judgment. Running around the clock. You stay in control.",
+    images: ["/og-image/og-image.png"],
   },
 };
 
