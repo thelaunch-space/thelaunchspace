@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     siteName: "thelaunch.space",
     type: "article",
     publishedTime: "2026-02-20T00:00:00.000Z",
-    modifiedTime: "2026-03-02T00:00:00.000Z",
+    modifiedTime: "2026-03-10T00:00:00.000Z",
     authors: ["thelaunch.space"],
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "I Built My App With AI. Now What?" }],
   },
@@ -30,7 +30,7 @@ const jsonLd = {
   description: "You deployed AI-generated code to your laptop. Now it needs to reach real users. Here's the deployment reality no one talks about—and three paths forward.",
   url: "https://thelaunch.space/blogs/ai-tools/ai-generated-code-deployment-reality",
   datePublished: "2026-02-20T00:00:00.000Z",
-  dateModified: "2026-03-02T00:00:00.000Z",
+  dateModified: "2026-03-10T00:00:00.000Z",
   author: { "@type": "Organization", name: "thelaunch.space", url: "https://thelaunch.space" },
   publisher: {
     "@type": "Organization",
@@ -62,7 +62,7 @@ export default function BlogPost() {
           <div className="flex items-center gap-3 text-sm text-text-secondary mb-10">
             <span>thelaunch.space</span><span>·</span>
             <time dateTime="2026-02-20">Feb 20, 2026</time><span>·</span>
-            <span className="text-text-primary">Updated Mar 2, 2026</span><span>·</span>
+            <span className="text-text-primary">Updated Mar 10, 2026</span><span>·</span>
             <span>9 min read</span>
           </div>
 
@@ -101,12 +101,12 @@ export default function BlogPost() {
           </p>
 
           <div className="bg-border-color/30 border border-border-color rounded-xl p-8 my-10 text-center">
-            <p className="text-3xl md:text-4xl font-bold text-text-primary mb-2">84%</p>
-            <p className="text-sm md:text-base text-text-secondary">of developers use AI tools in 2025—but less than 44% of AI-generated code ships to production without modification</p>
+            <p className="text-3xl md:text-4xl font-bold text-text-primary mb-2">41-42%</p>
+            <p className="text-sm md:text-base text-text-secondary">of all code is now AI-generated globally, yet only 7% of companies have scaled genAI enterprise-wide (2026 data)</p>
           </div>
 
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
-            The numbers reveal the production gap: According to <a href="https://www.baytechconsulting.com/blog/mastering-ai-code-revolution-2026" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">Baytech Consulting's 2026 analysis</a>, main branch success rates for AI-generated code have dropped to 70.8%—the lowest in over five years and well below the recommended 90% benchmark. The gap between code generation speed and actual production readiness is widening.
+            The numbers reveal the production gap: According to <a href="https://www.baytechconsulting.com/blog/mastering-ai-code-revolution-2026" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">Baytech Consulting's 2026 analysis</a>, main branch success rates for AI-generated code have dropped to 70.8%—the lowest in over five years and well below the recommended 90% benchmark. The gap between code generation speed and actual production readiness is widening. With 76% of professional developers using AI tools but only 7% of companies achieving full enterprise deployment, we're in a classic "generation is easy, production is hard" paradox.
           </p>
 
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
@@ -143,6 +143,10 @@ export default function BlogPost() {
               <p className="text-text-primary font-semibold mb-1">322% more privilege escalation paths in Fortune 50 codebases</p>
               <p className="text-text-secondary text-base leading-relaxed">Apiiro's research through June 2025 identified design flaws like authentication bypass and insecure references at rates 153% higher than human-written code, with over 10,000 new findings monthly.</p>
             </div>
+            <div className="bg-border-color/20 rounded-xl p-5">
+              <p className="text-text-primary font-semibold mb-1">Over 25% of AI "skills" and extensions contain vulnerabilities</p>
+              <p className="text-text-secondary text-base leading-relaxed">Security researchers analyzing over 30,000 AI agent skills found that more than a quarter contain at least one vulnerability—creating a supply chain risk that most non-technical founders aren't aware of.</p>
+            </div>
           </div>
 
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
@@ -150,18 +154,80 @@ export default function BlogPost() {
           </p>
 
           <div className="bg-border-color/30 border border-border-color rounded-xl p-8 my-10 text-center">
-            <p className="text-3xl md:text-4xl font-bold text-text-primary mb-2">38%</p>
-            <p className="text-sm md:text-base text-text-secondary">of developers find reviewing AI-generated code more effort-intensive than human-written code (Sonar 2026)</p>
+            <p className="text-3xl md:text-4xl font-bold text-text-primary mb-2">67%</p>
+            <p className="text-sm md:text-base text-text-secondary">of developers spend more time debugging AI code than they save from using AI tools (2026 data)</p>
           </div>
 
           <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
-            According to <a href="https://www.sonarsource.com/state-of-code-developer-survey-report.pdf" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">Sonar's State of Code Developer Survey</a>, only 27% find AI code easier to review—the rest find it either harder or equivalent in effort. With <strong>96% of developers struggling to fully trust AI-generated code</strong>, every line becomes a verification exercise rather than a quick scan.
+            According to <a href="https://www.sonarsource.com/state-of-code-developer-survey-report.pdf" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">Sonar's State of Code Developer Survey</a>, only 27% find AI code easier to review—the rest find it either harder or equivalent in effort. With <strong>96% of developers struggling to fully trust AI-generated code</strong>, every line becomes a verification exercise rather than a quick scan. AI code shows 1.7× more issues in production systems, 1.64× higher maintainability errors, and 1.57× more security findings than human code.
           </p>
 
           <div className="border-l-4 border-accent-blue pl-6 my-8">
             <p className="text-base md:text-lg text-text-primary font-medium leading-relaxed">
               Here's what this means for deployment: even if you figure out how to push code to a server, you're deploying code that statistically has more security holes and takes longer to verify. The deployment wall isn't just technical—it's also a quality and safety checkpoint that AI-generated code struggles to pass.
             </p>
+          </div>
+
+          <hr className="border-border-color my-12" />
+
+          <h2 className="text-2xl md:text-3xl font-bold mt-16 mb-4">Pre-Deployment Security Checklist</h2>
+
+          <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
+            Before deploying any AI-generated code to production, run through this security checklist aligned with OWASP LLM Top-10, NIST AI RMF, and 2026 best practices:
+          </p>
+
+          <div className="overflow-x-auto my-10">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-border-color/30">
+                  <th className="border border-border-color px-4 py-3 text-left text-text-primary font-semibold">Security Layer</th>
+                  <th className="border border-border-color px-4 py-3 text-left text-text-primary font-semibold">What to Check</th>
+                  <th className="border border-border-color px-4 py-3 text-left text-text-primary font-semibold">Why It Matters</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="border border-border-color px-4 py-3 text-text-primary font-semibold">Input Validation</td>
+                  <td className="border border-border-color px-4 py-3 text-text-secondary">Sanitize all user inputs with allow-lists, rule-based filters, and validation</td>
+                  <td className="border border-border-color px-4 py-3 text-text-secondary">Blocks prompt injection, SQL injection, XSS attacks</td>
+                </tr>
+                <tr className="bg-border-color/10">
+                  <td className="border border-border-color px-4 py-3 text-text-primary font-semibold">Authentication & Access</td>
+                  <td className="border border-border-color px-4 py-3 text-text-secondary">Verify auth flows work, check for hardcoded credentials, review permission levels</td>
+                  <td className="border border-border-color px-4 py-3 text-text-secondary">AI often generates weak or missing auth checks</td>
+                </tr>
+                <tr>
+                  <td className="border border-border-color px-4 py-3 text-text-primary font-semibold">Secrets Management</td>
+                  <td className="border border-border-color px-4 py-3 text-text-secondary">Ensure no API keys, passwords, or tokens in code; use environment variables</td>
+                  <td className="border border-border-color px-4 py-3 text-text-secondary">Hardcoded secrets are common in AI code</td>
+                </tr>
+                <tr className="bg-border-color/10">
+                  <td className="border border-border-color px-4 py-3 text-text-primary font-semibold">Dependency Scan</td>
+                  <td className="border border-border-color px-4 py-3 text-text-secondary">Run SAST tools and container scanners (Trivy, Grype) to detect vulnerabilities</td>
+                  <td className="border border-border-color px-4 py-3 text-text-secondary">Over 25% of AI dependencies have known vulnerabilities</td>
+                </tr>
+                <tr>
+                  <td className="border border-border-color px-4 py-3 text-text-primary font-semibold">Output Filtering</td>
+                  <td className="border border-border-color px-4 py-3 text-text-secondary">Filter model outputs for sensitive data, PII, policy violations before user exposure</td>
+                  <td className="border border-border-color px-4 py-3 text-text-secondary">Prevents data leaks and compliance violations</td>
+                </tr>
+                <tr className="bg-border-color/10">
+                  <td className="border border-border-color px-4 py-3 text-text-primary font-semibold">Error Handling</td>
+                  <td className="border border-border-color px-4 py-3 text-text-secondary">Verify graceful failure, no stack traces exposed to users, circuit breakers in place</td>
+                  <td className="border border-border-color px-4 py-3 text-text-secondary">AI code often fails ungracefully in edge cases</td>
+                </tr>
+                <tr>
+                  <td className="border border-border-color px-4 py-3 text-text-primary font-semibold">Rate Limiting</td>
+                  <td className="border border-border-color px-4 py-3 text-text-secondary">Implement API rate limits, abuse monitoring, cost caps</td>
+                  <td className="border border-border-color px-4 py-3 text-text-secondary">Prevents runaway costs and DDoS attacks</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="bg-border-color/30 border border-border-color rounded-xl p-8 my-10 text-center">
+            <p className="text-3xl md:text-4xl font-bold text-text-primary mb-2">83% vs 29%</p>
+            <p className="text-sm md:text-base text-text-secondary">83% of orgs plan to deploy agentic AI, but only 29% report being ready to operate those systems securely (2026)</p>
           </div>
 
           <hr className="border-border-color my-12" />
@@ -469,12 +535,32 @@ export default function BlogPost() {
 
             <div>
               <h3 className="text-lg md:text-xl font-bold text-text-primary mb-2">What percentage of production code is AI-generated in 2026?</h3>
-              <p className="text-base text-text-secondary leading-relaxed">As of 2026, approximately 24% of production code is AI-written globally (29% in the US), according to Aikido Security's survey of 450 organizations. Gartner forecasts this will reach 60% by the end of 2026. However, 90% of enterprises now use AI in development—the gap between usage and production deployment reflects the quality and security challenges that prevent much AI code from shipping without significant human review and modification.</p>
+              <p className="text-base text-text-secondary leading-relaxed">As of early 2026, approximately 41-42% of all code globally is AI-generated, with 76% of professional developers using or planning to use AI tools. However, only 7% of companies have fully scaled genAI enterprise-wide, and only 30% of AI experiments move to production. The gap between usage and production deployment reflects the quality and security challenges that prevent much AI code from shipping without significant human review and modification.</p>
             </div>
 
             <div>
               <h3 className="text-lg md:text-xl font-bold text-text-primary mb-2">How bad are security vulnerabilities in AI-generated code really?</h3>
               <p className="text-base text-text-secondary leading-relaxed">The data is concerning: AI code has 2.74x more vulnerabilities than human-written code, 25.1% of AI samples contain at least one confirmed vulnerability, and AI code caused 1 in 5 security breaches in 2026. Common issues include SQL injection, Server-Side Request Forgery (SSRF), hardcoded secrets, and missing authentication checks. This doesn't mean AI code can't be made secure—but it requires expert security review before production deployment, especially for apps handling user data or payments.</p>
+            </div>
+
+            <div>
+              <h3 className="text-lg md:text-xl font-bold text-text-primary mb-2">Do I need a CI/CD pipeline to deploy AI-generated code?</h3>
+              <p className="text-base text-text-secondary leading-relaxed">For early validation, no. Platforms like Vercel and Netlify provide automatic CI/CD when you connect your GitHub repository—they rebuild and deploy on every push. For production apps with real users, a proper CI/CD pipeline with automated testing becomes essential. AI code shows 1.7× more production issues than human code, so automated testing before deployment catches problems early.</p>
+            </div>
+
+            <div>
+              <h3 className="text-lg md:text-xl font-bold text-text-primary mb-2">What's the minimum team size needed to deploy and maintain an AI-generated app?</h3>
+              <p className="text-base text-text-secondary leading-relaxed">For validation-stage apps with <500 users: one technically-inclined founder can manage deployment using Vercel/Netlify + Supabase. For production apps with paying customers: minimum two people—one who understands the business logic and one with deployment/security experience. AI code's higher vulnerability rate (2.74× more issues) and debugging overhead (67% of devs spend more time debugging than they save) makes solo maintenance risky at scale.</p>
+            </div>
+
+            <div>
+              <h3 className="text-lg md:text-xl font-bold text-text-primary mb-2">How do I monitor AI-generated code after deployment?</h3>
+              <p className="text-base text-text-secondary leading-relaxed">Start with basic error tracking (Sentry, LogRocket) to catch crashes and exceptions. For production apps, add performance monitoring (response times, API usage), security monitoring (failed auth attempts, unusual traffic), and cost monitoring (especially for apps using external AI APIs). Set up alerts for errors, downtime, and cost spikes. AI code often fails in unexpected ways, so comprehensive monitoring catches issues before users complain.</p>
+            </div>
+
+            <div>
+              <h3 className="text-lg md:text-xl font-bold text-text-primary mb-2">Can I roll back a deployment if something breaks?</h3>
+              <p className="text-base text-text-secondary leading-relaxed">Yes, if you're using modern deployment platforms. Vercel, Netlify, and most cloud providers offer instant rollback to previous deployments with one click. This is critical for AI-generated code—given that AI code shows 23.5% more incidents and 30% higher failure rates post-deployment, having a rollback strategy isn't optional. Test your rollback process before you need it.</p>
             </div>
           </div>
 
